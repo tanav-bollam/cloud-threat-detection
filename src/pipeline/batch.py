@@ -1,0 +1,51 @@
+"""Batch (backfill) detection helpers shared by evaluation, the live worker and the dashboard."""
+from __future__ import annotations
+
+import json
+from typing import Optional
+
+import numpy as np
+import pandas as pd
+
+from src.detection.explain import explain
+from src.detection.features import Baseline, compute_windows
+from src.detection.iforest import AnomalyModel, windows_to_alerts
+from src.detection.rules_engine import Alert, RulesEngine
+from src.generator.world import load_yaml
+
+
+def org_context() -> dict:
+    org = load_yaml("org.yaml")["org"]
+    return {"account_id": org["account_id"], "home_regions": list(org["home_regions"])}
+
+
+def rules_alerts(con, disabled: Optional[set] = None, where: str = "") -> list[Alert]:
+    eng = RulesEngine(context=org_context(), disabled=disabled)
+    out: list[Alert] = []
+    cur = con.execute(f"SELECT raw FROM events {where} ORDER BY event_time, event_id")
+    while True:
+        rows = cur.fetchmany(50_000)
+        if not rows:
+            break
+        for (raw,) in rows:
+            out.extend(eng.evaluate(json.loads(raw)))
+    return out
+
+
+def anomaly_alerts(events: pd.DataFrame, baseline: Baseline, model: AnomalyModel, with_reasons: bool = True, top_k: int = 5):
+    feats = compute_windows(events, baseline)
+    scores = model.score(feats)
+    flagged = model.flag(feats, scores)
+    reasons = {}
+    if with_reasons and flagged.any():
+        idx = np.where(flagged)[0]
+        rs = explain(model, feats.iloc[idx], top_k)
+        reasons = {(feats.at[i, "identity"], feats.at[i, "wstart"]): r for i, r in zip(idx, rs)}
+    return windows_to_alerts(feats, scores, flagged, events, reasons), feats, scores
+
+
+def alerts_df(alerts: list[Alert]) -> pd.DataFrame:
+    cols = ["rule_id", "title", "severity", "event_id", "event_time", "detected_at", "identity", "source_ip", "matched_event_ids", "source", "score"]
+    if not alerts:
+        return pd.DataFrame(columns=cols)
+    return pd.DataFrame([a.to_dict() for a in alerts])

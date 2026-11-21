@@ -19,6 +19,24 @@ def load_truth(con) -> tuple[dict, dict, pd.DataFrame]:
     return truth, inj_events, inj
 
 
+def event_level(alerts: pd.DataFrame, con) -> dict:
+    """Event-level precision/recall: an event is 'predicted' if it appears in any alert's matched events."""
+    mal = {r[0]: r[1] for r in con.execute("SELECT event_id, scenario_id FROM labels WHERE is_malicious").fetchall()}
+    pred: set = set()
+    for row in alerts.itertuples():
+        pred |= set(row.matched_event_ids) | {row.event_id}
+    tp = len(pred & set(mal))
+    per: dict = defaultdict(lambda: [0, 0])
+    for e, s in mal.items():
+        per[s][1] += 1
+        per[s][0] += e in pred
+    prec = tp / len(pred) if pred else 0.0
+    rec = tp / len(mal) if mal else 0.0
+    f1 = 2 * prec * rec / (prec + rec) if prec + rec else 0.0
+    return {"precision": round(prec, 4), "recall": round(rec, 4), "f1": round(f1, 4), "predicted_events": len(pred),
+            "recall_by_scenario": {s: round(v[0] / v[1], 3) for s, v in sorted(per.items())}}
+
+
 def score(alerts: pd.DataFrame, con, days: float) -> dict:
     """alerts needs columns: event_id, matched_event_ids(list), rule_id/source."""
     truth, inj_events, inj = load_truth(con)
@@ -34,7 +52,7 @@ def score(alerts: pd.DataFrame, con, days: float) -> dict:
             if ids & evs:
                 detected.add(inj_id)
                 hit = True
-                t = pd.Timestamp(str(row.event_time).rstrip("Z"))
+                t = pd.Timestamp(str(row.detected_at).rstrip("Z"))
                 if inj_id not in first_alert or t < first_alert[inj_id]:
                     first_alert[inj_id] = t
         if hit:

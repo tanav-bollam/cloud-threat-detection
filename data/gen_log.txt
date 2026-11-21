@@ -1,0 +1,12 @@
+generated 1,181,833 events (0 injections) in 47.5s
+wrote 1,181,833 events to data\train.duckdb (1103.6 MB)
+generated 1,012,478 events (0 injections) in 38.1s
+wrote 1,012,478 events to data\val.duckdb (947.9 MB)
+generated 1,203,254 events (84 injections) in 43.6s
+wrote 1,203,254 events to data\test.duckdb (1126.7 MB)
+ote {n:,} events to {out} ({out.stat().st_size/1e6:.1f} MB)")
+                                          ^^^^^^^^^^
+  File "C:\Users\tansb\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 840, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] The system cannot find the file specified: 'data\\train.duckdb'

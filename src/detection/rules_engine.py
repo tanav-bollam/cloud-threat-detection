@@ -10,7 +10,7 @@ Rule shape:
     check: <name>                              # python predicate from rule_checks.CHECKS
     threshold: {count: N, window_s: S, group_by: [field,...], cooldown_s: optional}
     sequence:  {prior: {all: [...]}, prior_count: N, window_s: S, group_by: [field,...]}
-The detector never reads labels; it only sees CloudTrail records.
+The detector never reads ground truth; it only sees CloudTrail records.
 """
 from __future__ import annotations
 
@@ -84,6 +84,14 @@ class Alert:
     event_name: str = ""
     matched_event_ids: list[str] = field(default_factory=list)
     detail: str = ""
+    detected_at: str = ""          # when the detector could first know (rules: event time; windows: window end)
+    source: str = "rule"           # rule | anomaly | ip
+    score: float = 0.0
+    reasons: list = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if not self.detected_at:
+            self.detected_at = self.event_time
 
     def to_dict(self) -> dict:
         return asdict(self)

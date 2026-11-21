@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS events (
   event_id VARCHAR PRIMARY KEY, event_time TIMESTAMP, event_source VARCHAR, event_name VARCHAR, aws_region VARCHAR,
   source_ip VARCHAR, user_agent VARCHAR, identity_type VARCHAR, identity VARCHAR, principal_id VARCHAR, identity_arn VARCHAR,
   access_key_id VARCHAR, account_id VARCHAR, mfa_authenticated BOOLEAN, error_code VARCHAR, read_only BOOLEAN,
-  management_event BOOLEAN, event_type VARCHAR, bytes_out BIGINT, raw JSON)
+  management_event BOOLEAN, event_type VARCHAR, bytes_out BIGINT, console_login VARCHAR, raw JSON)
 """
 LABELS_DDL = """
 CREATE TABLE IF NOT EXISTS labels (
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS injections (
 """
 EVENT_COLS = ["event_id", "event_time", "event_source", "event_name", "aws_region", "source_ip", "user_agent", "identity_type", "identity",
               "principal_id", "identity_arn", "access_key_id", "account_id", "mfa_authenticated", "error_code", "read_only",
-              "management_event", "event_type", "bytes_out", "raw"]
+              "management_event", "event_type", "bytes_out", "console_login", "raw"]
 LABEL_COLS = ["event_id", "is_malicious", "scenario_id", "injection_id", "technique", "mitre_tactic"]
 
 
@@ -54,7 +54,8 @@ def flatten(rec: dict) -> dict:
         "access_key_id": ui.get("accessKeyId") or None, "account_id": ui["accountId"],
         "mfa_authenticated": None if mfa is None else mfa == "true", "error_code": rec.get("errorCode"),
         "read_only": rec["readOnly"], "management_event": rec["managementEvent"], "event_type": rec["eventType"],
-        "bytes_out": add.get("bytesTransferredOut"), "raw": json.dumps(rec, separators=(",", ":")),
+        "bytes_out": add.get("bytesTransferredOut"),
+        "console_login": (rec.get("responseElements") or {}).get("ConsoleLogin") if rec["eventName"] == "ConsoleLogin" else None, "raw": json.dumps(rec, separators=(",", ":")),
     }
 
 

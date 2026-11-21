@@ -123,7 +123,7 @@ class BenignGenerator:
     def _lambdas(self) -> None:
         rng, cfg = self.rng, self.cfg["personas"]["lambdas"]
         for p in self.w.by_persona("lambdas"):
-            rate = rng.uniform(*cfg["rate_per_hour"]) * self.scale          # events/hour at peak
+            rate = p.rate_per_hour * self.scale                              # events/hour at peak (fixed per world)
             gap = 3600.0 / max(rate, 1e-6)
             ua, ip = p.uas["lambda"][0], p.service_ips[0]
             names, weights = list(cfg["api_mix"]), list(cfg["api_mix"].values())

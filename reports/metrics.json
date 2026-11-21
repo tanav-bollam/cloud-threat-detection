@@ -1,0 +1,468 @@
+{
+ "test_days": 7.0,
+ "val_days": 7.0,
+ "injections": 84,
+ "rules_only": {
+  "alerts": 367,
+  "true_positive_alerts": 358,
+  "false_positive_alerts": 9,
+  "fp_alerts_per_day": 1.29,
+  "fp_by_source": {
+   "N_onboarding": 3,
+   "benign_baseline": 5,
+   "N_maintenance": 1
+  },
+  "per_scenario": {
+   "S1": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S2": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S3": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S4": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S5": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S6": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S7": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S8": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S9": {
+    "injections": 6,
+    "detected": 0,
+    "recall": 0.0
+   }
+  },
+  "overall_injection_recall": 0.929,
+  "event_level": {
+   "precision": 0.9966,
+   "recall": 0.4419,
+   "f1": 0.6123,
+   "predicted_events": 2656,
+   "recall_by_scenario": {
+    "S1": 0.245,
+    "S2": 0.088,
+    "S3": 0.818,
+    "S4": 0.828,
+    "S5": 0.61,
+    "S6": 1.0,
+    "S7": 0.885,
+    "S8": 0.97,
+    "S9": 0.0
+   }
+  },
+  "benign_week_fp_alerts_per_day": 1.43,
+  "benign_week_fp_alerts": 10,
+  "ttd_p50_s": 0.0,
+  "ttd_p95_s": 346.0
+ },
+ "anomaly_global": {
+  "alerts": 70,
+  "true_positive_alerts": 56,
+  "false_positive_alerts": 14,
+  "fp_alerts_per_day": 2.0,
+  "fp_by_source": {
+   "benign_baseline": 14
+  },
+  "per_scenario": {
+   "S1": {
+    "injections": 12,
+    "detected": 11,
+    "recall": 0.917
+   },
+   "S2": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S3": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S4": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S5": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S6": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S7": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S8": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S9": {
+    "injections": 6,
+    "detected": 3,
+    "recall": 0.5
+   }
+  },
+  "overall_injection_recall": 0.952,
+  "event_level": {
+   "precision": 0.9069,
+   "recall": 0.997,
+   "f1": 0.9498,
+   "predicted_events": 6585,
+   "recall_by_scenario": {
+    "S1": 0.898,
+    "S2": 1.0,
+    "S3": 1.0,
+    "S4": 1.0,
+    "S5": 1.0,
+    "S6": 1.0,
+    "S7": 1.0,
+    "S8": 1.0,
+    "S9": 0.552
+   }
+  },
+  "benign_week_fp_alerts_per_day": 3.0,
+  "benign_week_fp_alerts": 21,
+  "ttd_p50_s": 77.5,
+  "ttd_p95_s": 273.59999999999997
+ },
+ "rules_plus_anomaly_global": {
+  "alerts": 437,
+  "true_positive_alerts": 414,
+  "false_positive_alerts": 23,
+  "fp_alerts_per_day": 3.28,
+  "fp_by_source": {
+   "N_onboarding": 3,
+   "benign_baseline": 19,
+   "N_maintenance": 1
+  },
+  "per_scenario": {
+   "S1": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S2": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S3": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S4": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S5": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S6": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S7": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S8": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S9": {
+    "injections": 6,
+    "detected": 3,
+    "recall": 0.5
+   }
+  },
+  "overall_injection_recall": 0.964,
+  "event_level": {
+   "precision": 0.9057,
+   "recall": 0.9972,
+   "f1": 0.9492,
+   "predicted_events": 6595,
+   "recall_by_scenario": {
+    "S1": 0.918,
+    "S2": 1.0,
+    "S3": 1.0,
+    "S4": 1.0,
+    "S5": 1.0,
+    "S6": 1.0,
+    "S7": 1.0,
+    "S8": 1.0,
+    "S9": 0.552
+   }
+  },
+  "benign_week_fp_alerts_per_day": 4.43,
+  "benign_week_fp_alerts": 31,
+  "ttd_p50_s": 0.0,
+  "ttd_p95_s": 43.0
+ },
+ "anomaly_per_group": {
+  "alerts": 61,
+  "true_positive_alerts": 52,
+  "false_positive_alerts": 9,
+  "fp_alerts_per_day": 1.29,
+  "fp_by_source": {
+   "benign_baseline": 8,
+   "N_onboarding": 1
+  },
+  "per_scenario": {
+   "S1": {
+    "injections": 12,
+    "detected": 10,
+    "recall": 0.833
+   },
+   "S2": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S3": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S4": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S5": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S6": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S7": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S8": {
+    "injections": 6,
+    "detected": 5,
+    "recall": 0.833
+   },
+   "S9": {
+    "injections": 6,
+    "detected": 1,
+    "recall": 0.167
+   }
+  },
+  "overall_injection_recall": 0.905,
+  "event_level": {
+   "precision": 0.8823,
+   "recall": 0.9886,
+   "f1": 0.9325,
+   "predicted_events": 6712,
+   "recall_by_scenario": {
+    "S1": 0.735,
+    "S2": 1.0,
+    "S3": 1.0,
+    "S4": 1.0,
+    "S5": 1.0,
+    "S6": 1.0,
+    "S7": 1.0,
+    "S8": 0.843,
+    "S9": 0.172
+   }
+  },
+  "benign_week_fp_alerts_per_day": 2.14,
+  "benign_week_fp_alerts": 15,
+  "ttd_p50_s": 77.5,
+  "ttd_p95_s": 288.0
+ },
+ "rules_plus_anomaly_per_group": {
+  "alerts": 428,
+  "true_positive_alerts": 410,
+  "false_positive_alerts": 18,
+  "fp_alerts_per_day": 2.57,
+  "fp_by_source": {
+   "N_onboarding": 4,
+   "benign_baseline": 13,
+   "N_maintenance": 1
+  },
+  "per_scenario": {
+   "S1": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S2": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S3": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S4": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S5": {
+    "injections": 12,
+    "detected": 12,
+    "recall": 1.0
+   },
+   "S6": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S7": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S8": {
+    "injections": 6,
+    "detected": 6,
+    "recall": 1.0
+   },
+   "S9": {
+    "injections": 6,
+    "detected": 1,
+    "recall": 0.167
+   }
+  },
+  "overall_injection_recall": 0.94,
+  "event_level": {
+   "precision": 0.8821,
+   "recall": 0.994,
+   "f1": 0.9347,
+   "predicted_events": 6750,
+   "recall_by_scenario": {
+    "S1": 0.796,
+    "S2": 1.0,
+    "S3": 1.0,
+    "S4": 1.0,
+    "S5": 1.0,
+    "S6": 1.0,
+    "S7": 1.0,
+    "S8": 0.99,
+    "S9": 0.172
+   }
+  },
+  "benign_week_fp_alerts_per_day": 3.57,
+  "benign_week_fp_alerts": 25,
+  "ttd_p50_s": 0.0,
+  "ttd_p95_s": 32.599999999999966
+ },
+ "sample_top_anomalies": {
+  "global": [
+   [
+    "omar",
+    "2025-01-12T14:20:00Z",
+    0.758,
+    "new_region=1.0 (+1.20), read_ratio=0.0 (+1.18), new_ua=1.0 (+1.17), new_ip=1.0 (+0.92), high_risk_share=1.0 (+0.87)"
+   ],
+   [
+    "frank",
+    "2025-01-11T07:40:00Z",
+    0.751,
+    "err_ratio=0.263 (+1.34), new_ua=1.0 (+1.02), n_distinct_names=51.0 (+0.81), new_ip=1.0 (+0.74), new_region=0.625 (+0.74)"
+   ],
+   [
+    "eli",
+    "2025-01-10T04:55:00Z",
+    0.748,
+    "new_region=1.0 (+1.27), read_ratio=0.0 (+1.20), new_ua=1.0 (+1.14), high_risk_share=1.0 (+0.91), new_ip=1.0 (+0.84)"
+   ],
+   [
+    "priya",
+    "2025-01-10T03:50:00Z",
+    0.748,
+    "new_region=1.0 (+1.27), read_ratio=0.0 (+1.20), new_ua=1.0 (+1.14), high_risk_share=1.0 (+0.91), new_ip=1.0 (+0.84)"
+   ],
+   [
+    "omar",
+    "2025-01-10T09:05:00Z",
+    0.748,
+    "new_region=1.0 (+1.27), read_ratio=0.0 (+1.20), new_ua=1.0 (+1.14), high_risk_share=1.0 (+0.91), new_ip=1.0 (+0.85)"
+   ]
+  ],
+  "per_group": [
+   [
+    "ci-deployer",
+    "2025-01-06T14:05:00Z",
+    0.757,
+    "err_ratio=0.048 (+2.04), log_n_ips=1.099 (+1.62), n_services=8.0 (+1.24), n_distinct_names=11.0 (+1.24), recon_ratio=0.548 (+1.22)"
+   ],
+   [
+    "ci-deployer",
+    "2025-01-10T22:45:00Z",
+    0.757,
+    "log_n_ips=1.099 (+1.58), err_ratio=0.028 (+1.55), n_services=8.0 (+1.20), n_distinct_names=11.0 (+1.15), recon_ratio=0.528 (+1.10)"
+   ],
+   [
+    "ci-deployer",
+    "2025-01-08T16:55:00Z",
+    0.755,
+    "log_n_ips=1.099 (+1.69), volume_z=4.421 (+1.51), recon_ratio=0.641 (+1.47), n_distinct_names=11.0 (+1.31), n_services=8.0 (+1.25)"
+   ],
+   [
+    "ci-deployer",
+    "2025-01-09T18:45:00Z",
+    0.746,
+    "log_n_ips=1.099 (+1.78), volume_z=4.516 (+1.53), recon_ratio=0.571 (+1.45), n_services=8.0 (+1.33), n_distinct_names=11.0 (+1.29)"
+   ],
+   [
+    "omar",
+    "2025-01-12T14:20:00Z",
+    0.741,
+    "high_risk_share=1.0 (+1.58), new_region=1.0 (+1.41), read_ratio=0.0 (+1.37), is_weekend=1.0 (+1.06), new_ua=1.0 (+0.92)"
+   ]
+  ]
+ }
+}

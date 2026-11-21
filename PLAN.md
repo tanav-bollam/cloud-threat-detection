@@ -6,7 +6,7 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - [x] Phase 1: schema + benign generator (personas, noise, DuckDB)   — `src/generator/{schema,world,benign,catalog,geo}.py`
 - [x] Phase 2: attack scenarios S1–S9 + chains + sidecar labels + CLI  — `src/generator/{attacks,dataset}.py`, `scripts/generate.py`
 - [x] Phase 3: rules engine + 24 YAML rules + tests (68 tests pass; rules-only: 8/9 scenarios, 1.1 FP alerts/day)
-- [ ] Phase 4: features + IsolationForest + SHAP + evaluate.py
+- [x] Phase 4: features + IsolationForest + SHAP + evaluate.py (83 tests pass; reports/metrics.json)
 - [ ] Phase 5: IP layer + scoring + incidents
 - [ ] Phase 6: streaming pipeline + live injection + time-to-detect
 - [ ] Phase 7: Streamlit dashboard

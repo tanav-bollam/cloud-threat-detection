@@ -9,3 +9,5 @@ data/raw/
 !data/demo_snapshot.duckdb
 *.egg-info/
 .env
+models/
+reports/*.tmp

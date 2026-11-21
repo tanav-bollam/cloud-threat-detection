@@ -36,6 +36,7 @@ class Principal:
     start_day: int = 0              # first active day (new hires)
     service_ips: list[str] = field(default_factory=list)
     fav_buckets: list[str] = field(default_factory=list)
+    rate_per_hour: float = 0.0      # service roles: steady-state event rate (a property of the workload, fixed per world)
     error_rate: float = 0.02
 
     @property
@@ -158,6 +159,8 @@ def build_world(cfg: dict, seed: int) -> World:
     for p in principals:
         p.fav_buckets = rng.sample(BUCKETS, 3)
         p.error_rate = cfg["personas"].get(p.persona, {}).get("error_rate", 0.02)
+        if p.persona == "lambdas":
+            p.rate_per_hour = rng.uniform(*cfg["personas"]["lambdas"]["rate_per_hour"])
     return World(cfg=cfg, account=acct, principals=principals, regions=org["home_regions"])
 
 

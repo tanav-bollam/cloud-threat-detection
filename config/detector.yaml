@@ -1,0 +1,8 @@
+windows: {size_min: 15, step_min: 5}
+anomaly:
+  mode: global                  # global | per_group  (compared in docs/RESULTS.md)
+  n_estimators: 300
+  max_samples: 512
+  random_state: 7
+  target_fp_windows_per_day: 6  # threshold is calibrated so a benign validation week flags about this many windows per day
+  baseline_days: 5              # training: first N days build the baseline, the rest provide training windows
