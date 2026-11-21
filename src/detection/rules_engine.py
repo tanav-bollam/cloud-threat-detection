@@ -88,6 +88,9 @@ class Alert:
     source: str = "rule"           # rule | anomaly | ip
     score: float = 0.0
     reasons: list = field(default_factory=list)
+    margin: float = 0.0            # anomaly alerts: score minus the calibrated threshold
+    risk: float = 0.0              # 0-100, set by scoring
+    alert_id: str = ""             # stable id, set by scoring
 
     def __post_init__(self) -> None:
         if not self.detected_at:

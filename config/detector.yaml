@@ -6,3 +6,34 @@ anomaly:
   random_state: 7
   target_fp_windows_per_day: 6  # threshold is calibrated so a benign validation week flags about this many windows per day
   baseline_days: 5              # training: first N days build the baseline, the rest provide training windows
+
+ip:
+  impossible_travel: {min_speed_kmh: 900, min_km: 500, cooldown_s: 1800}
+  shared_ip: {min_identities: 3, window_s: 3600, cooldown_s: 3600}   # one IP that is NEW for >= N different identities
+  many_ips: {min_ips: 4, window_s: 1800, cooldown_s: 3600}           # one identity from >= N distinct IPs
+  blocked_asns: [AS9009]        # stand-in for a Tor-exit / anonymizing-VPN threat-intel feed (the optional blocklist)
+  blocked_cidr_file: config/ip_blocklist.txt
+
+scoring:
+  severity_points: {LOW: 15, MEDIUM: 35, HIGH: 60, CRITICAL: 90}
+  weights: {rule: 1.0, anomaly: 1.0, ip: 1.0}
+  anomaly: {margin_low: 0.03, margin_high: 0.08, margin_full: 0.15, max_points: 60}   # margin = score - threshold
+  corroboration_bonus: 12        # per extra distinct source (rule / anomaly / ip) agreeing on one incident
+  tactic_bonus: 8                # per extra distinct MITRE tactic in the incident
+  severity_from_risk: {MEDIUM: 30, HIGH: 55, CRITICAL: 85}
+  escalate_min_tactics: 3        # >= N distinct tactics => at least HIGH
+  anomaly_feature_tactics:       # which tactic an anomaly most resembles, from its top SHAP reasons
+    new_country: Initial Access
+    new_ip: Initial Access
+    new_asn: Initial Access
+    log_max_speed: Initial Access
+    recon_ratio: Discovery
+    err_ratio: Discovery
+    n_distinct_names: Discovery
+    high_risk_share: Persistence
+    bytes_z: Exfiltration
+    login_fail: Credential Access
+
+incidents:
+  gap_s: 3600                    # alerts for the same identity or source IP within this gap join one incident
+  high_severity_gap_s: 21600     # ...but an identity/IP already tied to a HIGH+ alert stays linked for this long

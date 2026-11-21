@@ -73,3 +73,45 @@ def score(alerts: pd.DataFrame, con, days: float) -> dict:
     return {"alerts": len(alerts), "true_positive_alerts": tp_alerts, "false_positive_alerts": fp_alerts,
             "fp_alerts_per_day": round(fp_alerts / days, 2), "fp_by_source": dict(fp_by_noise), "per_scenario": per,
             "overall_injection_recall": round(len(detected) / max(len(inj), 1), 3), "ttd_seconds": sorted(ttd)}
+
+
+def score_incidents(incidents: list, con, days: float) -> dict:
+    """Incident-level metrics. An incident is a true positive if it overlaps any malicious event."""
+    from collections import Counter
+    mal = {r[0]: (r[1], r[2]) for r in con.execute("SELECT event_id, scenario_id, injection_id FROM labels WHERE is_malicious").fetchall()}
+    inj = con.execute("SELECT injection_id, scenario_id, chain_id FROM injections").fetchdf()
+    inj_events: dict = defaultdict(set)
+    for e, (s, i) in mal.items():
+        inj_events[i].add(e)
+    tp = fp = 0
+    detected: set = set()
+    fp_sev: Counter = Counter()
+    tp_sev: Counter = Counter()
+    chain_incidents: dict = defaultdict(set)
+    chain_of = dict(zip(inj.injection_id, inj.chain_id))
+    for inc in incidents:
+        ids = set(inc.matched_event_ids)
+        hit = [i for i, evs in inj_events.items() if ids & evs]
+        if hit:
+            tp += 1
+            tp_sev[inc.severity] += 1
+            detected.update(hit)
+            for i in hit:
+                if chain_of.get(i):
+                    chain_incidents[chain_of[i]].add(inc.incident_id)
+        else:
+            fp += 1
+            fp_sev[inc.severity] += 1
+    per = {}
+    for sid, g in inj.groupby("scenario_id"):
+        ids = set(g.injection_id)
+        per[sid] = round(len(ids & detected) / len(ids), 3)
+    n_chains = int(inj.chain_id.nunique())
+    consolidated = sum(1 for v in chain_incidents.values() if len(v) == 1)
+    high_fp = fp_sev["HIGH"] + fp_sev["CRITICAL"]
+    return {"incidents": len(incidents), "tp_incidents": tp, "fp_incidents": fp,
+            "incident_precision": round(tp / len(incidents), 3) if incidents else 0.0,
+            "injection_recall": round(len(detected) / max(len(inj), 1), 3), "recall_by_scenario": per,
+            "fp_incidents_per_day": round(fp / days, 2), "fp_high_or_critical_per_day": round(high_fp / days, 2),
+            "fp_by_severity": dict(fp_sev), "tp_by_severity": dict(tp_sev),
+            "chains": n_chains, "chains_in_single_incident": consolidated}

@@ -7,9 +7,17 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - [x] Phase 2: attack scenarios S1–S9 + chains + sidecar labels + CLI  — `src/generator/{attacks,dataset}.py`, `scripts/generate.py`
 - [x] Phase 3: rules engine + 24 YAML rules + tests (68 tests pass; rules-only: 8/9 scenarios, 1.1 FP alerts/day)
 - [x] Phase 4: features + IsolationForest + SHAP + evaluate.py (83 tests pass; reports/metrics.json)
-- [ ] Phase 5: IP layer + scoring + incidents
+- [x] Phase 5: IP layer + scoring + incidents (100 tests pass; combined incident recall 9/9 scenarios, 6/6 kill chains in one incident, 0 HIGH+ false-positive incidents/day on a benign week)
 - [ ] Phase 6: streaming pipeline + live injection + time-to-detect
 - [ ] Phase 7: Streamlit dashboard
 - [ ] Phase 8: Detection Quality page + ablations + robustness
 - [ ] Phase 9: real-data validation (flaws.cloud, Stratus samples) + file ingestor
 - [ ] Phase 10: Docker, demo snapshot, webhook, CI, README, static showcase
+
+## Decisions & findings so far
+- Anomaly model: **global** (persona = identity-type features) beats per-group: anomaly-only incident recall 0.952 vs 0.905 (reports/metrics*.json).
+- Train/val/test share one world (`--world-seed 42`) but use independent event streams (seeds 101/202/303). Training: 10 days (first 5 build the
+  baseline, last 5 give training windows). Threshold calibrated on a benign validation week to ~6 flagged windows/day.
+- Bugs caught by tests along the way: err_ratio NULL-averaging (silently inflated), IAM region logging, per-run Lambda rates leaking into train/test drift.
+- CAVEAT for Phase 8: rules were written knowing the synthetic scenarios, so rules recall (1.0 on S1-S8) is optimistic; the stealth/robustness
+  study and the real-data runs (flaws.cloud, Stratus samples) are the honest checks.

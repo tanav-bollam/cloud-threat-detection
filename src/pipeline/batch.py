@@ -41,7 +41,7 @@ def anomaly_alerts(events: pd.DataFrame, baseline: Baseline, model: AnomalyModel
         idx = np.where(flagged)[0]
         rs = explain(model, feats.iloc[idx], top_k)
         reasons = {(feats.at[i, "identity"], feats.at[i, "wstart"]): r for i, r in zip(idx, rs)}
-    return windows_to_alerts(feats, scores, flagged, events, reasons), feats, scores
+    return windows_to_alerts(feats, scores, flagged, events, reasons, model.threshold_for(feats)), feats, scores
 
 
 def alerts_df(alerts: list[Alert]) -> pd.DataFrame:
@@ -49,3 +49,28 @@ def alerts_df(alerts: list[Alert]) -> pd.DataFrame:
     if not alerts:
         return pd.DataFrame(columns=cols)
     return pd.DataFrame([a.to_dict() for a in alerts])
+
+
+# ------------------------------------------------------------------------------------------ IP layer, scoring, incidents
+def ip_alerts(events: pd.DataFrame, baseline: Baseline, cfg: Optional[dict] = None) -> list[Alert]:
+    from src.detection.ip_analysis import IpAnalyzer
+    from src.detection.scoring import load_config
+    cfg = cfg or load_config()
+    return IpAnalyzer(cfg["ip"], baseline).evaluate_frame(events)
+
+
+def org_known_ips(baseline: Baseline) -> set:
+    return set(baseline.org_sets["ip"]["value"])
+
+
+def combine(layer_alerts: dict, layers: tuple, baseline: Baseline, cfg: Optional[dict] = None, suppressions=None):
+    """Merge the chosen layers' alerts -> score -> (optional suppression) -> group into incidents. Returns (alerts, incidents)."""
+    import copy
+    from src.detection.incidents import group_alerts
+    from src.detection.scoring import load_config, score_alerts
+    cfg = cfg or load_config()
+    alerts = [copy.copy(a) for layer in layers for a in layer_alerts[layer]]
+    alerts = score_alerts(alerts, cfg)
+    if suppressions is not None:
+        alerts, _ = suppressions.apply(alerts)
+    return alerts, group_alerts(alerts, cfg, org_known_ips(baseline))

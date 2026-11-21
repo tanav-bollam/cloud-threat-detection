@@ -7,6 +7,8 @@ Full spec: `SPEC.md`. Progress: `PLAN.md`. Everything must be free/open source; 
 - Test: `.venv/Scripts/python.exe -m pytest -q`
 - Generate: `.venv/Scripts/python.exe scripts/generate.py --days 7 --attacks S1,S3 --count 3 --out data/week.duckdb --overwrite`
   (`S1+S2+S3` = chained kill chain; `--scale 0.05` for small/fast data; `--stealth 0..1`)
+- Data for training/eval: `generate.py --seed 101 --world-seed 42 --days 10 --start 2024-12-27 --out data/train.duckdb` (benign), `--seed 202 ... --days 7 --start 2025-01-06 --out data/val.duckdb` (benign), `--seed 303 ... --attacks S1,...,S9,S1+S2+S3+S4+S5 --count 6 --out data/test.duckdb`
+- Train: `scripts/train.py` -> models/ ; Evaluate: `scripts/evaluate.py [--cache] [--mode global|per_group]` -> reports/metrics.json ; Rules only: `scripts/rules_report.py`
 - Summarize: `.venv/Scripts/python.exe scripts/summarize.py data/week.duckdb`
 
 ## Conventions

@@ -1,7 +1,8 @@
-"""Evaluate detection layers on the held-out test week; false positives measured on the benign validation week.
+"""Evaluate detection layers on the held-out test week; false positives are measured on the benign validation week.
 
   python scripts/evaluate.py            -> reports/metrics.json
-Combos: rules only / anomaly only (global, per_group) / rules + anomaly.
+
+Layers: rules, anomaly (IsolationForest), ip. Ablation combos are scored at alert level and incident level.
 """
 from __future__ import annotations
 
@@ -20,65 +21,99 @@ import pandas as pd
 from src.detection.explain import format_reasons
 from src.detection.features import load_events
 from src.detection.iforest import AnomalyModel
-from src.evaluation import event_level, score
-from src.pipeline.batch import alerts_df, anomaly_alerts, rules_alerts
+from src.detection.scoring import load_config
+from src.evaluation import event_level, score, score_incidents
+from src.pipeline.batch import alerts_df, anomaly_alerts, combine, ip_alerts, rules_alerts
+
+COMBOS = {
+    "rules_only": ("rules",),
+    "anomaly_only": ("anomaly",),
+    "ip_only": ("ip",),
+    "rules+ip": ("rules", "ip"),
+    "rules+anomaly": ("rules", "anomaly"),
+    "combined": ("rules", "anomaly", "ip"),
+}
 
 
-def summarize(alerts: pd.DataFrame, test_con, val_alerts: pd.DataFrame, val_days: float, days: float) -> dict:
-    s = score(alerts, test_con, days)
-    s.update({"event_level": event_level(alerts, test_con), "benign_week_fp_alerts_per_day": round(len(val_alerts) / val_days, 2),
-              "benign_week_fp_alerts": len(val_alerts)})
-    t = pd.Series(s.pop("ttd_seconds"))
-    s["ttd_p50_s"] = float(t.median()) if len(t) else None
-    s["ttd_p95_s"] = float(t.quantile(0.95)) if len(t) else None
-    return s
+def layer_alerts(con, events, base, model, with_reasons):
+    anom, _, _ = anomaly_alerts(events, base, model, with_reasons=with_reasons)
+    return {"rules": rules_alerts(con), "anomaly": anom, "ip": ip_alerts(events, base)}
+
+
+def summarize(layers, test_con, val_con, tl, vl, base, days, vdays, cfg):
+    out = {}
+    for name, combo in COMBOS.items():
+        t_alerts, t_inc = combine(tl, combo, base, cfg)
+        v_alerts, v_inc = combine(vl, combo, base, cfg)
+        a = score(alerts_df(t_alerts), test_con, days)
+        ttd = pd.Series(a.pop("ttd_seconds"))
+        inc = score_incidents(t_inc, test_con, days)
+        vinc = score_incidents(v_inc, val_con, vdays)          # benign week: every incident is a false positive
+        out[name] = {
+            "alerts": a["alerts"], "alert_injection_recall": a["overall_injection_recall"],
+            "event_level": event_level(alerts_df(t_alerts), test_con),
+            "ttd_p50_s": float(ttd.median()) if len(ttd) else None, "ttd_p95_s": float(ttd.quantile(0.95)) if len(ttd) else None,
+            "test_week": inc,
+            "benign_week": {"incidents": len(v_inc), "fp_incidents_per_day": round(len(v_inc) / vdays, 2),
+                            "fp_high_or_critical_per_day": round(sum(i.severity in ("HIGH", "CRITICAL") for i in v_inc) / vdays, 2),
+                            "alerts_per_day": round(len(v_alerts) / vdays, 2)},
+        }
+    return out
 
 
 def main() -> None:
+    sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
+    ap.add_argument("--cache", action="store_true", help="reuse/save per-layer alerts (reports/layers_cache.joblib)")
     ap.add_argument("--test", default="data/test.duckdb")
     ap.add_argument("--val", default="data/val.duckdb")
     ap.add_argument("--models", default="models")
+    ap.add_argument("--mode", default="global", choices=["global", "per_group"])
     ap.add_argument("--out", default="reports/metrics.json")
     a = ap.parse_args()
     t0 = time.time()
+    cfg = load_config()
     base = joblib.load(Path(a.models) / "baseline.joblib")
+    model = AnomalyModel.load(Path(a.models) / f"anomaly_{a.mode}.joblib")
     tcon, vcon = duckdb.connect(a.test, read_only=True), duckdb.connect(a.val, read_only=True)
     tev, vev = load_events(tcon), load_events(vcon)
     days = (tev["event_time"].max() - tev["event_time"].min()).total_seconds() / 86400
     vdays = (vev["event_time"].max() - vev["event_time"].min()).total_seconds() / 86400
 
-    r_test, r_val = alerts_df(rules_alerts(tcon)), alerts_df(rules_alerts(vcon))
-    print(f"rules done ({time.time()-t0:.0f}s): test {len(r_test)} alerts, val {len(r_val)}")
-    res = {"test_days": round(days, 2), "val_days": round(vdays, 2), "injections": int(tcon.execute("select count(*) from injections").fetchone()[0])}
-    res["rules_only"] = summarize(r_test, tcon, r_val, vdays, days)
-    samples = {}
-    for mode in ("global", "per_group"):
-        m = AnomalyModel.load(Path(a.models) / f"anomaly_{mode}.joblib")
-        at, _, _ = anomaly_alerts(tev, base, m)
-        av, _, _ = anomaly_alerts(vev, base, m, with_reasons=False)
-        a_test, a_val = alerts_df(at), alerts_df(av)
-        res[f"anomaly_{mode}"] = summarize(a_test, tcon, a_val, vdays, days)
-        res[f"rules_plus_anomaly_{mode}"] = summarize(pd.concat([r_test, a_test], ignore_index=True), tcon,
-                                                      pd.concat([r_val, a_val], ignore_index=True), vdays, days)
-        samples[mode] = [(x.identity, x.detected_at, round(x.score, 3), format_reasons(x.reasons)) for x in sorted(at, key=lambda x: -x.score)[:5]]
-    res["sample_top_anomalies"] = samples
+    cache = Path("reports/layers_cache.joblib")
+    if a.cache and cache.exists():
+        tl, vl = joblib.load(cache)
+    else:
+        tl = layer_alerts(tcon, tev, base, model, True)
+        vl = layer_alerts(vcon, vev, base, model, False)
+        if a.cache:
+            joblib.dump((tl, vl), cache)
+    print(f"layers done ({time.time()-t0:.0f}s): test " + ", ".join(f"{k}={len(v)}" for k, v in tl.items()) + " | val " + ", ".join(f"{k}={len(v)}" for k, v in vl.items()))
+    res = {"mode": a.mode, "test_days": round(days, 2), "val_days": round(vdays, 2),
+           "injections": int(tcon.execute("select count(*) from injections").fetchone()[0])}
+    res["layers"] = summarize(None, tcon, vcon, tl, vl, base, days, vdays, cfg)
+    t_alerts, t_inc = combine(tl, COMBOS["combined"], base, cfg)
+    res["sample_top_anomalies"] = [(x.identity, x.detected_at, round(x.score, 3), format_reasons(x.reasons))
+                                   for x in sorted(tl["anomaly"], key=lambda x: -x.score)[:5]]
+    res["sample_incidents"] = [{k: i.to_dict()[k] for k in ("incident_id", "title", "severity", "risk_score", "tactics", "sources", "n_alerts")}
+                               for i in sorted(t_inc, key=lambda i: -i.risk_score)[:8]]
     Path(a.out).parent.mkdir(exist_ok=True)
     json.dump(res, open(a.out, "w"), indent=1, default=str)
-    print(f"\n{'layer':<32}{'inj recall':>11}{'evt P':>8}{'evt R':>8}{'FP/day(val)':>13}{'TTD p50 s':>11}")
-    for k, v in res.items():
-        if isinstance(v, dict) and "overall_injection_recall" in v:
-            print(f"{k:<32}{v['overall_injection_recall']:>11}{v['event_level']['precision']:>8}{v['event_level']['recall']:>8}"
-                  f"{v['benign_week_fp_alerts_per_day']:>13}{v['ttd_p50_s']:>11}")
-    print("\nper-scenario injection recall:")
-    sc = sorted({s for k, v in res.items() if isinstance(v, dict) and "per_scenario" in v for s in v["per_scenario"]})
-    print(f"{'layer':<32}" + "".join(f"{s:>6}" for s in sc))
-    for k, v in res.items():
-        if isinstance(v, dict) and "per_scenario" in v:
-            print(f"{k:<32}" + "".join(f"{v['per_scenario'].get(s, {}).get('recall', '-'):>6}" for s in sc))
-    print("\ntop anomalies (global):")
-    for x in samples["global"]:
-        print(" ", x)
+
+    L = res["layers"]
+    print(f"\n{'layer':<16}{'inc recall':>11}{'inc prec':>9}{'FP inc/day':>11}{'FP H+C/day':>11}{'evt P':>7}{'evt R':>7}{'TTD p50':>9}{'chains=1':>9}")
+    for k, v in L.items():
+        w, b = v["test_week"], v["benign_week"]
+        print(f"{k:<16}{w['injection_recall']:>11}{w['incident_precision']:>9}{b['fp_incidents_per_day']:>11}{b['fp_high_or_critical_per_day']:>11}"
+              f"{v['event_level']['precision']:>7}{v['event_level']['recall']:>7}{v['ttd_p50_s']:>9}{'  ' + str(w['chains_in_single_incident']) + '/' + str(w['chains']):>9}")
+    sc = sorted(L["combined"]["test_week"]["recall_by_scenario"])
+    print("\nincident-level recall per scenario:\n" + f"{'layer':<16}" + "".join(f"{s:>6}" for s in sc))
+    for k, v in L.items():
+        print(f"{k:<16}" + "".join(f"{v['test_week']['recall_by_scenario'].get(s, '-'):>6}" for s in sc))
+    print("\ncombined: TP incidents by severity", L["combined"]["test_week"]["tp_by_severity"], "| FP by severity", L["combined"]["test_week"]["fp_by_severity"])
+    print("sample incidents:")
+    for i in res["sample_incidents"][:5]:
+        print(" ", i["incident_id"], i["severity"], i["risk_score"], i["title"][:90], i["sources"])
     print(f"\nfinished in {time.time()-t0:.0f}s -> {a.out}")
 
 

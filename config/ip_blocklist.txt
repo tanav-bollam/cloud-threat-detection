@@ -1,0 +1,1 @@
+# One CIDR or IP per line. Optional local blocklist (e.g. a Tor exit-node export). Lines starting with # are ignored.

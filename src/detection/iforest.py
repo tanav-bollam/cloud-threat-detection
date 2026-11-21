@@ -99,6 +99,7 @@ def windows_to_alerts(feats: pd.DataFrame, scores: np.ndarray, flagged: np.ndarr
                       reasons: Optional[dict] = None, thresholds: Optional[np.ndarray] = None) -> list[Alert]:
     """Merge consecutive/overlapping flagged windows per identity into one alert. `events` provides the matched event ids."""
     f = feats.assign(score=scores, flagged=flagged)
+    thr_s = pd.Series(thresholds, index=feats.index) if thresholds is not None else None
     f = f[f["flagged"]].sort_values(["identity", "wstart"])
     if f.empty:
         return []
@@ -122,11 +123,12 @@ def windows_to_alerts(feats: pd.DataFrame, scores: np.ndarray, flagged: np.ndarr
             if not mids:
                 continue
             best = max(rows, key=lambda r: r.score)
+            margin = float(best.score - thr_s[best.Index]) if thr_s is not None else 0.0
             reason = (reasons or {}).get((ident, best.wstart), [])
             a = Alert(rule_id="ML001", title="Anomalous behaviour for identity", severity="MEDIUM", mitre_tactic="", mitre_technique="",
                       event_id=mids[0], event_time=pd.Timestamp(times[lo]).strftime("%Y-%m-%dT%H:%M:%SZ"), identity=ident,
                       source_ip=str(ips[lo]), description="IsolationForest flagged an unusual 15-minute behaviour window relative to this identity's baseline.",
                       event_name="", matched_event_ids=mids, detail=f"{len(rows)} flagged window(s), max score {best.score:.3f}",
-                      detected_at=(start + win).strftime("%Y-%m-%dT%H:%M:%SZ"), source="anomaly", score=float(best.score), reasons=reason)
+                      detected_at=(start + win).strftime("%Y-%m-%dT%H:%M:%SZ"), source="anomaly", score=float(best.score), reasons=reason, margin=margin)
             alerts.append(a)
     return alerts

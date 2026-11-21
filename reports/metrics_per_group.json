@@ -1,0 +1,539 @@
+{
+ "mode": "per_group",
+ "test_days": 7.0,
+ "val_days": 7.0,
+ "injections": 84,
+ "layers": {
+  "rules_only": {
+   "alerts": 367,
+   "alert_injection_recall": 0.929,
+   "event_level": {
+    "precision": 0.9966,
+    "recall": 0.4419,
+    "f1": 0.6123,
+    "predicted_events": 2656,
+    "recall_by_scenario": {
+     "S1": 0.245,
+     "S2": 0.088,
+     "S3": 0.818,
+     "S4": 0.828,
+     "S5": 0.61,
+     "S6": 1.0,
+     "S7": 0.885,
+     "S8": 0.97,
+     "S9": 0.0
+    }
+   },
+   "ttd_p50_s": 0.0,
+   "ttd_p95_s": 346.0,
+   "test_week": {
+    "incidents": 58,
+    "tp_incidents": 52,
+    "fp_incidents": 6,
+    "incident_precision": 0.897,
+    "injection_recall": 0.929,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.0
+    },
+    "fp_incidents_per_day": 0.86,
+    "fp_high_or_critical_per_day": 0.0,
+    "fp_by_severity": {
+     "MEDIUM": 6
+    },
+    "tp_by_severity": {
+     "HIGH": 29,
+     "MEDIUM": 11,
+     "CRITICAL": 12
+    },
+    "chains": 6,
+    "chains_in_single_incident": 6
+   },
+   "benign_week": {
+    "incidents": 8,
+    "fp_incidents_per_day": 1.14,
+    "fp_high_or_critical_per_day": 0.0,
+    "alerts_per_day": 1.43
+   }
+  },
+  "anomaly_only": {
+   "alerts": 61,
+   "alert_injection_recall": 0.905,
+   "event_level": {
+    "precision": 0.8823,
+    "recall": 0.9886,
+    "f1": 0.9325,
+    "predicted_events": 6712,
+    "recall_by_scenario": {
+     "S1": 0.735,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 0.843,
+     "S9": 0.172
+    }
+   },
+   "ttd_p50_s": 77.5,
+   "ttd_p95_s": 288.0,
+   "test_week": {
+    "incidents": 59,
+    "tp_incidents": 50,
+    "fp_incidents": 9,
+    "incident_precision": 0.847,
+    "injection_recall": 0.905,
+    "recall_by_scenario": {
+     "S1": 0.833,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 0.833,
+     "S9": 0.167
+    },
+    "fp_incidents_per_day": 1.29,
+    "fp_high_or_critical_per_day": 0.0,
+    "fp_by_severity": {
+     "LOW": 8,
+     "MEDIUM": 1
+    },
+    "tp_by_severity": {
+     "MEDIUM": 15,
+     "HIGH": 30,
+     "LOW": 5
+    },
+    "chains": 6,
+    "chains_in_single_incident": 6
+   },
+   "benign_week": {
+    "incidents": 15,
+    "fp_incidents_per_day": 2.14,
+    "fp_high_or_critical_per_day": 0.0,
+    "alerts_per_day": 2.14
+   }
+  },
+  "ip_only": {
+   "alerts": 50,
+   "alert_injection_recall": 0.536,
+   "event_level": {
+    "precision": 0.5789,
+    "recall": 0.0092,
+    "f1": 0.0181,
+    "predicted_events": 95,
+    "recall_by_scenario": {
+     "S1": 0.163,
+     "S2": 0.003,
+     "S3": 0.061,
+     "S4": 0.109,
+     "S5": 0.001,
+     "S6": 0.194,
+     "S7": 0.135,
+     "S8": 0.015,
+     "S9": 0.276
+    }
+   },
+   "ttd_p50_s": 0.0,
+   "ttd_p95_s": 29357.8,
+   "test_week": {
+    "incidents": 43,
+    "tp_incidents": 43,
+    "fp_incidents": 0,
+    "incident_precision": 1.0,
+    "injection_recall": 0.536,
+    "recall_by_scenario": {
+     "S1": 0.583,
+     "S2": 0.417,
+     "S3": 0.417,
+     "S4": 0.5,
+     "S5": 0.25,
+     "S6": 0.667,
+     "S7": 1.0,
+     "S8": 0.5,
+     "S9": 1.0
+    },
+    "fp_incidents_per_day": 0.0,
+    "fp_high_or_critical_per_day": 0.0,
+    "fp_by_severity": {},
+    "tp_by_severity": {
+     "HIGH": 42,
+     "MEDIUM": 1
+    },
+    "chains": 6,
+    "chains_in_single_incident": 2
+   },
+   "benign_week": {
+    "incidents": 0,
+    "fp_incidents_per_day": 0.0,
+    "fp_high_or_critical_per_day": 0.0,
+    "alerts_per_day": 0.0
+   }
+  },
+  "rules+ip": {
+   "alerts": 417,
+   "alert_injection_recall": 1.0,
+   "event_level": {
+    "precision": 0.9819,
+    "recall": 0.4446,
+    "f1": 0.612,
+    "predicted_events": 2712,
+    "recall_by_scenario": {
+     "S1": 0.327,
+     "S2": 0.09,
+     "S3": 0.818,
+     "S4": 0.828,
+     "S5": 0.61,
+     "S6": 1.0,
+     "S7": 0.885,
+     "S8": 0.97,
+     "S9": 0.276
+    }
+   },
+   "ttd_p50_s": 0.0,
+   "ttd_p95_s": 342.2499999999999,
+   "test_week": {
+    "incidents": 74,
+    "tp_incidents": 68,
+    "fp_incidents": 6,
+    "incident_precision": 0.919,
+    "injection_recall": 1.0,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "fp_incidents_per_day": 0.86,
+    "fp_high_or_critical_per_day": 0.0,
+    "fp_by_severity": {
+     "MEDIUM": 6
+    },
+    "tp_by_severity": {
+     "HIGH": 36,
+     "MEDIUM": 7,
+     "CRITICAL": 25
+    },
+    "chains": 6,
+    "chains_in_single_incident": 6
+   },
+   "benign_week": {
+    "incidents": 8,
+    "fp_incidents_per_day": 1.14,
+    "fp_high_or_critical_per_day": 0.0,
+    "alerts_per_day": 1.43
+   }
+  },
+  "rules+anomaly": {
+   "alerts": 428,
+   "alert_injection_recall": 0.94,
+   "event_level": {
+    "precision": 0.8821,
+    "recall": 0.994,
+    "f1": 0.9347,
+    "predicted_events": 6750,
+    "recall_by_scenario": {
+     "S1": 0.796,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 0.99,
+     "S9": 0.172
+    }
+   },
+   "ttd_p50_s": 0.0,
+   "ttd_p95_s": 32.599999999999966,
+   "test_week": {
+    "incidents": 66,
+    "tp_incidents": 52,
+    "fp_incidents": 14,
+    "incident_precision": 0.788,
+    "injection_recall": 0.94,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.167
+    },
+    "fp_incidents_per_day": 2.0,
+    "fp_high_or_critical_per_day": 0.0,
+    "fp_by_severity": {
+     "LOW": 7,
+     "MEDIUM": 7
+    },
+    "tp_by_severity": {
+     "CRITICAL": 34,
+     "MEDIUM": 6,
+     "HIGH": 11,
+     "LOW": 1
+    },
+    "chains": 6,
+    "chains_in_single_incident": 6
+   },
+   "benign_week": {
+    "incidents": 22,
+    "fp_incidents_per_day": 3.14,
+    "fp_high_or_critical_per_day": 0.0,
+    "alerts_per_day": 3.57
+   }
+  },
+  "combined": {
+   "alerts": 478,
+   "alert_injection_recall": 1.0,
+   "event_level": {
+    "precision": 0.8776,
+    "recall": 0.9955,
+    "f1": 0.9328,
+    "predicted_events": 6795,
+    "recall_by_scenario": {
+     "S1": 0.837,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 0.99,
+     "S9": 0.414
+    }
+   },
+   "ttd_p50_s": 0.0,
+   "ttd_p95_s": 28.64999999999995,
+   "test_week": {
+    "incidents": 81,
+    "tp_incidents": 67,
+    "fp_incidents": 14,
+    "incident_precision": 0.827,
+    "injection_recall": 1.0,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "fp_incidents_per_day": 2.0,
+    "fp_high_or_critical_per_day": 0.0,
+    "fp_by_severity": {
+     "LOW": 7,
+     "MEDIUM": 7
+    },
+    "tp_by_severity": {
+     "CRITICAL": 36,
+     "MEDIUM": 3,
+     "HIGH": 28
+    },
+    "chains": 6,
+    "chains_in_single_incident": 6
+   },
+   "benign_week": {
+    "incidents": 22,
+    "fp_incidents_per_day": 3.14,
+    "fp_high_or_critical_per_day": 0.0,
+    "alerts_per_day": 3.57
+   }
+  }
+ },
+ "sample_top_anomalies": [
+  [
+   "ci-deployer",
+   "2025-01-06T14:05:00Z",
+   0.757,
+   "err_ratio=0.048 (+2.04), log_n_ips=1.099 (+1.62), n_services=8.0 (+1.24), n_distinct_names=11.0 (+1.24), recon_ratio=0.548 (+1.22)"
+  ],
+  [
+   "ci-deployer",
+   "2025-01-10T22:45:00Z",
+   0.757,
+   "log_n_ips=1.099 (+1.58), err_ratio=0.028 (+1.55), n_services=8.0 (+1.20), n_distinct_names=11.0 (+1.15), recon_ratio=0.528 (+1.10)"
+  ],
+  [
+   "ci-deployer",
+   "2025-01-08T16:55:00Z",
+   0.755,
+   "log_n_ips=1.099 (+1.69), volume_z=4.421 (+1.51), recon_ratio=0.641 (+1.47), n_distinct_names=11.0 (+1.31), n_services=8.0 (+1.25)"
+  ],
+  [
+   "ci-deployer",
+   "2025-01-09T18:45:00Z",
+   0.746,
+   "log_n_ips=1.099 (+1.78), volume_z=4.516 (+1.53), recon_ratio=0.571 (+1.45), n_services=8.0 (+1.33), n_distinct_names=11.0 (+1.29)"
+  ],
+  [
+   "omar",
+   "2025-01-12T14:20:00Z",
+   0.741,
+   "high_risk_share=1.0 (+1.58), new_region=1.0 (+1.41), read_ratio=0.0 (+1.37), is_weekend=1.0 (+1.06), new_ua=1.0 (+0.92)"
+  ]
+ ],
+ "sample_incidents": [
+  {
+   "incident_id": "INC-334F8660",
+   "title": "Multi-stage activity on sana: Initial Access \u2192 Persistence \u2192 Defense Evasion",
+   "severity": "CRITICAL",
+   "risk_score": 100.0,
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "sources": [
+    "anomaly",
+    "rule"
+   ],
+   "n_alerts": 6
+  },
+  {
+   "incident_id": "INC-B1749597",
+   "title": "Multi-stage activity on eli: Initial Access \u2192 Persistence \u2192 Privilege Escalation",
+   "severity": "CRITICAL",
+   "risk_score": 100.0,
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Privilege Escalation"
+   ],
+   "sources": [
+    "anomaly",
+    "ip",
+    "rule"
+   ],
+   "n_alerts": 10
+  },
+  {
+   "incident_id": "INC-A4903597",
+   "title": "Multi-stage activity on zane: Initial Access \u2192 Persistence \u2192 Defense Evasion",
+   "severity": "CRITICAL",
+   "risk_score": 100.0,
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Defense Evasion"
+   ],
+   "sources": [
+    "anomaly",
+    "ip",
+    "rule"
+   ],
+   "n_alerts": 7
+  },
+  {
+   "incident_id": "INC-8CDA660F",
+   "title": "Multi-stage activity on carol: Discovery \u2192 Initial Access \u2192 Privilege Escalation \u2192 Persistence \u2192 Defense Evasion \u2192 Exfiltration",
+   "severity": "CRITICAL",
+   "risk_score": 100.0,
+   "tactics": [
+    "Discovery",
+    "Initial Access",
+    "Privilege Escalation",
+    "Persistence",
+    "Defense Evasion",
+    "Exfiltration"
+   ],
+   "sources": [
+    "anomaly",
+    "ip",
+    "rule"
+   ],
+   "n_alerts": 17
+  },
+  {
+   "incident_id": "INC-D8C4EBDB",
+   "title": "Multi-stage activity on ines: Discovery \u2192 Initial Access \u2192 Exfiltration",
+   "severity": "CRITICAL",
+   "risk_score": 100.0,
+   "tactics": [
+    "Discovery",
+    "Initial Access",
+    "Exfiltration"
+   ],
+   "sources": [
+    "anomaly",
+    "ip",
+    "rule"
+   ],
+   "n_alerts": 6
+  },
+  {
+   "incident_id": "INC-34855723",
+   "title": "Multi-stage activity on priya: Initial Access \u2192 Persistence \u2192 Defense Evasion \u2192 Impact",
+   "severity": "CRITICAL",
+   "risk_score": 100.0,
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Defense Evasion",
+    "Impact"
+   ],
+   "sources": [
+    "anomaly",
+    "ip",
+    "rule"
+   ],
+   "n_alerts": 16
+  },
+  {
+   "incident_id": "INC-6BD5914A",
+   "title": "Multi-stage activity on liam: Persistence \u2192 Initial Access \u2192 Privilege Escalation",
+   "severity": "CRITICAL",
+   "risk_score": 100.0,
+   "tactics": [
+    "Persistence",
+    "Initial Access",
+    "Privilege Escalation"
+   ],
+   "sources": [
+    "anomaly",
+    "ip",
+    "rule"
+   ],
+   "n_alerts": 9
+  },
+  {
+   "incident_id": "INC-BC960559",
+   "title": "Multi-stage activity on sana: Discovery \u2192 Initial Access \u2192 Persistence \u2192 Privilege Escalation \u2192 Defense Evasion \u2192 Exfiltration",
+   "severity": "CRITICAL",
+   "risk_score": 100.0,
+   "tactics": [
+    "Discovery",
+    "Initial Access",
+    "Persistence",
+    "Privilege Escalation",
+    "Defense Evasion",
+    "Exfiltration"
+   ],
+   "sources": [
+    "anomaly",
+    "ip",
+    "rule"
+   ],
+   "n_alerts": 22
+  }
+ ]
+}
