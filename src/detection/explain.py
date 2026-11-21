@@ -10,7 +10,10 @@ from .iforest import AnomalyModel
 
 def _shap_values(unit, X_scaled: np.ndarray) -> np.ndarray:
     import shap
-    return shap.TreeExplainer(unit.forest).shap_values(X_scaled)
+    expl = getattr(unit, "_explainer", None)
+    if expl is None:                          # building a TreeExplainer is slow; do it once per model unit
+        expl = unit._explainer = shap.TreeExplainer(unit.forest)
+    return expl.shap_values(X_scaled)
 
 
 def _fallback_values(unit, X_scaled: np.ndarray) -> np.ndarray:

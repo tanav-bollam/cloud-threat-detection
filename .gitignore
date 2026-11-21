@@ -11,3 +11,5 @@ data/raw/
 .env
 models/
 reports/*.tmp
+reports/layers_cache.joblib
+reports/suppressions_live.json
