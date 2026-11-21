@@ -11,6 +11,7 @@ Full spec: `SPEC.md`. Progress: `PLAN.md`. Everything must be free/open source; 
 - Train: `scripts/train.py` -> models/ ; Evaluate: `scripts/evaluate.py [--cache] [--mode global|per_group]` -> reports/metrics.json ; Rules only: `scripts/rules_report.py`
 - Live: `scripts/run_live.py --speed 150 --sim-hours 3 --inject S1+S2+S3+S4+S5@1500` (speed 0 = max, deterministic; writes reports/live_ttd.json). Live code: `src/pipeline/live.py` (LiveEngine)
 - Dashboard: `.venv/Scripts/python.exe -m streamlit run app/streamlit_app.py` (needs models/). Pages in app/pages, data layer app/data.py (no Streamlit, unit-tested), shared app/common.py. Page tests use streamlit.testing AppTest + tests/conftest.py `dash_engine`.
+- Results pipeline: `scripts/evaluate.py --cache` -> `scripts/robustness.py` (needs the layers cache, ~12 min) -> `scripts/run_live.py` -> `scripts/make_results.py` (writes docs/RESULTS.md, docs/DETECTIONS.md). Never hand-edit those docs.
 - Summarize: `.venv/Scripts/python.exe scripts/summarize.py data/week.duckdb`
 
 ## Conventions

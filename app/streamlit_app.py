@@ -14,5 +14,6 @@ pages = [
     st.Page("pages/investigation.py", title="Incident Investigation", icon=":material/search_insights:"),
     st.Page("pages/forensics.py", title="Forensics Search", icon=":material/manage_search:"),
     st.Page("pages/simulator.py", title="Attack Simulator", icon=":material/bug_report:"),
+    st.Page("pages/quality.py", title="Detection Quality", icon=":material/monitoring:"),
 ]
 st.navigation(pages).run()

@@ -3,6 +3,14 @@
  "test_days": 7.0,
  "val_days": 7.0,
  "injections": 84,
+ "detector_config": {
+  "mode": "global",
+  "n_estimators": 300,
+  "max_samples": 512,
+  "random_state": 7,
+  "target_fp_windows_per_day": 6,
+  "baseline_days": 5
+ },
  "layers": {
   "rules_only": {
    "alerts": 367,
@@ -26,6 +34,86 @@
    },
    "ttd_p50_s": 0.0,
    "ttd_p95_s": 346.0,
+   "ttd_sim_s": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    13.0,
+    13.0,
+    13.0,
+    15.0,
+    16.0,
+    16.0,
+    17.0,
+    17.0,
+    18.0,
+    18.0,
+    19.0,
+    21.0,
+    21.0,
+    22.0,
+    23.0,
+    25.0,
+    30.0,
+    32.0,
+    32.0,
+    38.0,
+    38.0,
+    43.0,
+    45.0,
+    50.0,
+    321.0,
+    346.0,
+    346.0,
+    352.0,
+    353.0,
+    357.0
+   ],
    "test_week": {
     "incidents": 58,
     "tp_incidents": 52,
@@ -56,11 +144,198 @@
     "chains": 6,
     "chains_in_single_incident": 6
    },
+   "per_scenario": {
+    "S1": {
+     "event": {
+      "precision": 0.571,
+      "recall": 0.245,
+      "f1": 0.343,
+      "tp": 12,
+      "fp": 9,
+      "fn": 37
+     },
+     "incident": {
+      "precision": 0.667,
+      "recall": 1.0,
+      "f1": 0.8,
+      "tp": 12,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S2": {
+     "event": {
+      "precision": 0.954,
+      "recall": 0.088,
+      "f1": 0.161,
+      "tp": 186,
+      "fp": 9,
+      "fn": 1931
+     },
+     "incident": {
+      "precision": 0.647,
+      "recall": 1.0,
+      "f1": 0.786,
+      "tp": 11,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S3": {
+     "event": {
+      "precision": 0.9,
+      "recall": 0.818,
+      "f1": 0.857,
+      "tp": 81,
+      "fp": 9,
+      "fn": 18
+     },
+     "incident": {
+      "precision": 0.667,
+      "recall": 1.0,
+      "f1": 0.8,
+      "tp": 12,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S4": {
+     "event": {
+      "precision": 0.855,
+      "recall": 0.828,
+      "f1": 0.841,
+      "tp": 53,
+      "fp": 9,
+      "fn": 11
+     },
+     "incident": {
+      "precision": 0.667,
+      "recall": 1.0,
+      "f1": 0.8,
+      "tp": 12,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S5": {
+     "event": {
+      "precision": 0.996,
+      "recall": 0.61,
+      "f1": 0.757,
+      "tp": 2042,
+      "fp": 9,
+      "fn": 1305
+     },
+     "incident": {
+      "precision": 0.667,
+      "recall": 1.0,
+      "f1": 0.8,
+      "tp": 12,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S6": {
+     "event": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.889,
+      "tp": 36,
+      "fp": 9,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.667,
+      "tp": 6,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S7": {
+     "event": {
+      "precision": 0.836,
+      "recall": 0.885,
+      "f1": 0.86,
+      "tp": 46,
+      "fp": 9,
+      "fn": 6
+     },
+     "incident": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.667,
+      "tp": 6,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S8": {
+     "event": {
+      "precision": 0.955,
+      "recall": 0.97,
+      "f1": 0.962,
+      "tp": 191,
+      "fp": 9,
+      "fn": 6
+     },
+     "incident": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.667,
+      "tp": 6,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S9": {
+     "event": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "tp": 0,
+      "fp": 9,
+      "fn": 29
+     },
+     "incident": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "tp": 0,
+      "fp": 6,
+      "fn": 6
+     },
+     "injections": 6,
+     "detected": 0
+    }
+   },
    "benign_week": {
     "incidents": 8,
     "fp_incidents_per_day": 1.14,
     "fp_high_or_critical_per_day": 0.0,
-    "alerts_per_day": 1.43
+    "alerts_per_day": 1.43,
+    "alerts_by_source": {
+     "rule": 10,
+     "anomaly": 0,
+     "ip": 0
+    }
    }
   },
   "anomaly_only": {
@@ -85,6 +360,88 @@
    },
    "ttd_p50_s": 77.5,
    "ttd_p95_s": 273.59999999999997,
+   "ttd_sim_s": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    7.0,
+    7.0,
+    14.0,
+    15.0,
+    19.0,
+    29.0,
+    33.0,
+    33.0,
+    38.0,
+    42.0,
+    44.0,
+    53.0,
+    53.0,
+    64.0,
+    66.0,
+    70.0,
+    72.0,
+    75.0,
+    80.0,
+    87.0,
+    106.0,
+    114.0,
+    119.0,
+    124.0,
+    125.0,
+    126.0,
+    145.0,
+    146.0,
+    148.0,
+    151.0,
+    154.0,
+    155.0,
+    169.0,
+    180.0,
+    182.0,
+    212.0,
+    213.0,
+    215.0,
+    221.0,
+    221.0,
+    223.0,
+    233.0,
+    234.0,
+    238.0,
+    238.0,
+    247.0,
+    247.0,
+    250.0,
+    250.0,
+    252.0,
+    253.0,
+    256.0,
+    269.0,
+    273.0,
+    285.0,
+    297.0,
+    393.0,
+    440.0
+   ],
    "test_week": {
     "incidents": 65,
     "tp_incidents": 53,
@@ -116,11 +473,198 @@
     "chains": 6,
     "chains_in_single_incident": 6
    },
+   "per_scenario": {
+    "S1": {
+     "event": {
+      "precision": 0.067,
+      "recall": 0.898,
+      "f1": 0.125,
+      "tp": 44,
+      "fp": 613,
+      "fn": 5
+     },
+     "incident": {
+      "precision": 0.478,
+      "recall": 0.917,
+      "f1": 0.629,
+      "tp": 11,
+      "fp": 12,
+      "fn": 1
+     },
+     "injections": 12,
+     "detected": 11
+    },
+    "S2": {
+     "event": {
+      "precision": 0.775,
+      "recall": 1.0,
+      "f1": 0.874,
+      "tp": 2117,
+      "fp": 613,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.478,
+      "recall": 1.0,
+      "f1": 0.647,
+      "tp": 11,
+      "fp": 12,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S3": {
+     "event": {
+      "precision": 0.139,
+      "recall": 1.0,
+      "f1": 0.244,
+      "tp": 99,
+      "fp": 613,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.667,
+      "tp": 12,
+      "fp": 12,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S4": {
+     "event": {
+      "precision": 0.095,
+      "recall": 1.0,
+      "f1": 0.173,
+      "tp": 64,
+      "fp": 613,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.667,
+      "tp": 12,
+      "fp": 12,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S5": {
+     "event": {
+      "precision": 0.845,
+      "recall": 1.0,
+      "f1": 0.916,
+      "tp": 3347,
+      "fp": 613,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.667,
+      "tp": 12,
+      "fp": 12,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S6": {
+     "event": {
+      "precision": 0.055,
+      "recall": 1.0,
+      "f1": 0.105,
+      "tp": 36,
+      "fp": 613,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.333,
+      "recall": 1.0,
+      "f1": 0.5,
+      "tp": 6,
+      "fp": 12,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S7": {
+     "event": {
+      "precision": 0.078,
+      "recall": 1.0,
+      "f1": 0.145,
+      "tp": 52,
+      "fp": 613,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.333,
+      "recall": 1.0,
+      "f1": 0.5,
+      "tp": 6,
+      "fp": 12,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S8": {
+     "event": {
+      "precision": 0.243,
+      "recall": 1.0,
+      "f1": 0.391,
+      "tp": 197,
+      "fp": 613,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.333,
+      "recall": 1.0,
+      "f1": 0.5,
+      "tp": 6,
+      "fp": 12,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S9": {
+     "event": {
+      "precision": 0.025,
+      "recall": 0.552,
+      "f1": 0.049,
+      "tp": 16,
+      "fp": 613,
+      "fn": 13
+     },
+     "incident": {
+      "precision": 0.2,
+      "recall": 0.5,
+      "f1": 0.286,
+      "tp": 3,
+      "fp": 12,
+      "fn": 3
+     },
+     "injections": 6,
+     "detected": 3
+    }
+   },
    "benign_week": {
     "incidents": 15,
     "fp_incidents_per_day": 2.14,
     "fp_high_or_critical_per_day": 0.0,
-    "alerts_per_day": 3.0
+    "alerts_per_day": 3.0,
+    "alerts_by_source": {
+     "rule": 0,
+     "anomaly": 21,
+     "ip": 0
+    }
    }
   },
   "ip_only": {
@@ -145,6 +689,53 @@
    },
    "ttd_p50_s": 0.0,
    "ttd_p95_s": 29357.8,
+   "ttd_sim_s": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    9694.0,
+    11309.0,
+    13211.0,
+    14429.0,
+    16175.0,
+    16969.0,
+    18191.0,
+    20841.0,
+    23731.0,
+    25916.0,
+    28043.0,
+    28613.0,
+    29293.0,
+    29374.0,
+    32912.0,
+    35343.0
+   ],
    "test_week": {
     "incidents": 43,
     "tp_incidents": 43,
@@ -172,11 +763,198 @@
     "chains": 6,
     "chains_in_single_incident": 2
    },
+   "per_scenario": {
+    "S1": {
+     "event": {
+      "precision": 0.167,
+      "recall": 0.163,
+      "f1": 0.165,
+      "tp": 8,
+      "fp": 40,
+      "fn": 41
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 0.615,
+      "f1": 0.762,
+      "tp": 8,
+      "fp": 0,
+      "fn": 5
+     },
+     "injections": 12,
+     "detected": 7
+    },
+    "S2": {
+     "event": {
+      "precision": 0.13,
+      "recall": 0.003,
+      "f1": 0.006,
+      "tp": 6,
+      "fp": 40,
+      "fn": 2111
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 0.417,
+      "f1": 0.588,
+      "tp": 5,
+      "fp": 0,
+      "fn": 7
+     },
+     "injections": 12,
+     "detected": 5
+    },
+    "S3": {
+     "event": {
+      "precision": 0.13,
+      "recall": 0.061,
+      "f1": 0.083,
+      "tp": 6,
+      "fp": 40,
+      "fn": 93
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 0.417,
+      "f1": 0.588,
+      "tp": 5,
+      "fp": 0,
+      "fn": 7
+     },
+     "injections": 12,
+     "detected": 5
+    },
+    "S4": {
+     "event": {
+      "precision": 0.149,
+      "recall": 0.109,
+      "f1": 0.126,
+      "tp": 7,
+      "fp": 40,
+      "fn": 57
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 0.538,
+      "f1": 0.7,
+      "tp": 7,
+      "fp": 0,
+      "fn": 6
+     },
+     "injections": 12,
+     "detected": 6
+    },
+    "S5": {
+     "event": {
+      "precision": 0.07,
+      "recall": 0.001,
+      "f1": 0.002,
+      "tp": 3,
+      "fp": 40,
+      "fn": 3344
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 0.25,
+      "f1": 0.4,
+      "tp": 3,
+      "fp": 0,
+      "fn": 9
+     },
+     "injections": 12,
+     "detected": 3
+    },
+    "S6": {
+     "event": {
+      "precision": 0.149,
+      "recall": 0.194,
+      "f1": 0.169,
+      "tp": 7,
+      "fp": 40,
+      "fn": 29
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 0.778,
+      "f1": 0.875,
+      "tp": 7,
+      "fp": 0,
+      "fn": 2
+     },
+     "injections": 6,
+     "detected": 4
+    },
+    "S7": {
+     "event": {
+      "precision": 0.149,
+      "recall": 0.135,
+      "f1": 0.141,
+      "tp": 7,
+      "fp": 40,
+      "fn": 45
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 6,
+      "fp": 0,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S8": {
+     "event": {
+      "precision": 0.07,
+      "recall": 0.015,
+      "f1": 0.025,
+      "tp": 3,
+      "fp": 40,
+      "fn": 194
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 0.4,
+      "f1": 0.571,
+      "tp": 2,
+      "fp": 0,
+      "fn": 3
+     },
+     "injections": 6,
+     "detected": 3
+    },
+    "S9": {
+     "event": {
+      "precision": 0.167,
+      "recall": 0.276,
+      "f1": 0.208,
+      "tp": 8,
+      "fp": 40,
+      "fn": 21
+     },
+     "incident": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 7,
+      "fp": 0,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    }
+   },
    "benign_week": {
     "incidents": 0,
     "fp_incidents_per_day": 0.0,
     "fp_high_or_critical_per_day": 0.0,
-    "alerts_per_day": 0.0
+    "alerts_per_day": 0.0,
+    "alerts_by_source": {
+     "rule": 0,
+     "anomaly": 0,
+     "ip": 0
+    }
    }
   },
   "rules+ip": {
@@ -201,6 +979,92 @@
    },
    "ttd_p50_s": 0.0,
    "ttd_p95_s": 342.2499999999999,
+   "ttd_sim_s": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    13.0,
+    15.0,
+    16.0,
+    16.0,
+    17.0,
+    17.0,
+    18.0,
+    18.0,
+    19.0,
+    21.0,
+    21.0,
+    22.0,
+    23.0,
+    25.0,
+    30.0,
+    32.0,
+    32.0,
+    38.0,
+    38.0,
+    43.0,
+    45.0,
+    50.0,
+    321.0,
+    346.0,
+    346.0,
+    352.0,
+    353.0,
+    357.0
+   ],
    "test_week": {
     "incidents": 74,
     "tp_incidents": 68,
@@ -231,11 +1095,198 @@
     "chains": 6,
     "chains_in_single_incident": 6
    },
+   "per_scenario": {
+    "S1": {
+     "event": {
+      "precision": 0.246,
+      "recall": 0.327,
+      "f1": 0.281,
+      "tp": 16,
+      "fp": 49,
+      "fn": 33
+     },
+     "incident": {
+      "precision": 0.714,
+      "recall": 1.0,
+      "f1": 0.833,
+      "tp": 15,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S2": {
+     "event": {
+      "precision": 0.795,
+      "recall": 0.09,
+      "f1": 0.161,
+      "tp": 190,
+      "fp": 49,
+      "fn": 1927
+     },
+     "incident": {
+      "precision": 0.7,
+      "recall": 1.0,
+      "f1": 0.824,
+      "tp": 14,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S3": {
+     "event": {
+      "precision": 0.623,
+      "recall": 0.818,
+      "f1": 0.707,
+      "tp": 81,
+      "fp": 49,
+      "fn": 18
+     },
+     "incident": {
+      "precision": 0.667,
+      "recall": 1.0,
+      "f1": 0.8,
+      "tp": 12,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S4": {
+     "event": {
+      "precision": 0.52,
+      "recall": 0.828,
+      "f1": 0.639,
+      "tp": 53,
+      "fp": 49,
+      "fn": 11
+     },
+     "incident": {
+      "precision": 0.7,
+      "recall": 1.0,
+      "f1": 0.824,
+      "tp": 14,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S5": {
+     "event": {
+      "precision": 0.977,
+      "recall": 0.61,
+      "f1": 0.751,
+      "tp": 2042,
+      "fp": 49,
+      "fn": 1305
+     },
+     "incident": {
+      "precision": 0.667,
+      "recall": 1.0,
+      "f1": 0.8,
+      "tp": 12,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S6": {
+     "event": {
+      "precision": 0.424,
+      "recall": 1.0,
+      "f1": 0.595,
+      "tp": 36,
+      "fp": 49,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.625,
+      "recall": 1.0,
+      "f1": 0.769,
+      "tp": 10,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S7": {
+     "event": {
+      "precision": 0.484,
+      "recall": 0.885,
+      "f1": 0.626,
+      "tp": 46,
+      "fp": 49,
+      "fn": 6
+     },
+     "incident": {
+      "precision": 0.538,
+      "recall": 1.0,
+      "f1": 0.7,
+      "tp": 7,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S8": {
+     "event": {
+      "precision": 0.796,
+      "recall": 0.97,
+      "f1": 0.874,
+      "tp": 191,
+      "fp": 49,
+      "fn": 6
+     },
+     "incident": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.667,
+      "tp": 6,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S9": {
+     "event": {
+      "precision": 0.14,
+      "recall": 0.276,
+      "f1": 0.186,
+      "tp": 8,
+      "fp": 49,
+      "fn": 21
+     },
+     "incident": {
+      "precision": 0.538,
+      "recall": 1.0,
+      "f1": 0.7,
+      "tp": 7,
+      "fp": 6,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    }
+   },
    "benign_week": {
     "incidents": 8,
     "fp_incidents_per_day": 1.14,
     "fp_high_or_critical_per_day": 0.0,
-    "alerts_per_day": 1.43
+    "alerts_per_day": 1.43,
+    "alerts_by_source": {
+     "rule": 10,
+     "anomaly": 0,
+     "ip": 0
+    }
    }
   },
   "rules+anomaly": {
@@ -260,6 +1311,89 @@
    },
    "ttd_p50_s": 0.0,
    "ttd_p95_s": 43.0,
+   "ttd_sim_s": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    7.0,
+    13.0,
+    13.0,
+    15.0,
+    19.0,
+    21.0,
+    38.0,
+    43.0,
+    45.0,
+    64.0,
+    253.0,
+    393.0
+   ],
    "test_week": {
     "incidents": 72,
     "tp_incidents": 54,
@@ -292,11 +1426,198 @@
     "chains": 6,
     "chains_in_single_incident": 6
    },
+   "per_scenario": {
+    "S1": {
+     "event": {
+      "precision": 0.067,
+      "recall": 0.918,
+      "f1": 0.126,
+      "tp": 45,
+      "fp": 622,
+      "fn": 4
+     },
+     "incident": {
+      "precision": 0.4,
+      "recall": 1.0,
+      "f1": 0.571,
+      "tp": 12,
+      "fp": 18,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S2": {
+     "event": {
+      "precision": 0.773,
+      "recall": 1.0,
+      "f1": 0.872,
+      "tp": 2117,
+      "fp": 622,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.379,
+      "recall": 1.0,
+      "f1": 0.55,
+      "tp": 11,
+      "fp": 18,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S3": {
+     "event": {
+      "precision": 0.137,
+      "recall": 1.0,
+      "f1": 0.241,
+      "tp": 99,
+      "fp": 622,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.4,
+      "recall": 1.0,
+      "f1": 0.571,
+      "tp": 12,
+      "fp": 18,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S4": {
+     "event": {
+      "precision": 0.093,
+      "recall": 1.0,
+      "f1": 0.171,
+      "tp": 64,
+      "fp": 622,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.4,
+      "recall": 1.0,
+      "f1": 0.571,
+      "tp": 12,
+      "fp": 18,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S5": {
+     "event": {
+      "precision": 0.843,
+      "recall": 1.0,
+      "f1": 0.915,
+      "tp": 3347,
+      "fp": 622,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.4,
+      "recall": 1.0,
+      "f1": 0.571,
+      "tp": 12,
+      "fp": 18,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S6": {
+     "event": {
+      "precision": 0.055,
+      "recall": 1.0,
+      "f1": 0.104,
+      "tp": 36,
+      "fp": 622,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.25,
+      "recall": 1.0,
+      "f1": 0.4,
+      "tp": 6,
+      "fp": 18,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S7": {
+     "event": {
+      "precision": 0.077,
+      "recall": 1.0,
+      "f1": 0.143,
+      "tp": 52,
+      "fp": 622,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.25,
+      "recall": 1.0,
+      "f1": 0.4,
+      "tp": 6,
+      "fp": 18,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S8": {
+     "event": {
+      "precision": 0.241,
+      "recall": 1.0,
+      "f1": 0.388,
+      "tp": 197,
+      "fp": 622,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.25,
+      "recall": 1.0,
+      "f1": 0.4,
+      "tp": 6,
+      "fp": 18,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S9": {
+     "event": {
+      "precision": 0.025,
+      "recall": 0.552,
+      "f1": 0.048,
+      "tp": 16,
+      "fp": 622,
+      "fn": 13
+     },
+     "incident": {
+      "precision": 0.143,
+      "recall": 0.5,
+      "f1": 0.222,
+      "tp": 3,
+      "fp": 18,
+      "fn": 3
+     },
+     "injections": 6,
+     "detected": 3
+    }
+   },
    "benign_week": {
     "incidents": 23,
     "fp_incidents_per_day": 3.29,
     "fp_high_or_critical_per_day": 0.0,
-    "alerts_per_day": 4.43
+    "alerts_per_day": 4.43,
+    "alerts_by_source": {
+     "rule": 10,
+     "anomaly": 21,
+     "ip": 0
+    }
    }
   },
   "combined": {
@@ -321,6 +1642,92 @@
    },
    "ttd_p50_s": 0.0,
    "ttd_p95_s": 18.399999999999977,
+   "ttd_sim_s": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    13.0,
+    15.0,
+    19.0,
+    21.0,
+    38.0,
+    43.0,
+    45.0
+   ],
    "test_week": {
     "incidents": 84,
     "tp_incidents": 67,
@@ -352,11 +1759,198 @@
     "chains": 6,
     "chains_in_single_incident": 6
    },
+   "per_scenario": {
+    "S1": {
+     "event": {
+      "precision": 0.066,
+      "recall": 0.939,
+      "f1": 0.123,
+      "tp": 46,
+      "fp": 656,
+      "fn": 3
+     },
+     "incident": {
+      "precision": 0.469,
+      "recall": 1.0,
+      "f1": 0.638,
+      "tp": 15,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S2": {
+     "event": {
+      "precision": 0.763,
+      "recall": 1.0,
+      "f1": 0.866,
+      "tp": 2117,
+      "fp": 656,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.433,
+      "recall": 1.0,
+      "f1": 0.605,
+      "tp": 13,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S3": {
+     "event": {
+      "precision": 0.131,
+      "recall": 1.0,
+      "f1": 0.232,
+      "tp": 99,
+      "fp": 656,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.414,
+      "recall": 1.0,
+      "f1": 0.585,
+      "tp": 12,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S4": {
+     "event": {
+      "precision": 0.089,
+      "recall": 1.0,
+      "f1": 0.163,
+      "tp": 64,
+      "fp": 656,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.452,
+      "recall": 1.0,
+      "f1": 0.622,
+      "tp": 14,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S5": {
+     "event": {
+      "precision": 0.836,
+      "recall": 1.0,
+      "f1": 0.911,
+      "tp": 3347,
+      "fp": 656,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.414,
+      "recall": 1.0,
+      "f1": 0.585,
+      "tp": 12,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 12,
+     "detected": 12
+    },
+    "S6": {
+     "event": {
+      "precision": 0.052,
+      "recall": 1.0,
+      "f1": 0.099,
+      "tp": 36,
+      "fp": 656,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.37,
+      "recall": 1.0,
+      "f1": 0.541,
+      "tp": 10,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S7": {
+     "event": {
+      "precision": 0.073,
+      "recall": 1.0,
+      "f1": 0.137,
+      "tp": 52,
+      "fp": 656,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.292,
+      "recall": 1.0,
+      "f1": 0.452,
+      "tp": 7,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S8": {
+     "event": {
+      "precision": 0.231,
+      "recall": 1.0,
+      "f1": 0.375,
+      "tp": 197,
+      "fp": 656,
+      "fn": 0
+     },
+     "incident": {
+      "precision": 0.261,
+      "recall": 1.0,
+      "f1": 0.414,
+      "tp": 6,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    },
+    "S9": {
+     "event": {
+      "precision": 0.03,
+      "recall": 0.69,
+      "f1": 0.057,
+      "tp": 20,
+      "fp": 656,
+      "fn": 9
+     },
+     "incident": {
+      "precision": 0.292,
+      "recall": 1.0,
+      "f1": 0.452,
+      "tp": 7,
+      "fp": 17,
+      "fn": 0
+     },
+     "injections": 6,
+     "detected": 6
+    }
+   },
    "benign_week": {
     "incidents": 23,
     "fp_incidents_per_day": 3.29,
     "fp_high_or_critical_per_day": 0.0,
-    "alerts_per_day": 4.43
+    "alerts_per_day": 4.43,
+    "alerts_by_source": {
+     "rule": 10,
+     "anomaly": 21,
+     "ip": 0
+    }
    }
   }
  },
@@ -395,13 +1989,13 @@
  "sample_incidents": [
   {
    "incident_id": "INC-334F8660",
-   "title": "Multi-stage activity on sana: Initial Access \u2192 Persistence \u2192 Defense Evasion",
+   "title": "Multi-stage activity on sana: Initial Access \u2192 Defense Evasion \u2192 Persistence",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
     "Initial Access",
-    "Persistence",
-    "Defense Evasion"
+    "Defense Evasion",
+    "Persistence"
    ],
    "sources": [
     "anomaly",
@@ -428,13 +2022,13 @@
   },
   {
    "incident_id": "INC-A4903597",
-   "title": "Multi-stage activity on zane: Initial Access \u2192 Persistence \u2192 Defense Evasion",
+   "title": "Multi-stage activity on zane: Initial Access \u2192 Defense Evasion \u2192 Persistence",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
     "Initial Access",
-    "Persistence",
-    "Defense Evasion"
+    "Defense Evasion",
+    "Persistence"
    ],
    "sources": [
     "anomaly",
@@ -445,12 +2039,12 @@
   },
   {
    "incident_id": "INC-8CDA660F",
-   "title": "Multi-stage activity on carol: Discovery \u2192 Initial Access \u2192 Privilege Escalation \u2192 Persistence \u2192 Defense Evasion \u2192 Exfiltration",
+   "title": "Multi-stage activity on carol: Initial Access \u2192 Discovery \u2192 Privilege Escalation \u2192 Persistence \u2192 Defense Evasion \u2192 Exfiltration",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
-    "Discovery",
     "Initial Access",
+    "Discovery",
     "Privilege Escalation",
     "Persistence",
     "Defense Evasion",
@@ -465,14 +2059,14 @@
   },
   {
    "incident_id": "INC-34855723",
-   "title": "Multi-stage activity on priya: Initial Access \u2192 Persistence \u2192 Defense Evasion \u2192 Impact",
+   "title": "Multi-stage activity on priya: Initial Access \u2192 Defense Evasion \u2192 Impact \u2192 Persistence",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
     "Initial Access",
-    "Persistence",
     "Defense Evasion",
-    "Impact"
+    "Impact",
+    "Persistence"
    ],
    "sources": [
     "anomaly",
@@ -500,12 +2094,12 @@
   },
   {
    "incident_id": "INC-BC960559",
-   "title": "Multi-stage activity on sana: Discovery \u2192 Initial Access \u2192 Persistence \u2192 Privilege Escalation \u2192 Defense Evasion \u2192 Exfiltration",
+   "title": "Multi-stage activity on sana: Initial Access \u2192 Discovery \u2192 Persistence \u2192 Privilege Escalation \u2192 Defense Evasion \u2192 Exfiltration",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
-    "Discovery",
     "Initial Access",
+    "Discovery",
     "Persistence",
     "Privilege Escalation",
     "Defense Evasion",
@@ -520,13 +2114,13 @@
   },
   {
    "incident_id": "INC-06E5F762",
-   "title": "Multi-stage activity on ines: Initial Access \u2192 Persistence \u2192 Defense Evasion \u2192 Impact",
+   "title": "Multi-stage activity on ines: Initial Access \u2192 Defense Evasion \u2192 Persistence \u2192 Impact",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
     "Initial Access",
-    "Persistence",
     "Defense Evasion",
+    "Persistence",
     "Impact"
    ],
    "sources": [

@@ -38,6 +38,8 @@ def generate_dataset(seed: int = 42, days: int | None = None, start: str | None 
                 lo_day = 1 if days > 1 else 0
                 day = rng.randint(lo_day, days - 1)
                 hour = rng.uniform(2, 10) if off_hours else rng.uniform(0, 24)
+                if stealth >= 0.75:                      # blend into the workday (UTC 14-21 = US business hours)
+                    hour = rng.uniform(14, 21)
                 t0 = start_dt + timedelta(days=day, hours=hour)
                 evs, rows = runner.run(spec, t0, stealth=stealth)
                 events.extend(evs)

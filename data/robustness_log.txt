@@ -1,0 +1,5 @@
+stealth 0.0 (noisy attacker): rules_only=0.929  anomaly_only=0.952  ip_only=0.536  rules+ip=1.0  rules+anomaly=0.964  combined=1.0  [92s]
+stealth 0.3 (+ victim's user agent): rules_only=0.786  anomaly_only=0.964  ip_only=0.56  rules+ip=0.94  rules+anomaly=0.964  combined=1.0  [198s]
+stealth 0.6 (+ victim's region & same-country IP): rules_only=0.786  anomaly_only=0.845  ip_only=0.095  rules+ip=0.869  rules+anomaly=0.881  combined=0.917  [195s]
+stealth 0.9 (+ business hours): rules_only=0.786  anomaly_only=0.857  ip_only=0.083  rules+ip=0.857  rules+anomaly=0.869  combined=0.869  [222s]
+done in 710s -> reports/robustness.json

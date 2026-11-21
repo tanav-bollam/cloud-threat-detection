@@ -115,3 +115,43 @@ def score_incidents(incidents: list, con, days: float) -> dict:
             "fp_incidents_per_day": round(fp / days, 2), "fp_high_or_critical_per_day": round(high_fp / days, 2),
             "fp_by_severity": dict(fp_sev), "tp_by_severity": dict(tp_sev),
             "chains": n_chains, "chains_in_single_incident": consolidated}
+
+
+def _prf(tp: int, fp: int, fn: int) -> dict:
+    p = tp / (tp + fp) if tp + fp else 0.0
+    r = tp / (tp + fn) if tp + fn else 0.0
+    f = 2 * p * r / (p + r) if p + r else 0.0
+    return {"precision": round(p, 3), "recall": round(r, 3), "f1": round(f, 3), "tp": tp, "fp": fp, "fn": fn}
+
+
+def scenario_prf(alerts: pd.DataFrame, incidents: list, con) -> dict:
+    """One-vs-rest precision/recall/F1 per scenario, at event level and incident level.
+
+    Event level:    TP = scenario events inside any alert, FN = scenario events missed,
+                    FP = alerted events that are not malicious in ANY scenario (shared by every scenario).
+    Incident level: TP = incidents overlapping the scenario's events, FN = injections of the scenario with no overlapping incident,
+                    FP = incidents overlapping no malicious event (shared by every scenario).
+    Precision therefore depends on how many attacks were injected relative to benign activity (synthetic prevalence); the
+    benign-week false-positives-per-day figure is the prevalence-independent number."""
+    mal_rows = con.execute("SELECT event_id, scenario_id, injection_id FROM labels WHERE is_malicious").fetchall()
+    mal_all = {r[0] for r in mal_rows}
+    by_sc: dict = defaultdict(set)
+    inj_by_sc: dict = defaultdict(lambda: defaultdict(set))
+    for e, s, i in mal_rows:
+        by_sc[s].add(e)
+        inj_by_sc[s][i].add(e)
+    pred: set = set()
+    for row in alerts.itertuples():
+        pred |= set(row.matched_event_ids) | {row.event_id}
+    fp_events = len(pred - mal_all)
+    inc_sets = [set(i.matched_event_ids) for i in incidents]
+    fp_inc = sum(1 for ids in inc_sets if not ids & mal_all)
+    out = {}
+    for s, evs in sorted(by_sc.items()):
+        tp_e = len(pred & evs)
+        tp_inc = sum(1 for ids in inc_sets if ids & evs)
+        detected = sum(1 for evs_i in inj_by_sc[s].values() if any(ids & evs_i for ids in inc_sets))
+        n_inj = len(inj_by_sc[s])
+        out[s] = {"event": _prf(tp_e, fp_events, len(evs) - tp_e), "incident": _prf(tp_inc, fp_inc, n_inj - detected),
+                  "injections": n_inj, "detected": detected}
+    return out

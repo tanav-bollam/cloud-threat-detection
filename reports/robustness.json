@@ -1,0 +1,517 @@
+{
+ "levels": [
+  0.0,
+  0.3,
+  0.6,
+  0.9
+ ],
+ "notes": {
+  "0.0": "noisy attacker",
+  "0.3": "+ victim's user agent",
+  "0.6": "+ victim's region & same-country IP",
+  "0.9": "+ business hours"
+ },
+ "attacks": [
+  "S1",
+  "S2",
+  "S3",
+  "S4",
+  "S5",
+  "S6",
+  "S7",
+  "S8",
+  "S9",
+  "S1+S2+S3+S4+S5"
+ ],
+ "count": 6,
+ "results": {
+  "0.0": {
+   "rules_only": {
+    "incident_recall": 0.929,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.0
+    },
+    "event_recall": 0.4419,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 346.0,
+    "tp_incidents": 52,
+    "fp_incidents": 6,
+    "injections": 84
+   },
+   "anomaly_only": {
+    "incident_recall": 0.952,
+    "recall_by_scenario": {
+     "S1": 0.917,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.5
+    },
+    "event_recall": 0.997,
+    "ttd_p50_s": 77.5,
+    "ttd_p95_s": 273.59999999999997,
+    "tp_incidents": 53,
+    "fp_incidents": 12,
+    "injections": 84
+   },
+   "ip_only": {
+    "incident_recall": 0.536,
+    "recall_by_scenario": {
+     "S1": 0.583,
+     "S2": 0.417,
+     "S3": 0.417,
+     "S4": 0.5,
+     "S5": 0.25,
+     "S6": 0.667,
+     "S7": 1.0,
+     "S8": 0.5,
+     "S9": 1.0
+    },
+    "event_recall": 0.0092,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 29357.8,
+    "tp_incidents": 43,
+    "fp_incidents": 0,
+    "injections": 84
+   },
+   "rules+ip": {
+    "incident_recall": 1.0,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.4446,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 342.2499999999999,
+    "tp_incidents": 68,
+    "fp_incidents": 6,
+    "injections": 84
+   },
+   "rules+anomaly": {
+    "incident_recall": 0.964,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.5
+    },
+    "event_recall": 0.9972,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 43.0,
+    "tp_incidents": 54,
+    "fp_incidents": 18,
+    "injections": 84
+   },
+   "combined": {
+    "incident_recall": 1.0,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.998,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 18.399999999999977,
+    "tp_incidents": 67,
+    "fp_incidents": 17,
+    "injections": 84
+   }
+  },
+  "0.3": {
+   "rules_only": {
+    "incident_recall": 0.786,
+    "recall_by_scenario": {
+     "S1": 0.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.0
+    },
+    "event_recall": 0.1,
+    "ttd_p50_s": 160.5,
+    "ttd_p95_s": 3549.25,
+    "tp_incidents": 46,
+    "fp_incidents": 6,
+    "injections": 84
+   },
+   "anomaly_only": {
+    "incident_recall": 0.964,
+    "recall_by_scenario": {
+     "S1": 0.917,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.667
+    },
+    "event_recall": 0.9949,
+    "ttd_p50_s": 163.0,
+    "ttd_p95_s": 737.0,
+    "tp_incidents": 56,
+    "fp_incidents": 12,
+    "injections": 84
+   },
+   "ip_only": {
+    "incident_recall": 0.56,
+    "recall_by_scenario": {
+     "S1": 0.583,
+     "S2": 0.417,
+     "S3": 0.417,
+     "S4": 0.5,
+     "S5": 0.417,
+     "S6": 0.667,
+     "S7": 1.0,
+     "S8": 0.5,
+     "S9": 1.0
+    },
+    "event_recall": 0.0095,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 32527.399999999994,
+    "tp_incidents": 45,
+    "fp_incidents": 0,
+    "injections": 84
+   },
+   "rules+ip": {
+    "incident_recall": 0.94,
+    "recall_by_scenario": {
+     "S1": 0.583,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.1056,
+    "ttd_p50_s": 97.0,
+    "ttd_p95_s": 3802.499999999999,
+    "tp_incidents": 68,
+    "fp_incidents": 6,
+    "injections": 84
+   },
+   "rules+anomaly": {
+    "incident_recall": 0.964,
+    "recall_by_scenario": {
+     "S1": 0.917,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.667
+    },
+    "event_recall": 0.9949,
+    "ttd_p50_s": 90.0,
+    "ttd_p95_s": 523.0,
+    "tp_incidents": 56,
+    "fp_incidents": 18,
+    "injections": 84
+   },
+   "combined": {
+    "incident_recall": 1.0,
+    "recall_by_scenario": {
+     "S1": 1.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.9962,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 288.1999999999998,
+    "tp_incidents": 71,
+    "fp_incidents": 17,
+    "injections": 84
+   }
+  },
+  "0.6": {
+   "rules_only": {
+    "incident_recall": 0.786,
+    "recall_by_scenario": {
+     "S1": 0.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.0
+    },
+    "event_recall": 0.1281,
+    "ttd_p50_s": 222.0,
+    "ttd_p95_s": 5333.5,
+    "tp_incidents": 46,
+    "fp_incidents": 6,
+    "injections": 84
+   },
+   "anomaly_only": {
+    "incident_recall": 0.845,
+    "recall_by_scenario": {
+     "S1": 0.333,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 0.917,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 0.833,
+     "S8": 0.833,
+     "S9": 0.667
+    },
+    "event_recall": 0.6875,
+    "ttd_p50_s": 280.0,
+    "ttd_p95_s": 5394.0,
+    "tp_incidents": 60,
+    "fp_incidents": 12,
+    "injections": 84
+   },
+   "ip_only": {
+    "incident_recall": 0.095,
+    "recall_by_scenario": {
+     "S1": 0.083,
+     "S2": 0.0,
+     "S3": 0.0,
+     "S4": 0.0,
+     "S5": 0.0,
+     "S6": 0.0,
+     "S7": 0.167,
+     "S8": 0.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.0019,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 0.0,
+    "tp_incidents": 8,
+    "fp_incidents": 0,
+    "injections": 84
+   },
+   "rules+ip": {
+    "incident_recall": 0.869,
+    "recall_by_scenario": {
+     "S1": 0.083,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.13,
+    "ttd_p50_s": 216.0,
+    "ttd_p95_s": 5216.599999999997,
+    "tp_incidents": 53,
+    "fp_incidents": 6,
+    "injections": 84
+   },
+   "rules+anomaly": {
+    "incident_recall": 0.881,
+    "recall_by_scenario": {
+     "S1": 0.333,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.667
+    },
+    "event_recall": 0.6964,
+    "ttd_p50_s": 176.0,
+    "ttd_p95_s": 4573.749999999999,
+    "tp_incidents": 52,
+    "fp_incidents": 18,
+    "injections": 84
+   },
+   "combined": {
+    "incident_recall": 0.917,
+    "recall_by_scenario": {
+     "S1": 0.417,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.6978,
+    "ttd_p50_s": 150.0,
+    "ttd_p95_s": 4508.6,
+    "tp_incidents": 54,
+    "fp_incidents": 18,
+    "injections": 84
+   }
+  },
+  "0.9": {
+   "rules_only": {
+    "incident_recall": 0.786,
+    "recall_by_scenario": {
+     "S1": 0.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 0.0
+    },
+    "event_recall": 0.1121,
+    "ttd_p50_s": 324.5,
+    "ttd_p95_s": 7795.0,
+    "tp_incidents": 48,
+    "fp_incidents": 6,
+    "injections": 84
+   },
+   "anomaly_only": {
+    "incident_recall": 0.857,
+    "recall_by_scenario": {
+     "S1": 0.083,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 0.917,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.6094,
+    "ttd_p50_s": 416.5,
+    "ttd_p95_s": 7689.650000000004,
+    "tp_incidents": 63,
+    "fp_incidents": 12,
+    "injections": 84
+   },
+   "ip_only": {
+    "incident_recall": 0.083,
+    "recall_by_scenario": {
+     "S1": 0.0,
+     "S2": 0.0,
+     "S3": 0.0,
+     "S4": 0.083,
+     "S5": 0.0,
+     "S6": 0.0,
+     "S7": 0.0,
+     "S8": 0.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.0019,
+    "ttd_p50_s": 0.0,
+    "ttd_p95_s": 949.199999999999,
+    "tp_incidents": 6,
+    "fp_incidents": 0,
+    "injections": 84
+   },
+   "rules+ip": {
+    "incident_recall": 0.857,
+    "recall_by_scenario": {
+     "S1": 0.0,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.1136,
+    "ttd_p50_s": 316.0,
+    "ttd_p95_s": 7648.600000000001,
+    "tp_incidents": 53,
+    "fp_incidents": 6,
+    "injections": 84
+   },
+   "rules+anomaly": {
+    "incident_recall": 0.869,
+    "recall_by_scenario": {
+     "S1": 0.083,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.6195,
+    "ttd_p50_s": 276.0,
+    "ttd_p95_s": 7117.199999999989,
+    "tp_incidents": 53,
+    "fp_incidents": 18,
+    "injections": 84
+   },
+   "combined": {
+    "incident_recall": 0.869,
+    "recall_by_scenario": {
+     "S1": 0.083,
+     "S2": 1.0,
+     "S3": 1.0,
+     "S4": 1.0,
+     "S5": 1.0,
+     "S6": 1.0,
+     "S7": 1.0,
+     "S8": 1.0,
+     "S9": 1.0
+    },
+    "event_recall": 0.6205,
+    "ttd_p50_s": 216.0,
+    "ttd_p95_s": 7117.199999999989,
+    "tp_incidents": 52,
+    "fp_incidents": 18,
+    "injections": 84
+   }
+  }
+ }
+}

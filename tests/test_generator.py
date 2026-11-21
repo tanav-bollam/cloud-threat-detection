@@ -121,3 +121,38 @@ def test_storage_roundtrip(tmp_path, ds):
     assert con.execute("select count(*) from injections").fetchone()[0] == len(ds.injections)
     raw = con.execute("select raw from events limit 1").fetchone()[0]
     validate_record(json.loads(raw))
+
+
+def _s1_attackers(stealth, n=6):
+    ds = generate_dataset(seed=21, world_seed=9, days=3, scale=0.03, attacks=["S1"], count=n, stealth=stealth)
+    victims = {r["victim"]: r for r in ds.injections}
+    out = []
+    for rec, lab in ds.events:
+        if lab and lab["is_malicious"] and lab["scenario_id"] == "S1":
+            out.append(rec)
+    return ds, out
+
+
+def test_graded_stealth_levels():
+    base_ds, base = _s1_attackers(0.0)
+    ua_ds, ua = _s1_attackers(0.3)
+    bl_ds, bl = _s1_attackers(0.6)
+    biz_ds, biz = _s1_attackers(0.9)
+    # 0.0: foreign IPs, offensive-tool agents
+    assert any(geo.lookup(r["sourceIPAddress"]).country != "US" for r in base)
+    # 0.3: victim's own user agent (no offensive tooling) but still a foreign IP
+    assert not any("kali" in r["userAgent"] or r["userAgent"].startswith(("python-requests", "curl")) for r in ua)
+    assert any(geo.lookup(r["sourceIPAddress"]).country != "US" for r in ua)
+    # 0.6: same-country residential IP and the victim's usual region
+    assert all(geo.lookup(r["sourceIPAddress"]).country == "US" for r in bl)
+    assert all(r["awsRegion"] in ("us-east-1", "us-west-2") for r in bl if r["eventSource"] != "iam.amazonaws.com")
+    # 0.9: business hours in UTC
+    hours = [int(r["eventTime"][11:13]) for r in biz]
+    assert all(14 <= h <= 22 for h in hours)
+
+
+def test_stealth_slows_the_attacker():
+    def span(stealth):
+        ds = generate_dataset(seed=22, world_seed=9, days=3, scale=0.03, attacks=["S2"], count=1, stealth=stealth)
+        return (ds.injections[0]["end_time"] - ds.injections[0]["start_time"]).total_seconds()
+    assert span(0.9) > 5 * span(0.0)

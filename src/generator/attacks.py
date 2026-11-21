@@ -72,16 +72,23 @@ class Run:
 
 
 def make_attacker(world: World, rng: random.Random, victim: Principal, stealth: float) -> Attacker:
+    """Graded stealth (each level adds to the previous):
+       >= 0.25  uses the victim's own user agent (defeats user-agent rules / new-UA features)
+       >= 0.50  uses the victim's usual region and a same-country residential IP (defeats new-country/region/ASN, travel and blocklist signals)
+       >= 0.75  operates during the victim's working hours (see dataset scheduling) -> hour-of-day looks normal
+       always   pace is slowed by 1 + 20*stealth (see AttackRunner.run), which defeats burst/threshold detections."""
     a = SCEN["attacker"]
-    if stealth >= 0.5:  # blends in: same country/ISP kind, victim's own UA and region
-        return Attacker(geo.random_ip(rng, "US", "residential"), list(victim.uas.values())[0][0], victim.region, "US")
+    victim_ua = list(victim.uas.values())[0][0]
+    if stealth >= 0.5:
+        return Attacker(geo.random_ip(rng, "US", "residential"), victim_ua, victim.region, "US")
     cc = rng.choice(a["countries"])
     kind = rng.choice(["hosting", "vpn", "residential"])
     try:
         ip = geo.random_ip(rng, cc, kind)
     except ValueError:
         ip = geo.random_ip(rng, cc)
-    return Attacker(ip, rng.choice(a["agents"]), rng.choice(["us-east-1", "us-west-2", "eu-west-1", "ap-southeast-1"]), cc)
+    ua = rng.choice(a["agents"])
+    return Attacker(ip, victim_ua if stealth >= 0.25 else ua, rng.choice(["us-east-1", "us-west-2", "eu-west-1", "ap-southeast-1"]), cc)
 
 
 # ----------------------------------------------------------------------------------------------- scenarios

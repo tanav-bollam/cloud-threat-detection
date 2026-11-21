@@ -10,7 +10,7 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - [x] Phase 5: IP layer + scoring + incidents (100 tests pass; combined incident recall 9/9 scenarios, 6/6 kill chains in one incident, 0 HIGH+ false-positive incidents/day on a benign week)
 - [x] Phase 6: streaming pipeline + live injection + time-to-detect (109 tests pass; real-time replay: 9/9 injections detected, pipeline latency p50 368 ms)
 - [x] Phase 7: Streamlit dashboard (134 tests pass; Overview, Alerts & Incidents, Investigation + report export, Forensics, Attack Simulator; verified in a real browser)
-- [ ] Phase 8: Detection Quality page + ablations + robustness
+- [x] Phase 8: Detection Quality page + ablations + robustness (143 tests pass; combined recall 100% -> 86.9% as stealth rises; docs/RESULTS.md + DETECTIONS.md generated)
 - [ ] Phase 9: real-data validation (flaws.cloud, Stratus samples) + file ingestor
 - [ ] Phase 10: Docker, demo snapshot, webhook, CI, README, static showcase
 
@@ -33,3 +33,7 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - Bugs caught by page tests/screenshots: eager dict.get default crashed the timeline; MITRE chain was ordered by first matched event
   (an early anomaly window put Persistence before Initial Access) -> now ordered by DETECTION time.
 - Analyst SQL box is SELECT/WITH only and cannot see ground-truth tables (labels/injections/ttd); only the Attack Simulator reads those.
+- Phase 8: graded stealth (0.25 victim UA, 0.5 victim region + same-country IP, 0.75 business hours, pace x(1+20s)). Only S1 collapses at high
+  stealth; IP layer collapses at 0.6; rules fall once the UA stops looking offensive (rules' S1 recall at stealth 0 was largely the UA rule R022).
+- docs/RESULTS.md and docs/DETECTIONS.md are GENERATED (`scripts/make_results.py`); never edit by hand. A test proves numbers come from the JSON.
+- Per-scenario precision is one-vs-rest against the shared benign background (prevalence-dependent); FP/day on the benign week is the honest number.
