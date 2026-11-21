@@ -1,0 +1,85 @@
+{
+ "alerts": 151,
+ "true_positive_alerts": 143,
+ "false_positive_alerts": 8,
+ "fp_alerts_per_day": 1.14,
+ "fp_by_source": {
+  "benign_baseline": 4,
+  "N_onboarding": 3,
+  "N_maintenance": 1
+ },
+ "per_scenario": {
+  "S1": {
+   "injections": 3,
+   "detected": 3,
+   "recall": 1.0
+  },
+  "S2": {
+   "injections": 3,
+   "detected": 3,
+   "recall": 1.0
+  },
+  "S3": {
+   "injections": 3,
+   "detected": 3,
+   "recall": 1.0
+  },
+  "S4": {
+   "injections": 3,
+   "detected": 3,
+   "recall": 1.0
+  },
+  "S5": {
+   "injections": 3,
+   "detected": 3,
+   "recall": 1.0
+  },
+  "S6": {
+   "injections": 3,
+   "detected": 3,
+   "recall": 1.0
+  },
+  "S7": {
+   "injections": 3,
+   "detected": 3,
+   "recall": 1.0
+  },
+  "S8": {
+   "injections": 3,
+   "detected": 3,
+   "recall": 1.0
+  },
+  "S9": {
+   "injections": 3,
+   "detected": 0,
+   "recall": 0.0
+  }
+ },
+ "overall_injection_recall": 0.889,
+ "ttd_seconds": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  8.0,
+  9.0,
+  14.0
+ ]
+}

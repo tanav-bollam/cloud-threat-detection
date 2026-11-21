@@ -18,11 +18,13 @@ class Dataset:
 
 
 def generate_dataset(seed: int = 42, days: int | None = None, start: str | None = None, scale: float | None = None,
-                     attacks: list[str] | None = None, count: int = 1, stealth: float = 0.0) -> Dataset:
+                     attacks: list[str] | None = None, count: int = 1, stealth: float = 0.0,
+                     world_seed: int | None = None) -> Dataset:
+    """world_seed fixes WHO exists (identities, IPs, keys); seed drives WHAT happens (events). Train/test share a world."""
     cfg = load_yaml("org.yaml")
     days = days or cfg["org"]["default_days"]
     start_dt = datetime.strptime(start or cfg["org"]["default_start"], "%Y-%m-%d")
-    world = build_world(cfg, seed)
+    world = build_world(cfg, seed if world_seed is None else world_seed)
     events = BenignGenerator(world, seed, start_dt, days, scale).generate()
     injections: list[dict] = []
     if attacks:

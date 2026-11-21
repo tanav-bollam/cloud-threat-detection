@@ -22,6 +22,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=None)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--world-seed", type=int, default=None, help="identity/IP universe (default: same as --seed)")
     ap.add_argument("--start", default=None, help="YYYY-MM-DD (default from config)")
     ap.add_argument("--scale", type=float, default=None, help="volume multiplier")
     ap.add_argument("--attacks", default="", help="comma list of S1..S9, or chains like S1+S2+S3")
@@ -39,7 +40,7 @@ def main() -> None:
         out.unlink()
     t0 = time.time()
     attacks = [x for x in a.attacks.split(",") if x]
-    ds = generate_dataset(seed=a.seed, days=a.days, start=a.start, scale=a.scale, attacks=attacks, count=a.count, stealth=a.stealth)
+    ds = generate_dataset(seed=a.seed, days=a.days, start=a.start, scale=a.scale, attacks=attacks, count=a.count, stealth=a.stealth, world_seed=a.world_seed)
     print(f"generated {len(ds.events):,} events ({len(ds.injections)} injections) in {time.time()-t0:.1f}s")
     con = storage.connect(out)
     n = storage.insert_events(con, ds.events)

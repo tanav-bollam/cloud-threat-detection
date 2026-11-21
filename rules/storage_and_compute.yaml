@@ -1,0 +1,48 @@
+- id: R012
+  title: S3 bucket policy allows public access
+  severity: HIGH
+  mitre_tactic: Exfiltration
+  mitre_technique: T1537
+  description: PutBucketPolicy contains an Allow statement for Principal "*" without conditions.
+  false_positive_notes: Intentionally public static-website buckets.
+  condition: {event_name: [PutBucketPolicy], check: public_bucket_policy}
+- id: R013
+  title: S3 bucket ACL made public
+  severity: HIGH
+  mitre_tactic: Exfiltration
+  mitre_technique: T1537
+  description: PutBucketAcl grants public-read or public-read-write.
+  false_positive_notes: Intentionally public asset buckets.
+  condition: {event_name: [PutBucketAcl], check: public_acl}
+- id: R014
+  title: EBS snapshot shared with an external account
+  severity: HIGH
+  mitre_tactic: Exfiltration
+  mitre_technique: T1537
+  description: ModifySnapshotAttribute added another AWS account (or all) to a snapshot's createVolumePermission.
+  false_positive_notes: Sharing golden images with a known partner or a DR account.
+  condition: {event_name: [ModifySnapshotAttribute], check: snapshot_shared_external}
+- id: R015
+  title: Large or GPU instance launched
+  severity: MEDIUM
+  mitre_tactic: Impact
+  mitre_technique: T1496
+  description: RunInstances / RequestSpotInstances for GPU families or very large sizes, the signature of crypto-mining abuse.
+  false_positive_notes: ML training jobs. Check the requester's history and the region.
+  condition: {event_name: [RunInstances, RequestSpotInstances], check: big_instance}
+- id: R016
+  title: Compute launched in a region the organization does not use
+  severity: HIGH
+  mitre_tactic: Impact
+  mitre_technique: T1496
+  description: Instances launched outside the organization's home regions. Attackers pick unmonitored regions.
+  false_positive_notes: New region roll-out; update org home regions when it happens.
+  condition: {event_name: [RunInstances, RequestSpotInstances], check: non_home_region}
+- id: R017
+  title: Security group opened to the world
+  severity: MEDIUM
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1562.007
+  description: AuthorizeSecurityGroupIngress allows 0.0.0.0/0.
+  false_positive_notes: Public web/load-balancer security groups on 80/443.
+  condition: {event_name: [AuthorizeSecurityGroupIngress], check: open_to_world}

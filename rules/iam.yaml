@@ -1,0 +1,58 @@
+- id: R005
+  title: AdministratorAccess policy attached
+  severity: HIGH
+  mitre_tactic: Privilege Escalation
+  mitre_technique: T1098.003
+  description: The AWS-managed AdministratorAccess policy was attached to a user, role or group.
+  false_positive_notes: Onboarding of a new admin; break-glass role set-up.
+  condition:
+    event_name: [AttachUserPolicy, AttachRolePolicy, AttachGroupPolicy]
+    all: [{field: requestParameters.policyArn, op: regex, value: "policy/AdministratorAccess$"}]
+- id: R006
+  title: Inline policy granting full admin (Action * on Resource *)
+  severity: HIGH
+  mitre_tactic: Privilege Escalation
+  mitre_technique: T1098.003
+  description: An inline policy allows all actions on all resources, equivalent to admin access but harder to audit.
+  false_positive_notes: Rare. Some legacy automation uses wildcard inline policies.
+  condition: {event_name: [PutUserPolicy, PutRolePolicy, PutGroupPolicy], check: admin_policy_document}
+- id: R007
+  title: Access key created for a different user
+  severity: MEDIUM
+  mitre_tactic: Persistence
+  mitre_technique: T1098.001
+  description: CreateAccessKey was called for a user other than the caller, a common way to mint durable credentials for a target identity.
+  false_positive_notes: Admins rotating keys for service accounts and onboarding new hires (both occur in normal operation).
+  condition: {event_name: [CreateAccessKey], check: key_for_other_user}
+- id: R008
+  title: Console login profile created
+  severity: MEDIUM
+  mitre_tactic: Persistence
+  mitre_technique: T1098
+  description: CreateLoginProfile gives an IAM user console access, which an attacker can add to a user that only had API keys.
+  false_positive_notes: Onboarding a new employee.
+  condition: {event_name: [CreateLoginProfile]}
+- id: R009
+  title: Role trust policy opened to an external account
+  severity: HIGH
+  mitre_tactic: Persistence
+  mitre_technique: T1098
+  description: UpdateAssumeRolePolicy now trusts a principal outside this account (or "*"), creating a cross-account backdoor.
+  false_positive_notes: Approved partner or vendor integrations; verify the external account ID against an allowlist.
+  condition: {event_name: [UpdateAssumeRolePolicy, CreateRole], check: external_trust_policy}
+- id: R010
+  title: IAM user created
+  severity: LOW
+  mitre_tactic: Persistence
+  mitre_technique: T1136.003
+  description: A new IAM user was created. Low on its own; interesting in combination with key creation and policy attachment.
+  false_positive_notes: Onboarding.
+  condition: {event_name: [CreateUser]}
+- id: R011
+  title: Lambda function created
+  severity: LOW
+  mitre_tactic: Privilege Escalation
+  mitre_technique: T1546
+  description: A function was created (iam:PassRole privilege escalation and Lambda backdoors both start here).
+  false_positive_notes: Normal development; matters when the caller never created functions before or passes an admin role.
+  condition: {event_name: [CreateFunction20150331]}

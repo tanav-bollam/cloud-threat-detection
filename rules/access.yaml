@@ -1,0 +1,75 @@
+- id: R018
+  title: Root account used
+  severity: HIGH
+  mitre_tactic: Initial Access
+  mitre_technique: T1078.004
+  description: Any activity by the root principal. Root should only appear for break-glass tasks.
+  false_positive_notes: Documented break-glass procedures, billing changes.
+  condition:
+    all: [{field: userIdentity.type, op: eq, value: Root}]
+    none: [{field: responseElements.ConsoleLogin, op: eq, value: Failure}]
+- id: R019
+  title: Console login without MFA
+  severity: MEDIUM
+  mitre_tactic: Initial Access
+  mitre_technique: T1078.004
+  description: A successful ConsoleLogin where MFA was not used.
+  false_positive_notes: Accounts exempt from MFA by policy (should be none).
+  condition: {event_name: [ConsoleLogin], check: no_mfa_login}
+- id: R020
+  title: Repeated failed console logins
+  severity: MEDIUM
+  mitre_tactic: Credential Access
+  mitre_technique: T1110
+  description: Five or more failed ConsoleLogin events from one source IP within ten minutes (password guessing / spraying).
+  false_positive_notes: A user who forgot their password, usually 2-3 failures. NAT'd offices can aggregate several users.
+  condition:
+    event_name: [ConsoleLogin]
+    check: console_login_failure
+    threshold: {count: 5, window_s: 600, group_by: [sourceIPAddress]}
+- id: R021
+  title: Successful console login after repeated failures
+  severity: HIGH
+  mitre_tactic: Credential Access
+  mitre_technique: T1110
+  description: A ConsoleLogin succeeded from an IP that had five or more recent failures, so the guessing worked.
+  false_positive_notes: A user who finally remembered the password; check the IP is a known one.
+  condition:
+    event_name: [ConsoleLogin]
+    check: console_login_success
+    sequence:
+      prior: {event_name: [ConsoleLogin], check: console_login_failure}
+      prior_count: 5
+      window_s: 900
+      group_by: [sourceIPAddress]
+- id: R022
+  title: Offensive-tooling user agent
+  severity: MEDIUM
+  mitre_tactic: Initial Access
+  mitre_technique: T1078.004
+  description: User agent matches Kali/Pacu/curl/python-requests, which legitimate AWS tooling does not use against AWS APIs.
+  false_positive_notes: Security team scripts; internal tooling written with requests/curl against signed APIs.
+  condition:
+    all: [{field: userAgent, op: regex, value: "kali|pacu|^python-requests|^curl/"}]
+    threshold: {count: 1, window_s: 3600, group_by: [identity, sourceIPAddress]}
+- id: R023
+  title: Burst of AccessDenied errors (enumeration)
+  severity: MEDIUM
+  mitre_tactic: Discovery
+  mitre_technique: T1580
+  description: A principal produced 15+ authorization failures in ten minutes, the footprint of permission brute-forcing tools.
+  false_positive_notes: Misconfigured automation retrying a forbidden call; look at distinct event names.
+  condition:
+    check: is_error
+    threshold: {count: 15, window_s: 600, group_by: [identity], cooldown_s: 1800}
+- id: R024
+  title: Mass S3 object download by a human user
+  severity: HIGH
+  mitre_tactic: Exfiltration
+  mitre_technique: T1530
+  description: An IAM user performed 250+ GetObject calls in ten minutes. Service roles are excluded because bulk reads are normal for them.
+  false_positive_notes: Data migrations or analysts exporting large datasets.
+  condition:
+    event_name: [GetObject]
+    all: [{field: userIdentity.type, op: eq, value: IAMUser}]
+    threshold: {count: 250, window_s: 600, group_by: [identity], cooldown_s: 1800}
