@@ -15,21 +15,8 @@ from src.generator.dataset import generate_dataset
 from src.pipeline import storage
 from src.pipeline.live import Detector, LiveEngine
 
-WORLD = 9
+from tests.conftest import WORLD
 START = datetime(2025, 1, 13, 9, 0)
-
-
-@pytest.fixture(scope="module")
-def trained():
-    """Tiny baseline + model from a small benign dataset (same world as the live engine)."""
-    ds = generate_dataset(seed=5, world_seed=WORLD, days=3, scale=0.05)
-    flat = pd.DataFrame([storage.flatten(r) for r, _ in ds.events]).drop(columns=["raw"])
-    flat["event_time"] = pd.to_datetime(flat["event_time"])
-    base = fit_baseline(flat)
-    feats = compute_windows(flat, base)
-    model = AnomalyModel(mode="global", n_estimators=40, max_samples=256, random_state=1).fit(feats)
-    model.calibrate(feats, target_windows_per_day=4, days=3.0)
-    return base, model
 
 
 def run(tmp_path, trained, name, *, speed=0.0, injections=(("S1+S3+S4", 1800),), suppressions=None, hours=3.0, anomaly=True, live_inject=None):

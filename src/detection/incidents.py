@@ -87,7 +87,7 @@ def _build(grp: list[Alert], sc: dict) -> Incident:
     grp = sorted(grp, key=lambda a: (a.event_time, a.alert_id))
     tactics: list[str] = []
     techniques: list[str] = []
-    for a in grp:
+    for a in sorted(grp, key=lambda a: (a.detected_at, a.event_time, a.alert_id)):      # kill-chain order = when each stage was DETECTED
         if a.mitre_tactic and a.mitre_tactic not in tactics:
             tactics.append(a.mitre_tactic)
         if a.mitre_technique and a.mitre_technique not in techniques:

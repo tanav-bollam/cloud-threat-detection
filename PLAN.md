@@ -9,7 +9,7 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - [x] Phase 4: features + IsolationForest + SHAP + evaluate.py (83 tests pass; reports/metrics.json)
 - [x] Phase 5: IP layer + scoring + incidents (100 tests pass; combined incident recall 9/9 scenarios, 6/6 kill chains in one incident, 0 HIGH+ false-positive incidents/day on a benign week)
 - [x] Phase 6: streaming pipeline + live injection + time-to-detect (109 tests pass; real-time replay: 9/9 injections detected, pipeline latency p50 368 ms)
-- [ ] Phase 7: Streamlit dashboard
+- [x] Phase 7: Streamlit dashboard (134 tests pass; Overview, Alerts & Incidents, Investigation + report export, Forensics, Attack Simulator; verified in a real browser)
 - [ ] Phase 8: Detection Quality page + ablations + robustness
 - [ ] Phase 9: real-data validation (flaws.cloud, Stratus samples) + file ingestor
 - [ ] Phase 10: Docker, demo snapshot, webhook, CI, README, static showcase
@@ -27,3 +27,9 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - TTD semantics: sim TTD = alert detected_at - first malicious event of the injection (anomaly alerts detect at window END, so ~5-15 sim-min
   worst case); an anomaly alert opened earlier that later absorbs an injection counts at the time of absorption. Pipeline latency is only
   meaningful at real-time speeds (at speed 0 the queue is pre-filled).
+- Dashboard: `streamlit run app/streamlit_app.py` hosts the LiveEngine in-process (env knobs: CTD_SPEED, CTD_SCALE, CTD_DB, CTD_MODELS,
+  CTD_SIM_HOURS, CTD_DAYS, CTD_WORLD_SEED). Needs `python scripts/train.py` first (models/ is git-ignored; Phase 10 adds a demo snapshot/auto-train).
+- Colour: dataviz reference palette on a dark surface; severity always = symbol + label + status colour, never colour alone.
+- Bugs caught by page tests/screenshots: eager dict.get default crashed the timeline; MITRE chain was ordered by first matched event
+  (an early anomaly window put Persistence before Initial Access) -> now ordered by DETECTION time.
+- Analyst SQL box is SELECT/WITH only and cannot see ground-truth tables (labels/injections/ttd); only the Attack Simulator reads those.

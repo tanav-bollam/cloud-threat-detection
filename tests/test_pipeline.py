@@ -178,3 +178,11 @@ def test_end_to_end_kill_chain_becomes_one_high_incident():
     assert mine[0].severity == "CRITICAL"                           # StopLogging / DeleteTrail
     inj_start = pd.Timestamp(ds.injections[0]["start_time"])
     assert pd.Timestamp(mine[0].first_seen.rstrip("Z")) - inj_start < pd.Timedelta(minutes=2)    # detected at the first malicious event
+
+
+def test_tactic_chain_ordered_by_detection_time_not_first_matched_event():
+    """An anomaly window starts before the attack (its first matched event is earlier) but is only DETECTED at window end."""
+    ml = mkalert("ML001", "MEDIUM", src="anomaly", tactic="Persistence", eid="m", t="2025-01-08T09:50:00Z", detected_at="2025-01-08T10:05:00Z")
+    rule = mkalert("R022", "MEDIUM", tactic="Initial Access", eid="r", t="2025-01-08T09:58:00Z")
+    out = inc([ml, rule])
+    assert out[0].tactics == ["Initial Access", "Persistence"]

@@ -10,6 +10,7 @@ Full spec: `SPEC.md`. Progress: `PLAN.md`. Everything must be free/open source; 
 - Data for training/eval: `generate.py --seed 101 --world-seed 42 --days 10 --start 2024-12-27 --out data/train.duckdb` (benign), `--seed 202 ... --days 7 --start 2025-01-06 --out data/val.duckdb` (benign), `--seed 303 ... --attacks S1,...,S9,S1+S2+S3+S4+S5 --count 6 --out data/test.duckdb`
 - Train: `scripts/train.py` -> models/ ; Evaluate: `scripts/evaluate.py [--cache] [--mode global|per_group]` -> reports/metrics.json ; Rules only: `scripts/rules_report.py`
 - Live: `scripts/run_live.py --speed 150 --sim-hours 3 --inject S1+S2+S3+S4+S5@1500` (speed 0 = max, deterministic; writes reports/live_ttd.json). Live code: `src/pipeline/live.py` (LiveEngine)
+- Dashboard: `.venv/Scripts/python.exe -m streamlit run app/streamlit_app.py` (needs models/). Pages in app/pages, data layer app/data.py (no Streamlit, unit-tested), shared app/common.py. Page tests use streamlit.testing AppTest + tests/conftest.py `dash_engine`.
 - Summarize: `.venv/Scripts/python.exe scripts/summarize.py data/week.duckdb`
 
 ## Conventions

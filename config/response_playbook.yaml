@@ -1,0 +1,50 @@
+# Recommended response steps, keyed by MITRE technique and tactic. Used by the incident report export.
+# Advice only; nothing here is executed by the tool.
+generic:
+  - "Confirm the activity with the identity's owner out-of-band (chat/phone) before taking disruptive action."
+  - "Preserve evidence: export the raw CloudTrail events for the affected identities and source IPs shown in this report."
+by_technique:
+  T1078.004:
+    - "Deactivate the access key(s) used from the unusual source (IAM > Users > Security credentials > Make inactive) and invalidate active sessions (attach a deny-all policy with an aws:TokenIssueTime condition)."
+    - "Rotate the credential and search the owner's laptop/CI logs and repositories for the leaked key (git history, env files, pastebins)."
+    - "Review every API call made by the identity from the unfamiliar IP/user agent (see the timeline)."
+  T1580:
+    - "Review which services were enumerated and which calls succeeded; AccessDenied results show what the attacker could NOT reach."
+    - "Add alarms for bursts of AccessDenied errors per principal."
+  T1098.003:
+    - "Detach AdministratorAccess / delete the unexpected inline policies from the affected principals."
+    - "Audit who holds iam:AttachUserPolicy, iam:PutUserPolicy and iam:PassRole; remove broad grants (use permission boundaries / SCPs)."
+  T1098.001:
+    - "Delete access keys created during the incident (iam:DeleteAccessKey) and list all keys for the target users."
+  T1098:
+    - "Remove unexpected login profiles and roll back role trust policies (UpdateAssumeRolePolicy) to the last known-good document."
+  T1136.003:
+    - "Delete or disable IAM users created during the incident and review their activity before deleting."
+  T1562.008:
+    - "Re-enable CloudTrail logging immediately (StartLogging), confirm the trail is multi-region with log file validation, and restore the original event selectors."
+    - "Treat everything after the logging gap as unobserved: check S3 server access logs, VPC flow logs and service-specific logs for that window."
+    - "Apply an SCP denying cloudtrail:StopLogging / DeleteTrail / UpdateTrail except for a break-glass role."
+  T1562.001:
+    - "Re-create or re-enable the GuardDuty detector in every region where it was removed and review findings from the gap."
+  T1562.007:
+    - "Remove 0.0.0.0/0 ingress rules created during the incident and check for instances reachable from the internet."
+  T1530:
+    - "Identify which objects were read (S3 data events / server access logs) and classify the data exposure for breach-notification decisions."
+  T1537:
+    - "Make affected buckets private (Block Public Access), remove public ACLs/policies and unshare snapshots shared with unknown accounts."
+    - "Look for copies of the data in the external account IDs named in the alerts."
+  T1546:
+    - "Review newly created Lambda functions and their execution roles; delete any you cannot attribute to a change ticket."
+  T1496:
+    - "Terminate the unexpected instances and spot requests in every region, delete the associated key pairs/security groups, and set service quotas for GPU instance families to zero."
+    - "Check the bill for the incident window (Cost Explorer) and open an AWS support case about abuse charges."
+  T1110:
+    - "Lock or reset the targeted account, enforce MFA, and block the offending source IPs at the edge/SSO provider."
+  T1090:
+    - "Review whether the anonymizing network was used for the successful sessions; consider conditional access that requires known egress IPs."
+by_tactic:
+  Initial Access: ["Check how the credential was exposed (phishing, leaked key, reused password)."]
+  Persistence: ["Hunt for other persistence: new users, keys, roles with external trust, Lambda backdoors, scheduled events."]
+  "Defense Evasion": ["Assume the attacker knows your detections; widen the investigation window."]
+  Exfiltration: ["Quantify the data accessed and involve legal/privacy early."]
+  Impact: ["Stop the resource consumption first, then investigate how access was obtained."]
