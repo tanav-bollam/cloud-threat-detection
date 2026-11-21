@@ -1,0 +1,36 @@
+# Attack scenarios. Technique IDs follow MITRE ATT&CK for Cloud; behaviour is modelled on the Stratus Red Team catalog.
+scenarios:
+  S1: {name: "Leaked access key used from attacker infrastructure", technique: T1078.004, tactic: Initial Access, off_hours: true}
+  S2: {name: "Reconnaissance / enumeration",                       technique: T1580,     tactic: Discovery,      off_hours: true, events: [80, 250], deny_rate: 0.45}
+  S3: {name: "IAM privilege escalation",                           technique: T1098.003, tactic: Privilege Escalation}
+  S4: {name: "Defense evasion (disable logging/detection)",        technique: T1562.008, tactic: Defense Evasion}
+  S5: {name: "Data exfiltration",                                  technique: T1530,     tactic: Exfiltration,   events: [60, 400]}
+  S6: {name: "Persistence (backdoor identities)",                  technique: T1136.003, tactic: Persistence,    off_hours: true}
+  S7: {name: "Crypto-mining (resource hijacking)",                 technique: T1496,     tactic: Impact}
+  S8: {name: "Console brute force / risky login",                  technique: T1110,     tactic: Credential Access, failures: [10, 40]}
+  S9: {name: "Impossible travel",                                  technique: T1078.004, tactic: Initial Access, min_km: 5000}
+
+# per-event technique overrides (eventName -> [technique, tactic])
+event_overrides:
+  CreateAccessKey: [T1098.001, Persistence]
+  CreateLoginProfile: [T1098, Persistence]
+  UpdateAssumeRolePolicy: [T1098, Persistence]
+  CreateFunction20150331: [T1546, Privilege Escalation]
+  PutBucketPolicy: [T1537, Exfiltration]
+  PutBucketAcl: [T1537, Exfiltration]
+  ModifySnapshotAttribute: [T1537, Exfiltration]
+  GetCallerIdentity: [T1078.004, Initial Access]
+  CreateUser: [T1136.003, Persistence]
+  AttachUserPolicy: [T1098.003, Privilege Escalation]
+  PutUserPolicy: [T1098.003, Privilege Escalation]
+
+attacker:
+  countries: [RU, CN, NG, BR, NL, SG]
+  agents:
+    - "python-requests/2.31.0"
+    - "aws-cli/1.22.34 Python/3.10.12 Linux/6.5.0-kali3-amd64 botocore/1.23.34"
+    - "Boto3/1.28.57 md/Botocore#1.31.57 ua/2.0 os/linux#6.5.0-kali3-amd64 md/arch#x86_64 lang/python#3.11.6 md/pyimpl#CPython cfg/retry-mode#legacy Botocore/1.31.57"
+    - "curl/8.4.0"
+  external_accounts: ["999988887777", "444455556666", "210987654321"]
+  crypto_regions: [ap-southeast-1, eu-central-1, sa-east-1, ap-northeast-2, eu-west-3]
+  crypto_instances: [p3.16xlarge, g5.48xlarge, p4d.24xlarge, c5.18xlarge]

@@ -1,0 +1,98 @@
+# "A normal week in a ~50-person startup". All times are LOCAL to each user's tz_offset (UTC hours).
+org:
+  name: acme
+  account_id: "123456789012"
+  home_regions: {us-east-1: 0.8, us-west-2: 0.2}   # regions this org actually uses
+  signin_region: us-east-1
+  default_start: "2025-01-06"                        # a Monday
+  default_days: 7
+  volume_scale: 1.0                                  # multiplies per-session event counts and service rates
+  tz_offsets: [-5, -5, -5, -5, -8]                   # humans: mostly US-East, some US-West
+
+user_agents:
+  cli: ["aws-cli/2.15.30 Python/3.11.8 Linux/5.15.0-101-generic exe/x86_64.ubuntu.22 prompt/off",
+        "aws-cli/2.13.5 Python/3.11.4 Darwin/23.3.0 source/arm64 prompt/off",
+        "aws-cli/2.15.17 Python/3.11.6 Windows/10 exe/AMD64 prompt/off"]
+  sdk: ["Boto3/1.34.69 md/Botocore#1.34.69 ua/2.0 os/macos#23.3.0 md/arch#arm64 lang/python#3.11.8 md/pyimpl#CPython cfg/retry-mode#legacy Botocore/1.34.69",
+        "Boto3/1.34.40 md/Botocore#1.34.40 ua/2.0 os/linux#5.15.0 md/arch#x86_64 lang/python#3.10.12 md/pyimpl#CPython cfg/retry-mode#legacy Botocore/1.34.40"]
+  console: ["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Gecko/20100101 Firefox/123.0"]
+  terraform: ["aws-sdk-go/1.50.0 (go1.21.6; linux; amd64) APN/1.0 HashiCorp/1.0 Terraform/1.7.4 (+https://www.terraform.io)"]
+  lambda: ["Boto3/1.34.69 md/Botocore#1.34.69 ua/2.0 os/linux#5.10.210 md/arch#x86_64 lang/python#3.12.2 md/pyimpl#CPython exec-env/AWS_Lambda_python3.12 cfg/retry-mode#legacy Botocore/1.34.69"]
+
+personas:
+  developers:
+    count: 28
+    weekday_prob: 0.95
+    weekend_prob: 0.12
+    sessions_per_day: [1, 3]
+    hours: {mean: 9.5, sd: 1.8, min: 7.0, max: 20.0}
+    events_per_session: {mu: 4.4, sigma: 0.7}        # lognormal
+    mean_gap_s: 25
+    console_prob: 0.35
+    office_prob: 0.55
+    home_ips: [1, 2]
+    error_rate: 0.02
+    ua_kinds: [cli, sdk]
+    api_mix: {DescribeInstances: 10, DescribeSecurityGroups: 3, DescribeVolumes: 2, ListBuckets: 2, GetObject: 20, PutObject: 8,
+              ListObjects: 10, GetBucketLocation: 2, ListFunctions20150331: 4, GetFunction20150331v2: 4, UpdateFunctionCode20150331v2: 2,
+              DescribeLogGroups: 4, DescribeLogStreams: 6, GetLogEvents: 12, FilterLogEvents: 8, GetCallerIdentity: 3, AssumeRole: 3,
+              StartInstances: 1, StopInstances: 1, DescribeStacks: 3, GetParameter: 3, DescribeTable: 2, ListTables: 1, DescribeAlarms: 2,
+              ListClusters: 1, DescribeDBInstances: 1, ListQueues: 1, CreateTags: 1}
+  admins:
+    count: 4
+    weekday_prob: 0.9
+    weekend_prob: 0.05
+    sessions_per_day: [1, 2]
+    hours: {mean: 10.0, sd: 1.5, min: 8.0, max: 19.0}
+    events_per_session: {mu: 3.8, sigma: 0.6}
+    mean_gap_s: 30
+    console_prob: 0.7
+    office_prob: 0.7
+    home_ips: [1, 1]
+    error_rate: 0.015
+    ua_kinds: [cli, sdk]
+    api_mix: {ListUsers: 8, ListRoles: 6, ListPolicies: 3, GetUser: 5, ListAccessKeys: 5, ListAttachedUserPolicies: 4, GetAccountSummary: 2,
+              CreateTags: 3, DescribeInstances: 5, DescribeSecurityGroups: 3, AuthorizeSecurityGroupIngress: 0.6, AttachRolePolicy: 0.4,
+              CreateAccessKey: 0.25, DescribeTrails: 2, GetTrailStatus: 2, ListDetectors: 2, LookupEvents: 3, GetCallerIdentity: 2,
+              ListBuckets: 2, GetBucketPolicy: 1, ListGroups: 1}
+  analysts:
+    count: 8
+    weekday_prob: 0.92
+    weekend_prob: 0.03
+    sessions_per_day: [1, 2]
+    hours: {mean: 10.5, sd: 1.4, min: 8.0, max: 18.5}
+    events_per_session: {mu: 4.3, sigma: 0.8}
+    mean_gap_s: 20
+    console_prob: 0.6
+    office_prob: 0.6
+    home_ips: [1, 1]
+    error_rate: 0.03
+    ua_kinds: [sdk]
+    api_mix: {StartQueryExecution: 6, GetQueryExecution: 10, GetQueryResults: 10, GetObject: 25, ListObjects: 10, GetBucketLocation: 2,
+              GetTable: 6, GetDatabases: 3, ListBuckets: 1, GetCallerIdentity: 1}
+  ci:
+    role_name: ci-deployer
+    egress_ips: 2                                    # fixed NAT addresses in AS64501
+    deploys_per_weekday: [6, 12]
+    deploys_per_weekend: [0, 2]
+    events_per_deploy: {mu: 3.8, sigma: 0.5}
+    poll_every_s: 300
+    error_rate: 0.005
+    api_mix: {GetCallerIdentity: 2, GetAuthorizationToken: 3, PutImage: 3, DescribeStacks: 6, UpdateStack: 2, PutObject: 6,
+              UpdateFunctionCode20150331v2: 3, GetParameter: 5, DescribeInstances: 3, GetObject: 4, DescribeTable: 1}
+  lambdas:
+    count: 6
+    rate_per_hour: [300, 2200]
+    error_rate: 0.004
+    api_mix: {GetObject: 30, PutObject: 20, ListObjects: 6, GetSecretValue: 6, GetParameter: 8, Decrypt: 10}
+  root:
+    events_per_week: 0                               # break-glass root should almost never appear
+
+noise:                                               # benign-but-unusual behaviour to exercise false positives
+  on_call_engineers: 2                               # night sessions (local 01:00-04:00) on a few nights
+  on_call_nights: 2
+  traveling_devs: 1                                  # new IP, same country, for a couple of days
+  new_hires: 1                                       # appears on day 2, higher error rate, onboarding IAM writes by an admin
+  admin_maintenance: true                            # Saturday 03:00 local IAM key rotation by an admin

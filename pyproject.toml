@@ -1,0 +1,13 @@
+[project]
+name = "cloud-threat-detection"
+version = "0.1.0"
+description = "AWS CloudTrail threat detection: synthetic logs, rules, IsolationForest, Streamlit forensics"
+requires-python = ">=3.11"
+dependencies = [
+  "duckdb", "pandas", "pyarrow", "numpy", "pydantic", "pyyaml",
+  "scikit-learn", "shap", "streamlit", "plotly", "pytest", "hypothesis",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
