@@ -1,0 +1,2080 @@
+{
+ "geo_synthetic_registry": "disabled for all real data (IPs are anonymized)",
+ "sources": {
+  "samples_repo": "https://github.com/Yamato-Security/suzaku-sample-data",
+  "flaws_tar": "https://summitroute.com/downloads/flaws_cloudtrail_logs.tar",
+  "flaws_blog": "https://summitroute.com/blog/2020/10/09/public_dataset_of_cloudtrail_logs_from_flaws_cloud/"
+ },
+ "flaws_integrity": {
+  "tar_bytes": 251688960,
+  "members": 20,
+  "identical_to_repo_copy": 20
+ },
+ "samples_commit": "b32eb4e",
+ "stratus": {
+  "before": {
+   "techniques": 35,
+   "covered_specific": 12,
+   "covered_any": 14,
+   "rules_evaluated": 24,
+   "measured_at_commit": "18f7504 (Phase 8, before real-data fixes)"
+  },
+  "after": {
+   "techniques": 35,
+   "covered_specific": 33,
+   "covered_any": 33,
+   "rules_evaluated": 41
+  },
+  "rows": [
+   {
+    "tactic": "credential_access",
+    "technique": "aws.credential-access.ec2-get-password-data",
+    "events": 34,
+    "event_names": [
+     "AssumeRole",
+     "GetPasswordData"
+    ],
+    "before": {
+     "R023": 1
+    },
+    "after": {
+     "R028": 1,
+     "R023": 1
+    },
+    "after_specific": [
+     "R028"
+    ],
+    "rule_titles": {
+     "R028": "EC2 Windows password data retrieved",
+     "R023": "Burst of AccessDenied errors (enumeration)"
+    }
+   },
+   {
+    "tactic": "credential_access",
+    "technique": "aws.credential-access.ec2-steal-instance-credentials",
+    "events": 45,
+    "event_names": [
+     "DescribeInstanceInformation",
+     "DescribeInstances",
+     "GetCallerIdentity",
+     "GetCommandInvocation"
+    ],
+    "before": {},
+    "after": {
+     "R032": 1
+    },
+    "after_specific": [
+     "R032"
+    ],
+    "rule_titles": {
+     "R032": "Remote command or session on instances via SSM"
+    }
+   },
+   {
+    "tactic": "credential_access",
+    "technique": "aws.credential-access.secretsmanager-batch-retrieve-secrets",
+    "events": 5,
+    "event_names": [
+     "BatchGetSecretValue"
+    ],
+    "before": {},
+    "after": {
+     "R029": 1
+    },
+    "after_specific": [
+     "R029"
+    ],
+    "rule_titles": {
+     "R029": "Secrets Manager secrets retrieved in bulk"
+    }
+   },
+   {
+    "tactic": "credential_access",
+    "technique": "aws.credential-access.secretsmanager-retrieve-secrets",
+    "events": 21,
+    "event_names": [
+     "GetSecretValue",
+     "ListSecrets"
+    ],
+    "before": {},
+    "after": {
+     "R030": 1
+    },
+    "after_specific": [
+     "R030"
+    ],
+    "rule_titles": {
+     "R030": "Burst of secret reads by a human user"
+    }
+   },
+   {
+    "tactic": "credential_access",
+    "technique": "aws.credential-access.ssm-retrieve-securestring-parameters",
+    "events": 10,
+    "event_names": [
+     "DescribeParameters",
+     "GetParameters"
+    ],
+    "before": {},
+    "after": {
+     "R031": 1
+    },
+    "after_specific": [
+     "R031"
+    ],
+    "rule_titles": {
+     "R031": "SSM parameters read in bulk"
+    }
+   },
+   {
+    "tactic": "defense_evasion",
+    "technique": "AttemptToLeaveAWSOrganization",
+    "events": 3,
+    "event_names": [
+     "AssumeRole",
+     "LeaveOrganization"
+    ],
+    "before": {},
+    "after": {
+     "R036": 1
+    },
+    "after_specific": [
+     "R036"
+    ],
+    "rule_titles": {
+     "R036": "Attempt to leave the AWS Organization"
+    }
+   },
+   {
+    "tactic": "defense_evasion",
+    "technique": "aws.defense-evasion.cloudtrail-delete",
+    "events": 1,
+    "event_names": [
+     "DeleteTrail"
+    ],
+    "before": {
+     "R001": 1
+    },
+    "after": {
+     "R001": 1
+    },
+    "after_specific": [
+     "R001"
+    ],
+    "rule_titles": {
+     "R001": "CloudTrail logging stopped or trail deleted"
+    }
+   },
+   {
+    "tactic": "defense_evasion",
+    "technique": "aws.defense-evasion.cloudtrail-event-selectors",
+    "events": 1,
+    "event_names": [
+     "PutEventSelectors"
+    ],
+    "before": {
+     "R002": 1
+    },
+    "after": {
+     "R002": 1
+    },
+    "after_specific": [
+     "R002"
+    ],
+    "rule_titles": {
+     "R002": "CloudTrail configuration weakened"
+    }
+   },
+   {
+    "tactic": "defense_evasion",
+    "technique": "aws.defense-evasion.cloudtrail-stop",
+    "events": 1,
+    "event_names": [
+     "StopLogging"
+    ],
+    "before": {
+     "R001": 1
+    },
+    "after": {
+     "R001": 1
+    },
+    "after_specific": [
+     "R001"
+    ],
+    "rule_titles": {
+     "R001": "CloudTrail logging stopped or trail deleted"
+    }
+   },
+   {
+    "tactic": "defense_evasion",
+    "technique": "aws.defense-evasion.dns-delete-logs",
+    "events": 1,
+    "event_names": [
+     "DeleteResolverQueryLogConfig"
+    ],
+    "before": {},
+    "after": {
+     "R037": 1
+    },
+    "after_specific": [
+     "R037"
+    ],
+    "rule_titles": {
+     "R037": "DNS query logging removed"
+    }
+   },
+   {
+    "tactic": "defense_evasion",
+    "technique": "aws.defense-evasion.vpc-remove-flow-logs",
+    "events": 1,
+    "event_names": [
+     "DeleteFlowLogs"
+    ],
+    "before": {
+     "R004": 1
+    },
+    "after": {
+     "R004": 1
+    },
+    "after_specific": [
+     "R004"
+    ],
+    "rule_titles": {
+     "R004": "VPC flow logs deleted"
+    }
+   },
+   {
+    "tactic": "discovery",
+    "technique": "aws.discovery.ec2-download-user-data",
+    "events": 19,
+    "event_names": [
+     "AssumeRole",
+     "DescribeInstanceAttribute"
+    ],
+    "before": {
+     "R023": 1
+    },
+    "after": {
+     "R035": 1,
+     "R023": 1
+    },
+    "after_specific": [
+     "R035"
+    ],
+    "rule_titles": {
+     "R035": "EC2 user data read",
+     "R023": "Burst of AccessDenied errors (enumeration)"
+    }
+   },
+   {
+    "tactic": "execution",
+    "technique": "aws.execution.ec2-launch-unusual-instances",
+    "events": 3,
+    "event_names": [
+     "AssumeRole",
+     "RunInstances"
+    ],
+    "before": {
+     "R015": 1
+    },
+    "after": {
+     "R015": 1
+    },
+    "after_specific": [
+     "R015"
+    ],
+    "rule_titles": {
+     "R015": "Large or GPU instance launched"
+    }
+   },
+   {
+    "tactic": "execution",
+    "technique": "aws.execution.ec2-user-data",
+    "events": 35,
+    "event_names": [
+     "DescribeInstances",
+     "ModifyInstanceAttribute",
+     "StartInstances",
+     "StopInstances"
+    ],
+    "before": {},
+    "after": {
+     "R034": 1
+    },
+    "after_specific": [
+     "R034"
+    ],
+    "rule_titles": {
+     "R034": "EC2 user data modified"
+    }
+   },
+   {
+    "tactic": "execution",
+    "technique": "aws.execution.ssm-send-command",
+    "events": 56,
+    "event_names": [
+     "DescribeInstanceInformation",
+     "GetCommandInvocation",
+     "SendCommand"
+    ],
+    "before": {},
+    "after": {
+     "R032": 1
+    },
+    "after_specific": [
+     "R032"
+    ],
+    "rule_titles": {
+     "R032": "Remote command or session on instances via SSM"
+    }
+   },
+   {
+    "tactic": "execution",
+    "technique": "aws.execution.ssm-start-session",
+    "events": 29,
+    "event_names": [
+     "DescribeInstanceInformation",
+     "StartSession",
+     "TerminateSession"
+    ],
+    "before": {},
+    "after": {
+     "R032": 1
+    },
+    "after_specific": [
+     "R032"
+    ],
+    "rule_titles": {
+     "R032": "Remote command or session on instances via SSM"
+    }
+   },
+   {
+    "tactic": "exfiltration",
+    "technique": "aws.exfiltration.ec2-security-group-open-port-22-ingress",
+    "events": 1,
+    "event_names": [
+     "AuthorizeSecurityGroupIngress"
+    ],
+    "before": {},
+    "after": {
+     "R017": 1
+    },
+    "after_specific": [
+     "R017"
+    ],
+    "rule_titles": {
+     "R017": "Security group opened to the world"
+    }
+   },
+   {
+    "tactic": "exfiltration",
+    "technique": "aws.exfiltration.ec2-share-ami",
+    "events": 1,
+    "event_names": [
+     "ModifyImageAttribute"
+    ],
+    "before": {},
+    "after": {
+     "R025": 1
+    },
+    "after_specific": [
+     "R025"
+    ],
+    "rule_titles": {
+     "R025": "AMI shared with an external account or publicly"
+    }
+   },
+   {
+    "tactic": "exfiltration",
+    "technique": "aws.exfiltration.ec2-share-ebs-snapshot",
+    "events": 1,
+    "event_names": [
+     "ModifySnapshotAttribute"
+    ],
+    "before": {
+     "R014": 1
+    },
+    "after": {
+     "R014": 1
+    },
+    "after_specific": [
+     "R014"
+    ],
+    "rule_titles": {
+     "R014": "EBS snapshot shared with an external account"
+    }
+   },
+   {
+    "tactic": "exfiltration",
+    "technique": "aws.exfiltration.rds-share-snapshot",
+    "events": 1,
+    "event_names": [
+     "ModifyDBSnapshotAttribute"
+    ],
+    "before": {},
+    "after": {
+     "R026": 1
+    },
+    "after_specific": [
+     "R026"
+    ],
+    "rule_titles": {
+     "R026": "RDS snapshot shared with an external account"
+    }
+   },
+   {
+    "tactic": "impact",
+    "technique": "aws.impact.bedrock-invoke-model",
+    "events": 15,
+    "event_names": [
+     "CreateFoundationModelAgreement",
+     "GetFoundationModelAvailability",
+     "InvokeModel",
+     "ListFoundationModelAgreementOffers"
+    ],
+    "before": {},
+    "after": {
+     "R041": 1
+    },
+    "after_specific": [
+     "R041"
+    ],
+    "rule_titles": {
+     "R041": "Bedrock model invoked"
+    }
+   },
+   {
+    "tactic": "initial_access",
+    "technique": "aws.initial-access.console-login-without-mfa",
+    "events": 1,
+    "event_names": [
+     "ConsoleLogin"
+    ],
+    "before": {
+     "R019": 1
+    },
+    "after": {
+     "R019": 1
+    },
+    "after_specific": [
+     "R019"
+    ],
+    "rule_titles": {
+     "R019": "Console login without MFA"
+    }
+   },
+   {
+    "tactic": "lateral_movement",
+    "technique": "aws.lateral-movement.ec2-instance-connect",
+    "events": 3,
+    "event_names": [
+     "SendSSHPublicKey"
+    ],
+    "before": {},
+    "after": {
+     "R033": 1
+    },
+    "after_specific": [
+     "R033"
+    ],
+    "rule_titles": {
+     "R033": "EC2 Instance Connect or serial console access used"
+    }
+   },
+   {
+    "tactic": "lateral_movement",
+    "technique": "aws.lateral-movement.ec2-serial-console-send-ssh-public-key",
+    "events": 4,
+    "event_names": [
+     "EnableSerialConsoleAccess",
+     "SendSerialConsoleSSHPublicKey"
+    ],
+    "before": {},
+    "after": {
+     "R033": 1
+    },
+    "after_specific": [
+     "R033"
+    ],
+    "rule_titles": {
+     "R033": "EC2 Instance Connect or serial console access used"
+    }
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.iam-backdoor-role",
+    "events": 1,
+    "event_names": [
+     "UpdateAssumeRolePolicy"
+    ],
+    "before": {
+     "R009": 1
+    },
+    "after": {
+     "R009": 1
+    },
+    "after_specific": [
+     "R009"
+    ],
+    "rule_titles": {
+     "R009": "Role trust policy opened to an external account"
+    }
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.iam-backdoor-user",
+    "events": 1,
+    "event_names": [
+     "CreateAccessKey"
+    ],
+    "before": {
+     "R007": 1
+    },
+    "after": {
+     "R007": 1
+    },
+    "after_specific": [
+     "R007"
+    ],
+    "rule_titles": {
+     "R007": "Access key created for a different user"
+    }
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.iam-create-admin-user",
+    "events": 3,
+    "event_names": [
+     "AttachUserPolicy",
+     "CreateAccessKey",
+     "CreateUser"
+    ],
+    "before": {
+     "R005": 1,
+     "R007": 1,
+     "R010": 1
+    },
+    "after": {
+     "R005": 1,
+     "R007": 1,
+     "R010": 1
+    },
+    "after_specific": [
+     "R005",
+     "R007",
+     "R010"
+    ],
+    "rule_titles": {
+     "R005": "AdministratorAccess policy attached",
+     "R007": "Access key created for a different user",
+     "R010": "IAM user created"
+    }
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.iam-create-backdoor-role",
+    "events": 2,
+    "event_names": [
+     "AttachRolePolicy",
+     "CreateRole"
+    ],
+    "before": {
+     "R005": 1
+    },
+    "after": {
+     "R005": 1,
+     "R009": 1
+    },
+    "after_specific": [
+     "R005",
+     "R009"
+    ],
+    "rule_titles": {
+     "R005": "AdministratorAccess policy attached",
+     "R009": "Role trust policy opened to an external account"
+    }
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.iam-create-user-login-profile",
+    "events": 3,
+    "event_names": [
+     "CreateLoginProfile",
+     "DeleteLoginProfile",
+     "GetCallerIdentity"
+    ],
+    "before": {
+     "R008": 1
+    },
+    "after": {
+     "R008": 1
+    },
+    "after_specific": [
+     "R008"
+    ],
+    "rule_titles": {
+     "R008": "Console login profile created"
+    }
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.lambda-backdoor-function",
+    "events": 1,
+    "event_names": [
+     "AddPermission20150331v2"
+    ],
+    "before": {},
+    "after": {
+     "R027": 1
+    },
+    "after_specific": [
+     "R027"
+    ],
+    "rule_titles": {
+     "R027": "Lambda function invokable by anyone"
+    }
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.lambda-layer-extension",
+    "events": 1,
+    "event_names": [
+     "UpdateFunctionConfiguration20150331v2"
+    ],
+    "before": {},
+    "after": {},
+    "after_specific": [],
+    "rule_titles": {}
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.lambda-overwrite-code",
+    "events": 1,
+    "event_names": [
+     "UpdateFunctionCode20150331v2"
+    ],
+    "before": {},
+    "after": {},
+    "after_specific": [],
+    "rule_titles": {}
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.rolesanywhere-create-trust-anchor",
+    "events": 2,
+    "event_names": [
+     "CreateProfile",
+     "CreateTrustAnchor"
+    ],
+    "before": {},
+    "after": {
+     "R039": 1
+    },
+    "after_specific": [
+     "R039"
+    ],
+    "rule_titles": {
+     "R039": "IAM Roles Anywhere trust anchor or profile created"
+    }
+   },
+   {
+    "tactic": "persistence",
+    "technique": "aws.persistence.sts-federation-token",
+    "events": 2,
+    "event_names": [
+     "GetCallerIdentity",
+     "GetFederationToken"
+    ],
+    "before": {},
+    "after": {
+     "R038": 1
+    },
+    "after_specific": [
+     "R038"
+    ],
+    "rule_titles": {
+     "R038": "Federation token requested by an IAM user"
+    }
+   },
+   {
+    "tactic": "privilege_escalation",
+    "technique": "aws.privilege-escalation.iam-update-user-login-profile",
+    "events": 1,
+    "event_names": [
+     "UpdateLoginProfile"
+    ],
+    "before": {},
+    "after": {
+     "R040": 1
+    },
+    "after_specific": [
+     "R040"
+    ],
+    "rule_titles": {
+     "R040": "Console password reset for another user"
+    }
+   }
+  ]
+ },
+ "invictus": {
+  "name": "invictus",
+  "ingest": {
+   "records_seen": 2900,
+   "inserted": 2900,
+   "skipped_invalid": 0,
+   "duplicates": 0
+  },
+  "overview": {
+   "events": 2900,
+   "identities": 19,
+   "source_ips": 16,
+   "user_agents": 155,
+   "first": "2023-07-10 11:42:18",
+   "last": "2023-07-10 12:37:50",
+   "identity_types": {
+    "IAMUser": 2748,
+    "AssumedRole": 76,
+    "Unknown": 42,
+    "AWSService": 34
+   },
+   "top_events": [
+    [
+     "Decrypt",
+     178
+    ],
+    [
+     "DescribeRouteTables",
+     163
+    ],
+    [
+     "GetUser",
+     130
+    ],
+    [
+     "DescribeParameters",
+     122
+    ],
+    [
+     "ListTagsForResource",
+     88
+    ],
+    [
+     "GetParameter",
+     82
+    ],
+    [
+     "DeleteParameter",
+     78
+    ],
+    [
+     "PutParameter",
+     67
+    ],
+    [
+     "GetSecretValue",
+     60
+    ],
+    [
+     "DescribeNatGateways",
+     54
+    ]
+   ],
+   "top_identities": [
+    [
+     "bert-jan",
+     2642
+    ],
+    [
+     "benjamin",
+     105
+    ],
+    [
+     "123837392027",
+     42
+    ],
+    [
+     "stratus-red-team-ec2-get-password-data-role",
+     29
+    ],
+    [
+     "stratus-red-team-get-usr-data-role",
+     15
+    ],
+    [
+     "stratus-red-team-ec2-steal-credentials-role",
+     15
+    ],
+    [
+     "rds.amazonaws.com",
+     10
+    ],
+    [
+     "cloudtrail.amazonaws.com",
+     8
+    ]
+   ],
+   "error_events": 300
+  },
+  "home_region_assumed": "us-east-1",
+  "rules": [
+   {
+    "rule_id": "R035",
+    "title": "EC2 user data read",
+    "severity": "LOW",
+    "tactic": "Credential Access",
+    "alerts": 3,
+    "identities": 2,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T11:55:35Z",
+    "last": "2023-07-10T12:03:38Z",
+    "sample_event": "DescribeInstanceAttribute"
+   },
+   {
+    "rule_id": "R023",
+    "title": "Burst of AccessDenied errors (enumeration)",
+    "severity": "MEDIUM",
+    "tactic": "Discovery",
+    "alerts": 2,
+    "identities": 2,
+    "top_identity": "stratus-red-team-ec2-get-password-data-role",
+    "first": "2023-07-10T11:54:49Z",
+    "last": "2023-07-10T12:02:57Z",
+    "sample_event": "GetPasswordData"
+   },
+   {
+    "rule_id": "R032",
+    "title": "Remote command or session on instances via SSM",
+    "severity": "MEDIUM",
+    "tactic": "Execution",
+    "alerts": 2,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T11:57:16Z",
+    "last": "2023-07-10T12:05:12Z",
+    "sample_event": "SendCommand"
+   },
+   {
+    "rule_id": "R001",
+    "title": "CloudTrail logging stopped or trail deleted",
+    "severity": "CRITICAL",
+    "tactic": "Defense Evasion",
+    "alerts": 2,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T11:59:02Z",
+    "last": "2023-07-10T12:08:04Z",
+    "sample_event": "DeleteTrail"
+   },
+   {
+    "rule_id": "R002",
+    "title": "CloudTrail configuration weakened",
+    "severity": "HIGH",
+    "tactic": "Defense Evasion",
+    "alerts": 2,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:00:08Z",
+    "last": "2023-07-10T12:07:49Z",
+    "sample_event": "PutEventSelectors"
+   },
+   {
+    "rule_id": "R015",
+    "title": "Large or GPU instance launched",
+    "severity": "MEDIUM",
+    "tactic": "Impact",
+    "alerts": 2,
+    "identities": 2,
+    "top_identity": "stratus-red-team-ec2lui-role-pcccexdthk",
+    "first": "2023-07-10T12:06:42Z",
+    "last": "2023-07-10T12:09:31Z",
+    "sample_event": "RunInstances"
+   },
+   {
+    "rule_id": "R028",
+    "title": "EC2 Windows password data retrieved",
+    "severity": "MEDIUM",
+    "tactic": "Credential Access",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "stratus-red-team-ec2-get-password-data-role",
+    "first": "2023-07-10T11:54:47Z",
+    "last": "2023-07-10T11:54:47Z",
+    "sample_event": "GetPasswordData"
+   },
+   {
+    "rule_id": "R030",
+    "title": "Burst of secret reads by a human user",
+    "severity": "MEDIUM",
+    "tactic": "Credential Access",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T11:57:50Z",
+    "last": "2023-07-10T11:57:50Z",
+    "sample_event": "GetSecretValue"
+   },
+   {
+    "rule_id": "R031",
+    "title": "SSM parameters read in bulk",
+    "severity": "MEDIUM",
+    "tactic": "Credential Access",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T11:58:27Z",
+    "last": "2023-07-10T11:58:27Z",
+    "sample_event": "GetParameters"
+   },
+   {
+    "rule_id": "R036",
+    "title": "Attempt to leave the AWS Organization",
+    "severity": "HIGH",
+    "tactic": "Defense Evasion",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "stratus-red-team-leave-org-role",
+    "first": "2023-07-10T12:02:05Z",
+    "last": "2023-07-10T12:02:05Z",
+    "sample_event": "LeaveOrganization"
+   },
+   {
+    "rule_id": "R004",
+    "title": "VPC flow logs deleted",
+    "severity": "HIGH",
+    "tactic": "Defense Evasion",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:02:26Z",
+    "last": "2023-07-10T12:02:26Z",
+    "sample_event": "DeleteFlowLogs"
+   },
+   {
+    "rule_id": "R017",
+    "title": "Security group opened to the world",
+    "severity": "MEDIUM",
+    "tactic": "Defense Evasion",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:10:05Z",
+    "last": "2023-07-10T12:10:05Z",
+    "sample_event": "AuthorizeSecurityGroupIngress"
+   },
+   {
+    "rule_id": "R025",
+    "title": "AMI shared with an external account or publicly",
+    "severity": "HIGH",
+    "tactic": "Exfiltration",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:11:01Z",
+    "last": "2023-07-10T12:11:01Z",
+    "sample_event": "ModifyImageAttribute"
+   },
+   {
+    "rule_id": "R014",
+    "title": "EBS snapshot shared with an external account",
+    "severity": "HIGH",
+    "tactic": "Exfiltration",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:11:28Z",
+    "last": "2023-07-10T12:11:28Z",
+    "sample_event": "ModifySnapshotAttribute"
+   },
+   {
+    "rule_id": "R026",
+    "title": "RDS snapshot shared with an external account",
+    "severity": "HIGH",
+    "tactic": "Exfiltration",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:22:06Z",
+    "last": "2023-07-10T12:22:06Z",
+    "sample_event": "ModifyDBSnapshotAttribute"
+   },
+   {
+    "rule_id": "R010",
+    "title": "IAM user created",
+    "severity": "LOW",
+    "tactic": "Persistence",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:23:05Z",
+    "last": "2023-07-10T12:23:05Z",
+    "sample_event": "CreateUser"
+   },
+   {
+    "rule_id": "R008",
+    "title": "Console login profile created",
+    "severity": "MEDIUM",
+    "tactic": "Persistence",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:23:06Z",
+    "last": "2023-07-10T12:23:06Z",
+    "sample_event": "CreateLoginProfile"
+   },
+   {
+    "rule_id": "R019",
+    "title": "Console login without MFA",
+    "severity": "MEDIUM",
+    "tactic": "Initial Access",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "stratus-red-team-nmfalu-gfjyeaypjt",
+    "first": "2023-07-10T12:23:15Z",
+    "last": "2023-07-10T12:23:15Z",
+    "sample_event": "ConsoleLogin"
+   },
+   {
+    "rule_id": "R005",
+    "title": "AdministratorAccess policy attached",
+    "severity": "HIGH",
+    "tactic": "Privilege Escalation",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:24:10Z",
+    "last": "2023-07-10T12:24:10Z",
+    "sample_event": "AttachRolePolicy"
+   },
+   {
+    "rule_id": "R009",
+    "title": "Role trust policy opened to an external account",
+    "severity": "HIGH",
+    "tactic": "Persistence",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:24:11Z",
+    "last": "2023-07-10T12:24:11Z",
+    "sample_event": "UpdateAssumeRolePolicy"
+   },
+   {
+    "rule_id": "R007",
+    "title": "Access key created for a different user",
+    "severity": "MEDIUM",
+    "tactic": "Persistence",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:24:29Z",
+    "last": "2023-07-10T12:24:29Z",
+    "sample_event": "CreateAccessKey"
+   },
+   {
+    "rule_id": "R011",
+    "title": "Lambda function created",
+    "severity": "LOW",
+    "tactic": "Privilege Escalation",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:25:33Z",
+    "last": "2023-07-10T12:25:33Z",
+    "sample_event": "CreateFunction20150331"
+   },
+   {
+    "rule_id": "R027",
+    "title": "Lambda function invokable by anyone",
+    "severity": "HIGH",
+    "tactic": "Persistence",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:25:40Z",
+    "last": "2023-07-10T12:25:40Z",
+    "sample_event": "AddPermission20150331v2"
+   },
+   {
+    "rule_id": "R039",
+    "title": "IAM Roles Anywhere trust anchor or profile created",
+    "severity": "HIGH",
+    "tactic": "Persistence",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "bert-jan",
+    "first": "2023-07-10T12:27:13Z",
+    "last": "2023-07-10T12:27:13Z",
+    "sample_event": "CreateTrustAnchor"
+   }
+  ],
+  "alerts": 31,
+  "alerted_events": 102,
+  "high_risk_gap": [
+   {
+    "event_name": "CreateRole",
+    "events": 13,
+    "alerted": 0
+   },
+   {
+    "event_name": "DeleteBucket",
+    "events": 8,
+    "alerted": 0
+   },
+   {
+    "event_name": "RunInstances",
+    "events": 8,
+    "alerted": 2
+   },
+   {
+    "event_name": "AttachRolePolicy",
+    "events": 6,
+    "alerted": 1
+   },
+   {
+    "event_name": "PutRolePolicy",
+    "events": 5,
+    "alerted": 0
+   },
+   {
+    "event_name": "PutBucketPolicy",
+    "events": 3,
+    "alerted": 0
+   },
+   {
+    "event_name": "UpdateAssumeRolePolicy",
+    "events": 2,
+    "alerted": 1
+   },
+   {
+    "event_name": "DeleteAccessKey",
+    "events": 2,
+    "alerted": 0
+   },
+   {
+    "event_name": "ModifySnapshotAttribute",
+    "events": 2,
+    "alerted": 1
+   },
+   {
+    "event_name": "TerminateInstances",
+    "events": 2,
+    "alerted": 0
+   }
+  ]
+ },
+ "sans": {
+  "name": "sans",
+  "ingest": {
+   "records_seen": 30477,
+   "inserted": 23981,
+   "skipped_invalid": 0,
+   "duplicates": 6496
+  },
+  "overview": {
+   "events": 23981,
+   "identities": 6,
+   "source_ips": 5,
+   "user_agents": 32,
+   "first": "2021-07-28 15:28:12",
+   "last": "2021-08-02 09:50:03",
+   "identity_types": {
+    "AWSService": 21548,
+    "IAMUser": 1776,
+    "Root": 656,
+    "AssumedRole": 1
+   },
+   "top_events": [
+    [
+     "PutObject",
+     15079
+    ],
+    [
+     "GetBucketAcl",
+     3513
+    ],
+    [
+     "GenerateDataKey",
+     2549
+    ],
+    [
+     "GetObject",
+     1168
+    ],
+    [
+     "Decrypt",
+     566
+    ],
+    [
+     "HeadBucket",
+     325
+    ],
+    [
+     "AssumeRole",
+     93
+    ],
+    [
+     "DescribeInstances",
+     53
+    ],
+    [
+     "DescribeInstanceStatus",
+     32
+    ],
+    [
+     "DescribeTags",
+     29
+    ]
+   ],
+   "top_identities": [
+    [
+     "cloudtrail.amazonaws.com",
+     11537
+    ],
+    [
+     "delivery.logs.amazonaws.com",
+     10011
+    ],
+    [
+     "FalsimentisRoot",
+     1739
+    ],
+    [
+     "root",
+     656
+    ],
+    [
+     "jmerckle",
+     37
+    ],
+    [
+     "CloudTrailRoleForCloudWatchLogs",
+     1
+    ]
+   ],
+   "error_events": 10050
+  },
+  "home_region_assumed": "us-west-1",
+  "rules": [
+   {
+    "rule_id": "R018",
+    "title": "Root account used",
+    "severity": "HIGH",
+    "tactic": "Initial Access",
+    "alerts": 7,
+    "identities": 1,
+    "top_identity": "root",
+    "first": "2021-07-29T00:07:51Z",
+    "last": "2021-07-30T10:37:34Z",
+    "sample_event": "ConsoleLogin"
+   },
+   {
+    "rule_id": "R019",
+    "title": "Console login without MFA",
+    "severity": "MEDIUM",
+    "tactic": "Initial Access",
+    "alerts": 3,
+    "identities": 1,
+    "top_identity": "root",
+    "first": "2021-07-29T00:07:51Z",
+    "last": "2021-07-30T10:37:34Z",
+    "sample_event": "ConsoleLogin"
+   },
+   {
+    "rule_id": "R006",
+    "title": "Inline policy granting full admin (Action * on Resource *)",
+    "severity": "HIGH",
+    "tactic": "Privilege Escalation",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "jmerckle",
+    "first": "2021-07-29T13:06:49Z",
+    "last": "2021-07-29T13:06:49Z",
+    "sample_event": "PutUserPolicy"
+   },
+   {
+    "rule_id": "R002",
+    "title": "CloudTrail configuration weakened",
+    "severity": "HIGH",
+    "tactic": "Defense Evasion",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "root",
+    "first": "2021-07-29T23:53:36Z",
+    "last": "2021-07-29T23:53:36Z",
+    "sample_event": "PutEventSelectors"
+   },
+   {
+    "rule_id": "R024",
+    "title": "Mass S3 object download by a human user",
+    "severity": "HIGH",
+    "tactic": "Exfiltration",
+    "alerts": 1,
+    "identities": 1,
+    "top_identity": "FalsimentisRoot",
+    "first": "2021-07-30T16:32:50Z",
+    "last": "2021-07-30T16:32:50Z",
+    "sample_event": "GetObject"
+   }
+  ],
+  "alerts": 13,
+  "alerted_events": 373,
+  "high_risk_gap": [
+   {
+    "event_name": "AttachRolePolicy",
+    "events": 1,
+    "alerted": 0
+   },
+   {
+    "event_name": "CreateRole",
+    "events": 1,
+    "alerted": 0
+   },
+   {
+    "event_name": "PutBucketPolicy",
+    "events": 1,
+    "alerted": 0
+   },
+   {
+    "event_name": "CreateAccessKey",
+    "events": 1,
+    "alerted": 0
+   }
+  ]
+ },
+ "flaws": {
+  "overview": {
+   "events": 1225784,
+   "identities": 88,
+   "source_ips": 9402,
+   "user_agents": 8812,
+   "first": "2017-02-12 19:57:06",
+   "last": "2020-10-07 21:03:30",
+   "identity_types": {
+    "IAMUser": 1119316,
+    "AWSService": 51901,
+    "AssumedRole": 41097,
+    "Root": 10841,
+    "AWSAccount": 2628,
+    "Unknown": 1
+   },
+   "top_events": [
+    [
+     "RunInstances",
+     708270
+    ],
+    [
+     "DescribeSnapshots",
+     84814
+    ],
+    [
+     "AssumeRole",
+     72438
+    ],
+    [
+     "GetBucketAcl",
+     41641
+    ],
+    [
+     "DescribeInstances",
+     15302
+    ],
+    [
+     "GetCallerIdentity",
+     12741
+    ],
+    [
+     "GetPolicyVersion",
+     11409
+    ],
+    [
+     "ListBuckets",
+     11259
+    ],
+    [
+     "DescribeSpotPriceHistory",
+     10196
+    ],
+    [
+     "DescribeVpcs",
+     5661
+    ]
+   ],
+   "top_identities": [
+    [
+     "backup",
+     580860
+    ],
+    [
+     "Level6",
+     537329
+    ],
+    [
+     "ec2.amazonaws.com",
+     40230
+    ],
+    [
+     "flaws",
+     16725
+    ],
+    [
+     "SecurityMonkey",
+     16347
+    ],
+    [
+     "root",
+     10841
+    ],
+    [
+     "config.amazonaws.com",
+     6917
+    ],
+    [
+     "SecurityMokey",
+     4522
+    ]
+   ],
+   "error_events": 867663
+  },
+  "ingest": {
+   "records_seen": 1939207,
+   "inserted": 1225784,
+   "skipped_invalid": 0,
+   "duplicates": 713423,
+   "events": 1225784,
+   "first": "2017-02-12 19:57:06",
+   "last": "2020-10-07 21:03:30",
+   "source_url": "https://summitroute.com/downloads/flaws_cloudtrail_logs.tar",
+   "source_bytes": 251688960,
+   "ingest_seconds": 186
+  },
+  "rule_context": {
+   "home_regions": [
+    "us-west-2"
+   ],
+   "note": "assumed: the training site lives in us-west-2"
+  },
+  "monthly_median_events": 10665.0,
+  "surge": {
+   "month": "2019-08",
+   "events_in_month": 710859,
+   "x_median": 66.7,
+   "dominant_identity": "Level6",
+   "dominant_event": "RunInstances",
+   "dominant_events": 684377,
+   "onset": "2019-08-21 07:41:29",
+   "regions_touched": 15,
+   "errors_share": 1.0
+  },
+  "rules": {
+   "alerts": 7078,
+   "by_rule": [
+    {
+     "rule_id": "R016",
+     "title": "Compute launched in a region the organization does not use",
+     "severity": "HIGH",
+     "tactic": "Impact",
+     "alerts": 2576,
+     "identities": 2,
+     "top_identity": "backup",
+     "first": "2018-04-16T06:59:29Z",
+     "last": "2020-10-03T04:26:42Z",
+     "sample_event": "RunInstances"
+    },
+    {
+     "rule_id": "R022",
+     "title": "Offensive-tooling user agent",
+     "severity": "MEDIUM",
+     "tactic": "Initial Access",
+     "alerts": 1779,
+     "identities": 17,
+     "top_identity": "backup",
+     "first": "2017-02-27T13:39:41Z",
+     "last": "2020-10-07T20:08:52Z",
+     "sample_event": "ListBuckets"
+    },
+    {
+     "rule_id": "R015",
+     "title": "Large or GPU instance launched",
+     "severity": "MEDIUM",
+     "tactic": "Impact",
+     "alerts": 1610,
+     "identities": 2,
+     "top_identity": "backup",
+     "first": "2018-04-16T06:59:29Z",
+     "last": "2020-09-20T10:02:17Z",
+     "sample_event": "RunInstances"
+    },
+    {
+     "rule_id": "R023",
+     "title": "Burst of AccessDenied errors (enumeration)",
+     "severity": "MEDIUM",
+     "tactic": "Discovery",
+     "alerts": 686,
+     "identities": 11,
+     "top_identity": "backup",
+     "first": "2017-03-01T19:23:36Z",
+     "last": "2020-10-07T08:08:37Z",
+     "sample_event": "ListAccessKeys"
+    },
+    {
+     "rule_id": "R018",
+     "title": "Root account used",
+     "severity": "HIGH",
+     "tactic": "Initial Access",
+     "alerts": 204,
+     "identities": 1,
+     "top_identity": "root",
+     "first": "2017-02-12T19:57:06Z",
+     "last": "2020-10-07T17:52:31Z",
+     "sample_event": "ListBuckets"
+    },
+    {
+     "rule_id": "R035",
+     "title": "EC2 user data read",
+     "severity": "LOW",
+     "tactic": "Credential Access",
+     "alerts": 72,
+     "identities": 4,
+     "top_identity": "backup",
+     "first": "2017-03-11T06:21:58Z",
+     "last": "2020-10-07T08:09:27Z",
+     "sample_event": "DescribeInstanceAttribute"
+    },
+    {
+     "rule_id": "R010",
+     "title": "IAM user created",
+     "severity": "LOW",
+     "tactic": "Persistence",
+     "alerts": 35,
+     "identities": 5,
+     "top_identity": "Level6",
+     "first": "2017-02-12T20:58:26Z",
+     "last": "2020-08-21T07:49:02Z",
+     "sample_event": "CreateUser"
+    },
+    {
+     "rule_id": "R014",
+     "title": "EBS snapshot shared with an external account",
+     "severity": "HIGH",
+     "tactic": "Exfiltration",
+     "alerts": 29,
+     "identities": 2,
+     "top_identity": "backup",
+     "first": "2017-02-12T23:48:35Z",
+     "last": "2020-07-14T00:23:50Z",
+     "sample_event": "ModifySnapshotAttribute"
+    },
+    {
+     "rule_id": "R028",
+     "title": "EC2 Windows password data retrieved",
+     "severity": "MEDIUM",
+     "tactic": "Credential Access",
+     "alerts": 28,
+     "identities": 3,
+     "top_identity": "backup",
+     "first": "2017-03-02T03:01:50Z",
+     "last": "2020-09-21T04:27:54Z",
+     "sample_event": "GetPasswordData"
+    },
+    {
+     "rule_id": "R038",
+     "title": "Federation token requested by an IAM user",
+     "severity": "MEDIUM",
+     "tactic": "Persistence",
+     "alerts": 14,
+     "identities": 2,
+     "top_identity": "backup",
+     "first": "2017-03-09T19:40:14Z",
+     "last": "2020-09-15T10:17:41Z",
+     "sample_event": "GetFederationToken"
+    },
+    {
+     "rule_id": "R007",
+     "title": "Access key created for a different user",
+     "severity": "MEDIUM",
+     "tactic": "Persistence",
+     "alerts": 9,
+     "identities": 2,
+     "top_identity": "root",
+     "first": "2017-02-12T20:58:27Z",
+     "last": "2018-10-02T16:22:36Z",
+     "sample_event": "CreateAccessKey"
+    },
+    {
+     "rule_id": "R032",
+     "title": "Remote command or session on instances via SSM",
+     "severity": "MEDIUM",
+     "tactic": "Execution",
+     "alerts": 9,
+     "identities": 4,
+     "top_identity": "backup",
+     "first": "2019-09-19T23:29:38Z",
+     "last": "2020-08-06T16:46:12Z",
+     "sample_event": "StartSession"
+    },
+    {
+     "rule_id": "R017",
+     "title": "Security group opened to the world",
+     "severity": "MEDIUM",
+     "tactic": "Defense Evasion",
+     "alerts": 7,
+     "identities": 2,
+     "top_identity": "backup",
+     "first": "2017-02-12T20:38:07Z",
+     "last": "2020-07-20T15:30:49Z",
+     "sample_event": "AuthorizeSecurityGroupIngress"
+    },
+    {
+     "rule_id": "R019",
+     "title": "Console login without MFA",
+     "severity": "MEDIUM",
+     "tactic": "Initial Access",
+     "alerts": 5,
+     "identities": 2,
+     "top_identity": "flaws",
+     "first": "2017-05-16T23:05:01Z",
+     "last": "2019-09-18T04:40:03Z",
+     "sample_event": "ConsoleLogin"
+    },
+    {
+     "rule_id": "R008",
+     "title": "Console login profile created",
+     "severity": "MEDIUM",
+     "tactic": "Persistence",
+     "alerts": 4,
+     "identities": 3,
+     "top_identity": "backup",
+     "first": "2017-05-16T03:03:57Z",
+     "last": "2020-03-24T22:20:06Z",
+     "sample_event": "CreateLoginProfile"
+    },
+    {
+     "rule_id": "R009",
+     "title": "Role trust policy opened to an external account",
+     "severity": "HIGH",
+     "tactic": "Persistence",
+     "alerts": 4,
+     "identities": 1,
+     "top_identity": "root",
+     "first": "2017-05-26T18:26:02Z",
+     "last": "2020-10-06T21:13:18Z",
+     "sample_event": "CreateRole"
+    },
+    {
+     "rule_id": "R013",
+     "title": "S3 bucket ACL made public",
+     "severity": "HIGH",
+     "tactic": "Exfiltration",
+     "alerts": 2,
+     "identities": 1,
+     "top_identity": "root",
+     "first": "2017-02-12T21:38:25Z",
+     "last": "2017-02-26T18:28:54Z",
+     "sample_event": "PutBucketAcl"
+    },
+    {
+     "rule_id": "R001",
+     "title": "CloudTrail logging stopped or trail deleted",
+     "severity": "CRITICAL",
+     "tactic": "Defense Evasion",
+     "alerts": 2,
+     "identities": 2,
+     "top_identity": "Level6",
+     "first": "2019-06-07T11:04:25Z",
+     "last": "2019-08-23T15:48:50Z",
+     "sample_event": "StopLogging"
+    },
+    {
+     "rule_id": "R005",
+     "title": "AdministratorAccess policy attached",
+     "severity": "HIGH",
+     "tactic": "Privilege Escalation",
+     "alerts": 1,
+     "identities": 1,
+     "top_identity": "root",
+     "first": "2017-05-16T03:03:56Z",
+     "last": "2017-05-16T03:03:56Z",
+     "sample_event": "AttachUserPolicy"
+    },
+    {
+     "rule_id": "R002",
+     "title": "CloudTrail configuration weakened",
+     "severity": "HIGH",
+     "tactic": "Defense Evasion",
+     "alerts": 1,
+     "identities": 1,
+     "top_identity": "Level6",
+     "first": "2017-08-03T19:50:59Z",
+     "last": "2017-08-03T19:50:59Z",
+     "sample_event": "UpdateTrail"
+    },
+    {
+     "rule_id": "R040",
+     "title": "Console password reset for another user",
+     "severity": "MEDIUM",
+     "tactic": "Persistence",
+     "alerts": 1,
+     "identities": 1,
+     "top_identity": "root",
+     "first": "2017-09-17T14:43:04Z",
+     "last": "2017-09-17T14:43:04Z",
+     "sample_event": "UpdateLoginProfile"
+    }
+   ],
+   "seconds": 38,
+   "alerts_without_dedupe": 847927
+  },
+  "ml": {
+   "training_windows": 29260,
+   "calibration_windows": 18571,
+   "calibration_fp_per_day_target": 0.5,
+   "train_period": "2017-02-12 -> 2019-03-19",
+   "scored_period": "2019-08-01 -> 2020-10-07",
+   "scored_days": 434,
+   "scored_windows": 67407,
+   "flagged_windows": 2023,
+   "by_layer": {
+    "rules": {
+     "alerts": 5297,
+     "incidents": 578,
+     "incidents_per_day": 1.33,
+     "surge_events_covered": 658873,
+     "surge_events_covered_pct": 96.3,
+     "surge_detected": true,
+     "minutes_from_onset_to_first_alert": 0.0
+    },
+    "anomaly": {
+     "alerts": 168,
+     "incidents": 145,
+     "incidents_per_day": 0.33,
+     "surge_events_covered": 682967,
+     "surge_events_covered_pct": 99.8,
+     "surge_detected": true,
+     "minutes_from_onset_to_first_alert": 3.5
+    },
+    "ip": {
+     "alerts": 290,
+     "incidents": 252,
+     "incidents_per_day": 0.58,
+     "surge_events_covered": 0,
+     "surge_events_covered_pct": 0.0,
+     "surge_detected": false,
+     "minutes_from_onset_to_first_alert": null
+    },
+    "combined": {
+     "alerts": 5755,
+     "incidents": 685,
+     "incidents_per_day": 1.58,
+     "surge_events_covered": 684377,
+     "surge_events_covered_pct": 100.0,
+     "surge_detected": true,
+     "minutes_from_onset_to_first_alert": 0.0
+    }
+   },
+   "top_incidents": [
+    {
+     "severity": "CRITICAL",
+     "risk": 100.0,
+     "title": "Multi-stage activity on Level6 +1 more: Persistence \u2192 Impact \u2192 Discovery \u2192 Credential Access \u2192 Initial Access",
+     "identities": [
+      "Level6",
+      "backup"
+     ],
+     "first_seen": "2019-08-21T07:41:17Z",
+     "tactics": [
+      "Persistence",
+      "Impact",
+      "Discovery",
+      "Credential Access",
+      "Initial Access"
+     ],
+     "sources": [
+      "anomaly",
+      "ip",
+      "rule"
+     ],
+     "alerts": 2897
+    },
+    {
+     "severity": "CRITICAL",
+     "risk": 100.0,
+     "title": "Multi-stage activity on root: Initial Access \u2192 Defense Evasion \u2192 Discovery",
+     "identities": [
+      "root"
+     ],
+     "first_seen": "2019-08-23T15:47:30Z",
+     "tactics": [
+      "Initial Access",
+      "Defense Evasion",
+      "Discovery"
+     ],
+     "sources": [
+      "anomaly",
+      "rule"
+     ],
+     "alerts": 6
+    },
+    {
+     "severity": "CRITICAL",
+     "risk": 100.0,
+     "title": "Multi-stage activity on Level6 +1 more: Persistence \u2192 Impact \u2192 Discovery \u2192 Initial Access",
+     "identities": [
+      "Level6",
+      "backup"
+     ],
+     "first_seen": "2019-09-30T06:36:08Z",
+     "tactics": [
+      "Persistence",
+      "Impact",
+      "Discovery",
+      "Initial Access"
+     ],
+     "sources": [
+      "anomaly",
+      "ip",
+      "rule"
+     ],
+     "alerts": 59
+    },
+    {
+     "severity": "CRITICAL",
+     "risk": 100.0,
+     "title": "Multi-stage activity on backup: Impact \u2192 Initial Access \u2192 Discovery \u2192 Persistence",
+     "identities": [
+      "backup"
+     ],
+     "first_seen": "2020-05-16T04:54:38Z",
+     "tactics": [
+      "Impact",
+      "Initial Access",
+      "Discovery",
+      "Persistence"
+     ],
+     "sources": [
+      "anomaly",
+      "ip",
+      "rule"
+     ],
+     "alerts": 70
+    },
+    {
+     "severity": "CRITICAL",
+     "risk": 100.0,
+     "title": "Multi-stage activity on backup: Initial Access \u2192 Impact \u2192 Discovery",
+     "identities": [
+      "backup"
+     ],
+     "first_seen": "2020-06-02T14:25:23Z",
+     "tactics": [
+      "Initial Access",
+      "Impact",
+      "Discovery"
+     ],
+     "sources": [
+      "anomaly",
+      "ip",
+      "rule"
+     ],
+     "alerts": 63
+    },
+    {
+     "severity": "CRITICAL",
+     "risk": 100.0,
+     "title": "Multi-stage activity on backup: Impact \u2192 Initial Access \u2192 Discovery \u2192 Persistence",
+     "identities": [
+      "backup"
+     ],
+     "first_seen": "2020-08-30T11:26:57Z",
+     "tactics": [
+      "Impact",
+      "Initial Access",
+      "Discovery",
+      "Persistence"
+     ],
+     "sources": [
+      "anomaly",
+      "ip",
+      "rule"
+     ],
+     "alerts": 511
+    },
+    {
+     "severity": "CRITICAL",
+     "risk": 100.0,
+     "title": "Multi-stage activity on backup: Impact \u2192 Initial Access \u2192 Discovery \u2192 Persistence",
+     "identities": [
+      "backup"
+     ],
+     "first_seen": "2020-09-05T03:06:24Z",
+     "tactics": [
+      "Impact",
+      "Initial Access",
+      "Discovery",
+      "Persistence"
+     ],
+     "sources": [
+      "anomaly",
+      "ip",
+      "rule"
+     ],
+     "alerts": 306
+    },
+    {
+     "severity": "CRITICAL",
+     "risk": 100.0,
+     "title": "Multi-stage activity on backup: Impact \u2192 Initial Access \u2192 Discovery \u2192 Persistence",
+     "identities": [
+      "backup"
+     ],
+     "first_seen": "2020-09-20T10:00:15Z",
+     "tactics": [
+      "Impact",
+      "Initial Access",
+      "Discovery",
+      "Persistence"
+     ],
+     "sources": [
+      "anomaly",
+      "ip",
+      "rule"
+     ],
+     "alerts": 266
+    },
+    {
+     "severity": "HIGH",
+     "risk": 84.0,
+     "title": "Multi-stage activity on Level6: Initial Access \u2192 Discovery \u2192 Credential Access \u2192 Impact",
+     "identities": [
+      "Level6"
+     ],
+     "first_seen": "2020-08-06T12:16:59Z",
+     "tactics": [
+      "Initial Access",
+      "Discovery",
+      "Credential Access",
+      "Impact"
+     ],
+     "sources": [
+      "rule"
+     ],
+     "alerts": 4
+    },
+    {
+     "severity": "HIGH",
+     "risk": 83.0,
+     "title": "Multi-stage activity on Level6 +2 more: Initial Access \u2192 Credential Access \u2192 Execution \u2192 Discovery",
+     "identities": [
+      "Level6",
+      "backup",
+      "flaws"
+     ],
+     "first_seen": "2019-11-17T02:05:42Z",
+     "tactics": [
+      "Initial Access",
+      "Credential Access",
+      "Execution",
+      "Discovery"
+     ],
+     "sources": [
+      "anomaly",
+      "ip",
+      "rule"
+     ],
+     "alerts": 33
+    }
+   ],
+   "top_anomalies_outside_surge": [
+    {
+     "identity": "flaws",
+     "when": "2020-05-24T15:21:28Z",
+     "score": 0.786,
+     "margin": 0.099,
+     "reasons": "log_n=7.296 (+1.63), n_distinct_names=577.0 (+1.60), volume_z=10.0 (+1.54), n_services=105.0 (+1.29), type_role=1.0 (+1.17)",
+     "events_in_window": 2206,
+     "identity_most_common_event": "ListBuckets"
+    },
+    {
+     "identity": "flaws",
+     "when": "2020-04-18T10:44:20Z",
+     "score": 0.786,
+     "margin": 0.098,
+     "reasons": "n_distinct_names=567.0 (+1.59), log_n=6.612 (+1.54), volume_z=9.154 (+1.53), n_services=103.0 (+1.28), type_role=1.0 (+1.17)",
+     "events_in_window": 743,
+     "identity_most_common_event": "ListBuckets"
+    },
+    {
+     "identity": "aws:ec2-instance",
+     "when": "2020-10-06T16:39:31Z",
+     "score": 0.784,
+     "margin": 0.097,
+     "reasons": "volume_z=10.0 (+1.62), n_distinct_names=222.0 (+1.56), log_n=5.889 (+1.52), n_services=78.0 (+1.27), type_role=1.0 (+1.16)",
+     "events_in_window": 1121,
+     "identity_most_common_event": "GetCallerIdentity"
+    },
+    {
+     "identity": "flaws",
+     "when": "2020-06-11T21:37:48Z",
+     "score": 0.781,
+     "margin": 0.093,
+     "reasons": "log_n=7.296 (+1.74), n_distinct_names=578.0 (+1.67), volume_z=10.0 (+1.65), n_services=105.0 (+1.34), type_role=1.0 (+1.20)",
+     "events_in_window": 3457,
+     "identity_most_common_event": "ListBuckets"
+    },
+    {
+     "identity": "flaws",
+     "when": "2020-06-10T22:27:04Z",
+     "score": 0.78,
+     "margin": 0.092,
+     "reasons": "log_n=7.302 (+1.73), n_distinct_names=579.0 (+1.68), volume_z=10.0 (+1.65), n_services=105.0 (+1.34), type_role=1.0 (+1.19)",
+     "events_in_window": 1498,
+     "identity_most_common_event": "ListBuckets"
+    },
+    {
+     "identity": "flaws",
+     "when": "2020-02-25T16:11:11Z",
+     "score": 0.78,
+     "margin": 0.092,
+     "reasons": "log_n=7.265 (+1.74), n_distinct_names=564.0 (+1.68), volume_z=10.0 (+1.65), n_services=102.0 (+1.35), type_role=1.0 (+1.19)",
+     "events_in_window": 1544,
+     "identity_most_common_event": "ListBuckets"
+    },
+    {
+     "identity": "aws:ec2-instance",
+     "when": "2020-06-10T23:36:15Z",
+     "score": 0.778,
+     "margin": 0.09,
+     "reasons": "n_distinct_names=572.0 (+1.66), volume_z=10.0 (+1.65), log_n=6.601 (+1.64), n_services=104.0 (+1.35), type_role=1.0 (+1.19)",
+     "events_in_window": 735,
+     "identity_most_common_event": "GetCallerIdentity"
+    },
+    {
+     "identity": "flaws",
+     "when": "2020-06-11T00:34:20Z",
+     "score": 0.778,
+     "margin": 0.09,
+     "reasons": "n_distinct_names=574.0 (+1.68), log_n=6.604 (+1.65), volume_z=9.14 (+1.65), n_services=105.0 (+1.36), type_role=1.0 (+1.19)",
+     "events_in_window": 738,
+     "identity_most_common_event": "ListBuckets"
+    },
+    {
+     "identity": "flaws",
+     "when": "2020-07-09T17:07:08Z",
+     "score": 0.777,
+     "margin": 0.09,
+     "reasons": "log_n=7.312 (+1.74), n_distinct_names=587.0 (+1.69), volume_z=10.0 (+1.63), n_services=106.0 (+1.32), type_role=1.0 (+1.13)",
+     "events_in_window": 1497,
+     "identity_most_common_event": "ListBuckets"
+    },
+    {
+     "identity": "backup",
+     "when": "2020-07-05T17:12:47Z",
+     "score": 0.773,
+     "margin": 0.086,
+     "reasons": "n_distinct_names=588.0 (+1.77), log_n=7.307 (+1.68), volume_z=4.419 (+1.53), n_services=106.0 (+1.41), err_ratio=0.868 (+1.21)",
+     "events_in_window": 1490,
+     "identity_most_common_event": "RunInstances"
+    }
+   ],
+   "flagged_windows_in_surge_month": 19
+  }
+ }
+}

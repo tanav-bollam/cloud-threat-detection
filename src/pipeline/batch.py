@@ -19,8 +19,8 @@ def org_context() -> dict:
     return {"account_id": org["account_id"], "home_regions": list(org["home_regions"])}
 
 
-def rules_alerts(con, disabled: Optional[set] = None, where: str = "") -> list[Alert]:
-    eng = RulesEngine(context=org_context(), disabled=disabled)
+def rules_alerts(con, disabled: Optional[set] = None, where: str = "", context: Optional[dict] = None, dedupe_s: Optional[float] = None) -> list[Alert]:
+    eng = RulesEngine(context=context or org_context(), disabled=disabled, **({} if dedupe_s is None else {"dedupe_s": dedupe_s}))
     out: list[Alert] = []
     cur = con.execute(f"SELECT raw FROM events {where} ORDER BY event_time, event_id")
     while True:

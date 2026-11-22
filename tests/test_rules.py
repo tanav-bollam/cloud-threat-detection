@@ -89,6 +89,10 @@ FIXTURES = {
 }
 
 
+# merge fixtures for rules added after real-data validation BEFORE the parametrized tests below read FIXTURES
+from tests import rule_fixtures_real  # noqa: E402,F401
+
+
 def fired(seq, rule_id):
     eng = RulesEngine()
     return [a for r in seq for a in eng.evaluate(r) if a.rule_id == rule_id]
@@ -148,3 +152,4 @@ def test_alert_carries_metadata():
 def test_engine_never_sees_labels():
     rec = copy.deepcopy(mk("StopLogging"))
     assert "scenario_id" not in json.dumps(rec)
+

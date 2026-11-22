@@ -101,10 +101,17 @@ class Alert:
 
 
 def identity_of(rec: dict) -> str:
-    ui = rec["userIdentity"]
-    if ui["type"] == "AssumedRole":
-        return (ui.get("sessionContext") or {}).get("sessionIssuer", {}).get("userName") or ui["arn"]
-    return ui.get("userName") or ui["arn"]
+    ui = rec.get("userIdentity") if isinstance(rec.get("userIdentity"), dict) else {}
+    t = ui.get("type")
+    if t == "AssumedRole":
+        sc = ui.get("sessionContext") if isinstance(ui.get("sessionContext"), dict) else {}
+        issuer = sc.get("sessionIssuer") if isinstance(sc.get("sessionIssuer"), dict) else {}
+        return issuer.get("userName") or ui.get("arn") or ui.get("principalId") or "unknown"
+    if t == "Root":
+        return "root"
+    if t == "AWSService":
+        return ui.get("invokedBy") or "aws-service"
+    return ui.get("userName") or ui.get("arn") or ui.get("principalId") or ui.get("accountId") or "unknown"
 
 
 @dataclass
@@ -129,10 +136,12 @@ class Rule:
 
 class RulesEngine:
     def __init__(self, rules: Optional[list[Rule]] = None, rules_dir: str | Path | None = None, context: Optional[dict] = None,
-                 disabled: Optional[set[str]] = None):
+                 disabled: Optional[set[str]] = None, dedupe_s: float = 300.0):
         self.rules = rules if rules is not None else load_rules(rules_dir)
         self.ctx = {"account_id": "123456789012", "home_regions": ["us-east-1", "us-west-2"], **(context or {})}
         self.disabled = disabled or set()
+        self.dedupe_s = dedupe_s          # single-event rules: repeats for the same (rule, identity, source IP) within this window fold into one alert
+        self._open: dict[tuple, tuple[Alert, float]] = {}
         self._win: dict[tuple, deque] = defaultdict(deque)       # (rule_id, group) -> deque[(t, event_id)]
         self._prior: dict[tuple, deque] = defaultdict(deque)
         self._last_fire: dict[tuple, float] = {}
@@ -147,7 +156,7 @@ class RulesEngine:
                     self._by_name[n].append(r)
 
     def reset(self) -> None:
-        self._win.clear(); self._prior.clear(); self._last_fire.clear()
+        self._win.clear(); self._prior.clear(); self._last_fire.clear(); self._open.clear()
 
     # -------------------------------------------------------------------------------- matching
     def _match(self, cond: dict, rec: dict, include_check: bool = True) -> bool:
@@ -172,7 +181,7 @@ class RulesEngine:
 
     def _alert(self, rule: Rule, rec: dict, matched: list[str], detail: str = "") -> Alert:
         return Alert(rule.id, rule.title, rule.severity, rule.mitre_tactic, rule.mitre_technique, rec["eventID"], rec["eventTime"],
-                     identity_of(rec), rec["sourceIPAddress"], rule.description, rec["eventName"], matched, detail)
+                     identity_of(rec), rec.get("sourceIPAddress") or "", rule.description, rec["eventName"], matched, detail)
 
     # -------------------------------------------------------------------------------- evaluation
     def evaluate(self, rec: dict) -> list[Alert]:
@@ -188,9 +197,27 @@ class RulesEngine:
                 a = self._eval_threshold(rule, rec)
             else:
                 a = self._alert(rule, rec, [rec["eventID"]]) if self._match(cond, rec) else None
+                if a is not None and self.dedupe_s > 0:
+                    a = self._dedupe(rule, rec, a)
             if a:
                 out.append(a)
         return out
+
+    def _dedupe(self, rule: Rule, rec: dict, a: Alert) -> Optional[Alert]:
+        """Real traffic repeats the same hit thousands of times (one attacker, one API, 15 regions). Alert once per window and keep the
+        repeats as matched events on the first alert, so event coverage is unchanged but the analyst sees one alert."""
+        t = _parse_time(rec["eventTime"])
+        key = (rule.id, a.identity, a.source_ip)
+        prev = self._open.get(key)
+        if prev is not None and 0 <= t - prev[1] <= self.dedupe_s:
+            first = prev[0]
+            first.matched_event_ids.append(a.event_id)
+            first.detail = f"{len(first.matched_event_ids)} matching events within {int(t - prev[1])}s (repeats folded into this alert)"
+            return None
+        if len(self._open) > 200_000:                      # bound memory on very long streams
+            self._open = {k: v for k, v in self._open.items() if t - v[1] <= self.dedupe_s}
+        self._open[key] = (a, t)
+        return a
 
     def _eval_threshold(self, rule: Rule, rec: dict) -> Optional[Alert]:
         if not self._match(rule.condition, rec):

@@ -66,8 +66,22 @@ class Geo:
 _UNKNOWN = Geo("ZZ", "Unknown", 0.0, 0.0, "AS0", "Unknown", "unknown")
 
 
-@lru_cache(maxsize=200_000)
+_ENABLED = True
+
+
+def set_enabled(enabled: bool) -> None:
+    """Turn the synthetic registry off for REAL data: its networks are made up, so geolocating real (or anonymized) IPs with it
+    would invent countries and impossible-travel alerts. Disabled, every IP is 'unknown' and geo-based signals stay silent."""
+    global _ENABLED
+    _ENABLED = enabled
+
+
 def lookup(ip: str) -> Geo:
+    return _lookup(ip) if _ENABLED else _UNKNOWN
+
+
+@lru_cache(maxsize=200_000)
+def _lookup(ip: str) -> Geo:
     try:
         a, b, _, _ = (int(x) for x in ip.split("."))
     except ValueError:

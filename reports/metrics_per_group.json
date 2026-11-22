@@ -13,13 +13,13 @@
  },
  "layers": {
   "rules_only": {
-   "alerts": 367,
+   "alerts": 298,
    "alert_injection_recall": 0.929,
    "event_level": {
     "precision": 0.9966,
-    "recall": 0.4419,
-    "f1": 0.6123,
-    "predicted_events": 2656,
+    "recall": 0.4409,
+    "f1": 0.6113,
+    "predicted_events": 2650,
     "recall_by_scenario": {
      "S1": 0.245,
      "S2": 0.088,
@@ -28,7 +28,7 @@
      "S5": 0.61,
      "S6": 1.0,
      "S7": 0.885,
-     "S8": 0.97,
+     "S8": 0.939,
      "S9": 0.0
     }
    },
@@ -287,12 +287,12 @@
     },
     "S8": {
      "event": {
-      "precision": 0.955,
-      "recall": 0.97,
-      "f1": 0.962,
-      "tp": 191,
+      "precision": 0.954,
+      "recall": 0.939,
+      "f1": 0.946,
+      "tp": 185,
       "fp": 9,
-      "fn": 6
+      "fn": 12
      },
      "incident": {
       "precision": 0.5,
@@ -954,13 +954,13 @@
    }
   },
   "rules+ip": {
-   "alerts": 417,
+   "alerts": 348,
    "alert_injection_recall": 1.0,
    "event_level": {
     "precision": 0.9819,
-    "recall": 0.4446,
-    "f1": 0.612,
-    "predicted_events": 2712,
+    "recall": 0.4437,
+    "f1": 0.6112,
+    "predicted_events": 2707,
     "recall_by_scenario": {
      "S1": 0.327,
      "S2": 0.09,
@@ -969,7 +969,7 @@
      "S5": 0.61,
      "S6": 1.0,
      "S7": 0.885,
-     "S8": 0.97,
+     "S8": 0.944,
      "S9": 0.276
     }
    },
@@ -1234,12 +1234,12 @@
     },
     "S8": {
      "event": {
-      "precision": 0.796,
-      "recall": 0.97,
-      "f1": 0.874,
-      "tp": 191,
+      "precision": 0.791,
+      "recall": 0.944,
+      "f1": 0.861,
+      "tp": 186,
       "fp": 49,
-      "fn": 6
+      "fn": 11
      },
      "incident": {
       "precision": 0.5,
@@ -1286,7 +1286,7 @@
    }
   },
   "rules+anomaly": {
-   "alerts": 428,
+   "alerts": 359,
    "alert_injection_recall": 0.94,
    "event_level": {
     "precision": 0.8821,
@@ -1615,7 +1615,7 @@
    }
   },
   "combined": {
-   "alerts": 478,
+   "alerts": 409,
    "alert_injection_recall": 1.0,
    "event_level": {
     "precision": 0.8776,
@@ -1995,7 +1995,7 @@
     "anomaly",
     "rule"
    ],
-   "n_alerts": 6
+   "n_alerts": 5
   },
   {
    "incident_id": "INC-B1749597",
@@ -2049,7 +2049,7 @@
     "ip",
     "rule"
    ],
-   "n_alerts": 17
+   "n_alerts": 16
   },
   {
    "incident_id": "INC-D8C4EBDB",
@@ -2084,7 +2084,7 @@
     "ip",
     "rule"
    ],
-   "n_alerts": 16
+   "n_alerts": 7
   },
   {
    "incident_id": "INC-6BD5914A",

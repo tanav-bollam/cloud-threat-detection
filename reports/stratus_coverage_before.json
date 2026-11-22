@@ -1,0 +1,580 @@
+{
+ "techniques": 35,
+ "covered_specific": 12,
+ "covered_any": 14,
+ "rules_evaluated": 24,
+ "rows": [
+  {
+   "tactic": "credential_access",
+   "technique": "aws.credential-access.ec2-get-password-data",
+   "file": "credential_access\\aws.credential-access.ec2-get-password-data.json",
+   "events": 34,
+   "event_names": [
+    "AssumeRole",
+    "GetPasswordData"
+   ],
+   "fired": {
+    "R023": 1
+   },
+   "specific": [],
+   "generic_only": true,
+   "rule_titles": {
+    "R023": "Burst of AccessDenied errors (enumeration)"
+   }
+  },
+  {
+   "tactic": "credential_access",
+   "technique": "aws.credential-access.ec2-steal-instance-credentials",
+   "file": "credential_access\\aws.credential-access.ec2-steal-instance-credentials.json",
+   "events": 45,
+   "event_names": [
+    "DescribeInstanceInformation",
+    "DescribeInstances",
+    "GetCallerIdentity",
+    "GetCommandInvocation",
+    "SendCommand"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "credential_access",
+   "technique": "aws.credential-access.secretsmanager-batch-retrieve-secrets",
+   "file": "credential_access\\aws.credential-access.secretsmanager-batch-retrieve-secrets.json",
+   "events": 5,
+   "event_names": [
+    "BatchGetSecretValue"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "credential_access",
+   "technique": "aws.credential-access.secretsmanager-retrieve-secrets",
+   "file": "credential_access\\aws.credential-access.secretsmanager-retrieve-secrets.json",
+   "events": 21,
+   "event_names": [
+    "GetSecretValue",
+    "ListSecrets"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "credential_access",
+   "technique": "aws.credential-access.ssm-retrieve-securestring-parameters",
+   "file": "credential_access\\aws.credential-access.ssm-retrieve-securestring-parameters.json",
+   "events": 10,
+   "event_names": [
+    "DescribeParameters",
+    "GetParameters"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "defense_evasion",
+   "technique": "AttemptToLeaveAWSOrganization",
+   "file": "defense_evasion\\AttemptToLeaveAWSOrganization.json",
+   "events": 3,
+   "event_names": [
+    "AssumeRole",
+    "LeaveOrganization"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "defense_evasion",
+   "technique": "aws.defense-evasion.cloudtrail-delete",
+   "file": "defense_evasion\\aws.defense-evasion.cloudtrail-delete.json",
+   "events": 1,
+   "event_names": [
+    "DeleteTrail"
+   ],
+   "fired": {
+    "R001": 1
+   },
+   "specific": [
+    "R001"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R001": "CloudTrail logging stopped or trail deleted"
+   }
+  },
+  {
+   "tactic": "defense_evasion",
+   "technique": "aws.defense-evasion.cloudtrail-event-selectors",
+   "file": "defense_evasion\\aws.defense-evasion.cloudtrail-event-selectors.json",
+   "events": 1,
+   "event_names": [
+    "PutEventSelectors"
+   ],
+   "fired": {
+    "R002": 1
+   },
+   "specific": [
+    "R002"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R002": "CloudTrail configuration weakened"
+   }
+  },
+  {
+   "tactic": "defense_evasion",
+   "technique": "aws.defense-evasion.cloudtrail-stop",
+   "file": "defense_evasion\\aws.defense-evasion.cloudtrail-stop.json",
+   "events": 1,
+   "event_names": [
+    "StopLogging"
+   ],
+   "fired": {
+    "R001": 1
+   },
+   "specific": [
+    "R001"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R001": "CloudTrail logging stopped or trail deleted"
+   }
+  },
+  {
+   "tactic": "defense_evasion",
+   "technique": "aws.defense-evasion.dns-delete-logs",
+   "file": "defense_evasion\\aws.defense-evasion.dns-delete-logs.json",
+   "events": 1,
+   "event_names": [
+    "DeleteResolverQueryLogConfig"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "defense_evasion",
+   "technique": "aws.defense-evasion.vpc-remove-flow-logs",
+   "file": "defense_evasion\\aws.defense-evasion.vpc-remove-flow-logs.json",
+   "events": 1,
+   "event_names": [
+    "DeleteFlowLogs"
+   ],
+   "fired": {
+    "R004": 1
+   },
+   "specific": [
+    "R004"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R004": "VPC flow logs deleted"
+   }
+  },
+  {
+   "tactic": "discovery",
+   "technique": "aws.discovery.ec2-download-user-data",
+   "file": "discovery\\aws.discovery.ec2-download-user-data.json",
+   "events": 19,
+   "event_names": [
+    "AssumeRole",
+    "DescribeInstanceAttribute"
+   ],
+   "fired": {
+    "R023": 1
+   },
+   "specific": [],
+   "generic_only": true,
+   "rule_titles": {
+    "R023": "Burst of AccessDenied errors (enumeration)"
+   }
+  },
+  {
+   "tactic": "execution",
+   "technique": "aws.execution.ec2-launch-unusual-instances",
+   "file": "execution\\aws.execution.ec2-launch-unusual-instances.json",
+   "events": 3,
+   "event_names": [
+    "AssumeRole",
+    "RunInstances"
+   ],
+   "fired": {
+    "R015": 1
+   },
+   "specific": [
+    "R015"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R015": "Large or GPU instance launched"
+   }
+  },
+  {
+   "tactic": "execution",
+   "technique": "aws.execution.ec2-user-data",
+   "file": "execution\\aws.execution.ec2-user-data.json",
+   "events": 35,
+   "event_names": [
+    "DescribeInstances",
+    "ModifyInstanceAttribute",
+    "StartInstances",
+    "StopInstances"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "execution",
+   "technique": "aws.execution.ssm-send-command",
+   "file": "execution\\aws.execution.ssm-send-command.json",
+   "events": 56,
+   "event_names": [
+    "DescribeInstanceInformation",
+    "GetCommandInvocation",
+    "SendCommand"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "execution",
+   "technique": "aws.execution.ssm-start-session",
+   "file": "execution\\aws.execution.ssm-start-session.json",
+   "events": 29,
+   "event_names": [
+    "DescribeInstanceInformation",
+    "StartSession",
+    "TerminateSession"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "exfiltration",
+   "technique": "aws.exfiltration.ec2-security-group-open-port-22-ingress",
+   "file": "exfiltration\\aws.exfiltration.ec2-security-group-open-port-22-ingress.json",
+   "events": 1,
+   "event_names": [
+    "AuthorizeSecurityGroupIngress"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "exfiltration",
+   "technique": "aws.exfiltration.ec2-share-ami",
+   "file": "exfiltration\\aws.exfiltration.ec2-share-ami.json",
+   "events": 1,
+   "event_names": [
+    "ModifyImageAttribute"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "exfiltration",
+   "technique": "aws.exfiltration.ec2-share-ebs-snapshot",
+   "file": "exfiltration\\aws.exfiltration.ec2-share-ebs-snapshot.json",
+   "events": 1,
+   "event_names": [
+    "ModifySnapshotAttribute"
+   ],
+   "fired": {
+    "R014": 1
+   },
+   "specific": [
+    "R014"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R014": "EBS snapshot shared with an external account"
+   }
+  },
+  {
+   "tactic": "exfiltration",
+   "technique": "aws.exfiltration.rds-share-snapshot",
+   "file": "exfiltration\\aws.exfiltration.rds-share-snapshot.json",
+   "events": 1,
+   "event_names": [
+    "ModifyDBSnapshotAttribute"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "impact",
+   "technique": "aws.impact.bedrock-invoke-model",
+   "file": "impact\\aws.impact.bedrock-invoke-model.json",
+   "events": 15,
+   "event_names": [
+    "CreateFoundationModelAgreement",
+    "GetFoundationModelAvailability",
+    "InvokeModel",
+    "ListFoundationModelAgreementOffers",
+    "PutFoundationModelEntitlement",
+    "PutUseCaseForModelAccess"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "initial_access",
+   "technique": "aws.initial-access.console-login-without-mfa",
+   "file": "initial_access\\aws.initial-access.console-login-without-mfa.json",
+   "events": 1,
+   "event_names": [
+    "ConsoleLogin"
+   ],
+   "fired": {
+    "R019": 1
+   },
+   "specific": [
+    "R019"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R019": "Console login without MFA"
+   }
+  },
+  {
+   "tactic": "lateral_movement",
+   "technique": "aws.lateral-movement.ec2-instance-connect",
+   "file": "lateral_movement\\aws.lateral-movement.ec2-instance-connect.json",
+   "events": 3,
+   "event_names": [
+    "SendSSHPublicKey"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "lateral_movement",
+   "technique": "aws.lateral-movement.ec2-serial-console-send-ssh-public-key",
+   "file": "lateral_movement\\aws.lateral-movement.ec2-serial-console-send-ssh-public-key.json",
+   "events": 4,
+   "event_names": [
+    "EnableSerialConsoleAccess",
+    "SendSerialConsoleSSHPublicKey"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.iam-backdoor-role",
+   "file": "persistence\\aws.persistence.iam-backdoor-role.json",
+   "events": 1,
+   "event_names": [
+    "UpdateAssumeRolePolicy"
+   ],
+   "fired": {
+    "R009": 1
+   },
+   "specific": [
+    "R009"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R009": "Role trust policy opened to an external account"
+   }
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.iam-backdoor-user",
+   "file": "persistence\\aws.persistence.iam-backdoor-user.json",
+   "events": 1,
+   "event_names": [
+    "CreateAccessKey"
+   ],
+   "fired": {
+    "R007": 1
+   },
+   "specific": [
+    "R007"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R007": "Access key created for a different user"
+   }
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.iam-create-admin-user",
+   "file": "persistence\\aws.persistence.iam-create-admin-user.json",
+   "events": 3,
+   "event_names": [
+    "AttachUserPolicy",
+    "CreateAccessKey",
+    "CreateUser"
+   ],
+   "fired": {
+    "R005": 1,
+    "R007": 1,
+    "R010": 1
+   },
+   "specific": [
+    "R005",
+    "R007",
+    "R010"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R005": "AdministratorAccess policy attached",
+    "R007": "Access key created for a different user",
+    "R010": "IAM user created"
+   }
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.iam-create-backdoor-role",
+   "file": "persistence\\aws.persistence.iam-create-backdoor-role.json",
+   "events": 2,
+   "event_names": [
+    "AttachRolePolicy",
+    "CreateRole"
+   ],
+   "fired": {
+    "R005": 1
+   },
+   "specific": [
+    "R005"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R005": "AdministratorAccess policy attached"
+   }
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.iam-create-user-login-profile",
+   "file": "persistence\\aws.persistence.iam-create-user-login-profile.json",
+   "events": 3,
+   "event_names": [
+    "CreateLoginProfile",
+    "DeleteLoginProfile",
+    "GetCallerIdentity"
+   ],
+   "fired": {
+    "R008": 1
+   },
+   "specific": [
+    "R008"
+   ],
+   "generic_only": false,
+   "rule_titles": {
+    "R008": "Console login profile created"
+   }
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.lambda-backdoor-function",
+   "file": "persistence\\aws.persistence.lambda-backdoor-function.json",
+   "events": 1,
+   "event_names": [
+    "AddPermission20150331v2"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.lambda-layer-extension",
+   "file": "persistence\\aws.persistence.lambda-layer-extension.json",
+   "events": 1,
+   "event_names": [
+    "UpdateFunctionConfiguration20150331v2"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.lambda-overwrite-code",
+   "file": "persistence\\aws.persistence.lambda-overwrite-code.json",
+   "events": 1,
+   "event_names": [
+    "UpdateFunctionCode20150331v2"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.rolesanywhere-create-trust-anchor",
+   "file": "persistence\\aws.persistence.rolesanywhere-create-trust-anchor.json",
+   "events": 2,
+   "event_names": [
+    "CreateProfile",
+    "CreateTrustAnchor"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "persistence",
+   "technique": "aws.persistence.sts-federation-token",
+   "file": "persistence\\aws.persistence.sts-federation-token.json",
+   "events": 2,
+   "event_names": [
+    "GetCallerIdentity",
+    "GetFederationToken"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  },
+  {
+   "tactic": "privilege_escalation",
+   "technique": "aws.privilege-escalation.iam-update-user-login-profile",
+   "file": "privilege_escalation\\aws.privilege-escalation.iam-update-user-login-profile.json",
+   "events": 1,
+   "event_names": [
+    "UpdateLoginProfile"
+   ],
+   "fired": {},
+   "specific": [],
+   "generic_only": false,
+   "rule_titles": {}
+  }
+ ],
+ "measured_at_commit": "18f7504 (Phase 8, before real-data fixes)"
+}

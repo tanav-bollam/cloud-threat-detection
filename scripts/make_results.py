@@ -203,7 +203,9 @@ def main() -> None:
     DOCS.mkdir(exist_ok=True)
     (DOCS / "RESULTS.md").write_text(results_md(), encoding="utf-8")
     (DOCS / "DETECTIONS.md").write_text(detections_md(), encoding="utf-8")
-    print("wrote docs/RESULTS.md and docs/DETECTIONS.md")
+    from scripts.real_findings import real_md          # imported lazily: real_findings imports helpers from this module
+    (DOCS / "REAL_DATA_FINDINGS.md").write_text(real_md(), encoding="utf-8")
+    print("wrote docs/RESULTS.md, docs/DETECTIONS.md and docs/REAL_DATA_FINDINGS.md")
 
 
 if __name__ == "__main__":

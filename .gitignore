@@ -13,3 +13,7 @@ models/
 reports/*.tmp
 reports/layers_cache.joblib
 reports/suppressions_live.json
+data/*.json
+data/*.txt
+data/raw/
+reports/real_data_small.json

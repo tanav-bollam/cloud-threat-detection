@@ -1,0 +1,12 @@
+{
+ "records_seen": 1939207,
+ "inserted": 1225784,
+ "skipped_invalid": 0,
+ "duplicates": 713423,
+ "events": 1225784,
+ "first": "2017-02-12 19:57:06",
+ "last": "2020-10-07 21:03:30",
+ "source_url": "https://summitroute.com/downloads/flaws_cloudtrail_logs.tar",
+ "source_bytes": 251688960,
+ "ingest_seconds": 186
+}

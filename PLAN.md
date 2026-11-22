@@ -11,7 +11,7 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - [x] Phase 6: streaming pipeline + live injection + time-to-detect (109 tests pass; real-time replay: 9/9 injections detected, pipeline latency p50 368 ms)
 - [x] Phase 7: Streamlit dashboard (134 tests pass; Overview, Alerts & Incidents, Investigation + report export, Forensics, Attack Simulator; verified in a real browser)
 - [x] Phase 8: Detection Quality page + ablations + robustness (143 tests pass; combined recall 100% -> 86.9% as stealth rises; docs/RESULTS.md + DETECTIONS.md generated)
-- [ ] Phase 9: real-data validation (flaws.cloud, Stratus samples) + file ingestor
+- [x] Phase 9: real-data validation + file ingestor (193 tests pass; real Stratus coverage 12/35 before -> 33/35 post-hoc; flaws.cloud 1.23M unique events)
 - [ ] Phase 10: Docker, demo snapshot, webhook, CI, README, static showcase
 
 ## Decisions & findings so far
@@ -37,3 +37,12 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
   stealth; IP layer collapses at 0.6; rules fall once the UA stops looking offensive (rules' S1 recall at stealth 0 was largely the UA rule R022).
 - docs/RESULTS.md and docs/DETECTIONS.md are GENERATED (`scripts/make_results.py`); never edit by hand. A test proves numbers come from the JSON.
 - Per-scenario precision is one-vs-rest against the shared benign background (prevalence-dependent); FP/day on the benign week is the honest number.
+- Phase 9 (real data): `scripts/load_flaws.py` (tar -> ingest, verified URL + size + 20/20 SHA-256 match with the samples repo), `scripts/ingest_cloudtrail.py`
+  (any CloudTrail export, no AWS SDK), `scripts/validate_real.py` -> reports/real_data.json -> docs/REAL_DATA_FINDINGS.md (generated) + the Real Data page.
+- Honest real-data number: 12/35 Stratus techniques covered by the ORIGINAL 24 rules (measured at commit 18f7504 in a pristine worktree). The 33/35 after is POST-HOC
+  (17 rules R025-R041 written after reading those samples) and is a regression check only. Two shipped rules were wrong on real shapes (R017, R009).
+- Real data also forced: engine-level dedupe of single-event rules (flaws.cloud 847,927 -> 7,078 alerts), R018 per-IP/hour dedupe, R023 excludes AWSService principals
+  (SANS lab: 177 -> 13 alerts), lenient flatten/ingest, geo registry switch (`geo.set_enabled(False)` for real data; IPs are anonymized).
+- flaws.cloud: 1,939,207 records = 1,225,784 unique events (37% exact duplicates by eventID). Aug-2019 surge (66.7x median month, Level6 RunInstances, 100% errors) found from
+  raw counts; rules+anomaly both detect it, anomaly model flags ~4.7 windows/day vs a 0.5/day calibration (threshold does not transfer across regimes).
+- Test lesson: parametrize reads FIXTURES at import time; merging fixtures after the decorators silently skipped 17 rules' tests until moved before them.

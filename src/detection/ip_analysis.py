@@ -92,7 +92,7 @@ class IpAnalyzer:
         out: list[Alert] = []
         ident, ip, t = row["identity"], row["source_ip"], _ts(row["event_time"])
         itype = row.get("identity_type") or self.types.get(ident, "IAMUser")
-        if not ip[0].isdigit():                       # service principal names are not IPs
+        if not ip or not ip[0].isdigit():             # missing IPs and service principal names are not IPs
             return out
         g = geo.lookup(ip)
         c = self.cfg

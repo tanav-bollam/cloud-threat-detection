@@ -1,0 +1,142 @@
+# Rules added AFTER running the original 24 rules against real Stratus Red Team CloudTrail samples (Yamato-Security/suzaku-sample-data) and
+# finding techniques they did not cover. They are therefore NOT held-out against those samples: coverage numbers for them are a regression check,
+# not an independent measurement. Request shapes below follow the real records (see tests/test_rules.py for minimal fixtures).
+- id: R025
+  title: AMI shared with an external account or publicly
+  severity: HIGH
+  mitre_tactic: Exfiltration
+  mitre_technique: T1537
+  description: ModifyImageAttribute added a launch permission for another AWS account (or group "all"), exposing the image contents.
+  false_positive_notes: Sharing golden images with a known partner or DR account; verify the account ID against an allowlist.
+  condition: {event_name: [ModifyImageAttribute], check: image_shared_external}
+- id: R026
+  title: RDS snapshot shared with an external account
+  severity: HIGH
+  mitre_tactic: Exfiltration
+  mitre_technique: T1537
+  description: A DB snapshot's restore attribute was opened to another account (or "all"), letting them restore a copy of the database.
+  false_positive_notes: Cross-account backup or migration to an account you own; confirm the destination account.
+  condition: {event_name: [ModifyDBSnapshotAttribute, ModifyDBClusterSnapshotAttribute], check: rds_snapshot_shared_external}
+- id: R027
+  title: Lambda function invokable by anyone
+  severity: HIGH
+  mitre_tactic: Persistence
+  mitre_technique: T1098
+  description: AddPermission granted lambda:InvokeFunction to Principal "*" with no source restriction, creating an unauthenticated entry point.
+  false_positive_notes: Intentionally public function URLs/webhooks (should use a function URL with auth or an API gateway instead).
+  condition: {event_name: [AddPermission20150331v2, AddPermission20150331], check: public_lambda_permission}
+- id: R028
+  title: EC2 Windows password data retrieved
+  severity: MEDIUM
+  mitre_tactic: Credential Access
+  mitre_technique: T1552
+  description: GetPasswordData returns the (encrypted) Administrator password of a Windows instance.
+  false_positive_notes: Administrators launching a Windows instance for the first time; rare in most estates.
+  condition: {event_name: [GetPasswordData]}
+- id: R029
+  title: Secrets Manager secrets retrieved in bulk
+  severity: MEDIUM
+  mitre_tactic: Credential Access
+  mitre_technique: T1555
+  description: BatchGetSecretValue retrieves many secrets in a single call.
+  false_positive_notes: Application start-up code that loads its secrets in one call (usually a service role).
+  condition: {event_name: [BatchGetSecretValue]}
+- id: R030
+  title: Burst of secret reads by a human user
+  severity: MEDIUM
+  mitre_tactic: Credential Access
+  mitre_technique: T1555
+  description: An IAM user read 10+ secrets within ten minutes. Service roles are excluded because they read secrets constantly.
+  false_positive_notes: A migration script run by an engineer; confirm with the user.
+  condition:
+    event_name: [GetSecretValue]
+    all: [{field: userIdentity.type, op: eq, value: IAMUser}]
+    threshold: {count: 10, window_s: 600, group_by: [identity], cooldown_s: 1800}
+- id: R031
+  title: SSM parameters read in bulk
+  severity: MEDIUM
+  mitre_tactic: Credential Access
+  mitre_technique: T1552
+  description: GetParameters named ten or more parameters in a single call, the pattern of harvesting SecureString credentials.
+  false_positive_notes: Application bootstrap code (typically a service role).
+  condition: {event_name: [GetParameters], check: bulk_parameter_read}
+- id: R032
+  title: Remote command or session on instances via SSM
+  severity: MEDIUM
+  mitre_tactic: Execution
+  mitre_technique: T1651
+  description: SendCommand or StartSession ran commands or opened an interactive session on EC2 instances without SSH.
+  false_positive_notes: Routine operations by admins and automation; matters when the caller never did this before.
+  condition: {event_name: [SendCommand, StartSession]}
+- id: R033
+  title: EC2 Instance Connect or serial console access used
+  severity: MEDIUM
+  mitre_tactic: Lateral Movement
+  mitre_technique: T1021
+  description: A temporary SSH key was pushed (SendSSHPublicKey / serial console) or serial console access was enabled for the account.
+  false_positive_notes: Break-glass access to a broken instance.
+  condition: {event_name: [SendSSHPublicKey, SendSerialConsoleSSHPublicKey, EnableSerialConsoleAccess]}
+- id: R034
+  title: EC2 user data modified
+  severity: MEDIUM
+  mitre_tactic: Execution
+  mitre_technique: T1059
+  description: ModifyInstanceAttribute changed an instance's user data, which runs as root at next boot.
+  false_positive_notes: Infrastructure changes by the platform team (usually via IaC, not by hand).
+  condition: {event_name: [ModifyInstanceAttribute], check: user_data_attribute}
+- id: R035
+  title: EC2 user data read
+  severity: LOW
+  mitre_tactic: Credential Access
+  mitre_technique: T1552
+  description: DescribeInstanceAttribute requested userData, which often holds bootstrap secrets.
+  false_positive_notes: Debugging a launch configuration.
+  condition: {event_name: [DescribeInstanceAttribute], check: user_data_attribute}
+- id: R036
+  title: Attempt to leave the AWS Organization
+  severity: HIGH
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1562
+  description: LeaveOrganization would detach the account from organization-level guardrails (SCPs, org trails).
+  false_positive_notes: Account divestiture, which is a planned and ticketed event.
+  condition: {event_name: [LeaveOrganization]}
+- id: R037
+  title: DNS query logging removed
+  severity: HIGH
+  mitre_tactic: Defense Evasion
+  mitre_technique: T1562.008
+  description: A Route 53 Resolver query log configuration was deleted or disassociated, blinding DNS-based detection.
+  false_positive_notes: VPC teardown.
+  condition: {event_name: [DeleteResolverQueryLogConfig, DisassociateResolverQueryLogConfig]}
+- id: R038
+  title: Federation token requested by an IAM user
+  severity: MEDIUM
+  mitre_tactic: Persistence
+  mitre_technique: T1098
+  description: GetFederationToken mints temporary credentials (up to 36 h) that survive deletion of the access key that requested them.
+  false_positive_notes: Legacy broker applications; rare in modern accounts.
+  condition: {event_name: [GetFederationToken]}
+- id: R039
+  title: IAM Roles Anywhere trust anchor or profile created
+  severity: HIGH
+  mitre_tactic: Persistence
+  mitre_technique: T1098
+  description: A new Roles Anywhere trust anchor/profile lets an external certificate authority obtain AWS role credentials.
+  false_positive_notes: Planned hybrid-workload onboarding.
+  condition: {event_name: [CreateTrustAnchor, CreateProfile], all: [{field: eventSource, op: eq, value: rolesanywhere.amazonaws.com}]}
+- id: R040
+  title: Console password reset for another user
+  severity: MEDIUM
+  mitre_tactic: Persistence
+  mitre_technique: T1098
+  description: UpdateLoginProfile changed the console password of a user other than the caller.
+  false_positive_notes: Help-desk password resets by admins.
+  condition: {event_name: [UpdateLoginProfile], check: key_for_other_user}
+- id: R041
+  title: Bedrock model invoked
+  severity: LOW
+  mitre_tactic: Impact
+  mitre_technique: T1496
+  description: A foundation model was invoked. Stolen credentials are used to run expensive model inference (LLMjacking); alone this is low severity.
+  false_positive_notes: Any legitimate use of Bedrock. Meaningful only for identities that never invoked models before or in unusual regions.
+  condition: {event_name: [InvokeModel, InvokeModelWithResponseStream, Converse, ConverseStream], all: [{field: eventSource, op: eq, value: bedrock.amazonaws.com}]}

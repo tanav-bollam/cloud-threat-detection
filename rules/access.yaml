@@ -8,6 +8,7 @@
   condition:
     all: [{field: userIdentity.type, op: eq, value: Root}]
     none: [{field: responseElements.ConsoleLogin, op: eq, value: Failure}]
+    threshold: {count: 1, window_s: 3600, group_by: [identity, sourceIPAddress]}      # one alert per root session/IP per hour (real data: hundreds of root events in a burst)
 - id: R019
   title: Console login without MFA
   severity: MEDIUM
@@ -61,6 +62,7 @@
   false_positive_notes: Misconfigured automation retrying a forbidden call; look at distinct event names.
   condition:
     check: is_error
+    none: [{field: userIdentity.type, op: eq, value: AWSService}]      # e.g. log delivery hitting a bucket policy; real data showed 164 such false alerts
     threshold: {count: 15, window_s: 600, group_by: [identity], cooldown_s: 1800}
 - id: R024
   title: Mass S3 object download by a human user
