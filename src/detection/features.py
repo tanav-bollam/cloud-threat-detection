@@ -55,6 +55,9 @@ class Baseline:
     org_sets: dict = field(default_factory=dict)     # attr -> DataFrame(identity_type, value)
     hours: Optional[pd.DataFrame] = None             # identity, hour, rarity
     org_hours: Optional[pd.DataFrame] = None         # identity_type, hour, rarity
+    ip_p99: dict = field(default_factory=dict)       # identity -> 99th percentile of distinct source IPs per window (how many IPs is normal for it)
+    org_ip_p99: dict = field(default_factory=dict)   # identity_type -> same, fallback for identities without history
+    ip_spread: dict = field(default_factory=dict)    # identity -> distinct source IPs ever seen (very large = a widely shared credential)
     vol: Optional[pd.DataFrame] = None               # identity, mu_n, sd_n, mu_b, sd_b
     org_vol: Optional[pd.DataFrame] = None           # identity_type, mu_n, sd_n, mu_b, sd_b
     identity_types: dict = field(default_factory=dict)
@@ -206,4 +209,7 @@ def fit_baseline(events: pd.DataFrame) -> Baseline:
         return s
     b.vol = stats(raw, "identity")
     b.org_vol = stats(raw, "identity_type")
+    b.ip_p99 = {k: float(v) for k, v in raw.groupby("identity")["n_ips"].quantile(0.99).items()}
+    b.org_ip_p99 = {k: float(v) for k, v in raw.groupby("identity_type")["n_ips"].quantile(0.99).items()}
+    b.ip_spread = {k: int(v) for k, v in ev.groupby("identity")["source_ip"].nunique().items()}
     return b

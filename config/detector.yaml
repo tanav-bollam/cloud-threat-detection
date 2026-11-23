@@ -9,8 +9,8 @@ anomaly:
 
 ip:
   impossible_travel: {min_speed_kmh: 900, min_km: 500, cooldown_s: 1800}
-  shared_ip: {min_identities: 3, window_s: 3600, cooldown_s: 3600}   # one IP that is NEW for >= N different identities
-  many_ips: {min_ips: 4, window_s: 1800, cooldown_s: 3600}           # one identity from >= N distinct IPs
+  shared_ip: {min_identities: 3, window_s: 3600, cooldown_s: 3600, widely_shared_min_ips: 50}   # one IP NEW for >= N identities; identities already seen from >= 50 IPs (shared credentials) are not counted
+  many_ips: {min_ips: 4, window_s: 1800, cooldown_s: 3600, baseline_multiplier: 1.5}   # >= N IPs AND more than 1.5x what is normal for that identity (baseline p99)
   blocked_asns: [AS9009]        # stand-in for a Tor-exit / anonymizing-VPN threat-intel feed (the optional blocklist)
   blocked_cidr_file: config/ip_blocklist.txt
 

@@ -48,8 +48,12 @@ class IpAnalyzer:
             for t, g in baseline.org_sets["ip"].groupby("identity_type"):
                 self.org_known[t] = set(g["value"])
             self.types = baseline.identity_types
+            # older pickled baselines predate these fields; getattr keeps them loadable (the relative rules then fall back to the fixed thresholds)
+            self.ip_p99 = getattr(baseline, "ip_p99", {})
+            self.org_ip_p99 = getattr(baseline, "org_ip_p99", {})
+            self.ip_spread = getattr(baseline, "ip_spread", {})
         else:
-            self.types = {}
+            self.types, self.ip_p99, self.org_ip_p99, self.ip_spread = {}, {}, {}, {}
         self.blocked_asns = set(cfg.get("blocked_asns", []))
         self.blocked_nets = self._load_nets(cfg.get("blocked_cidr_file"))
         self.last: dict[str, tuple[str, float, str]] = {}            # identity -> (ip, t, event_id)
@@ -109,8 +113,9 @@ class IpAnalyzer:
         self.last[ident] = (ip, t, row["event_id"])
 
         # IP002 an IP that is new to several identities
-        if self._is_new_ip(ident, ip, itype):
-            si = c["shared_ip"]
+        si = c["shared_ip"]
+        widely_shared = self.ip_spread.get(ident, 0) >= si.get("widely_shared_min_ips", 10**9)
+        if not widely_shared and self._is_new_ip(ident, ip, itype):
             d = self.ip_ids[ip]
             d[ident] = t
             for k in [k for k, v in d.items() if v < t - si["window_s"]]:
@@ -125,8 +130,10 @@ class IpAnalyzer:
         while dq and dq[0][0] < t - mi["window_s"]:
             dq.popleft()
         distinct = {i for _, i in dq}
-        if len(distinct) >= mi["min_ips"] and self._cooled(("IP003", ident), t, mi["cooldown_s"]):
-            out.append(self._alert("IP003", row, f"{len(distinct)} distinct IPs in {mi['window_s']//60} min", [row["event_id"]]))
+        normal = self.ip_p99.get(ident, self.org_ip_p99.get(itype, 0.0))
+        need = max(mi["min_ips"], int(mi.get("baseline_multiplier", 0) * normal) + 1)       # an identity that always shows many IPs needs far more to alert
+        if len(distinct) >= need and self._cooled(("IP003", ident), t, mi["cooldown_s"]):
+            out.append(self._alert("IP003", row, f"{len(distinct)} distinct IPs in {mi['window_s']//60} min (normal for this identity: about {normal:.0f})", [row["event_id"]]))
 
         # IP004 blocklist (once per identity+ip per hour)
         blocked = g.asn in self.blocked_asns or (self.blocked_nets and any(ipaddress.ip_address(ip) in n for n in self.blocked_nets))
