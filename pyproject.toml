@@ -3,6 +3,7 @@ name = "cloud-threat-detection"
 version = "0.1.0"
 description = "AWS CloudTrail threat detection: synthetic logs, rules, IsolationForest, Streamlit forensics"
 requires-python = ">=3.11"
+license = { text = "MIT" }
 dependencies = [
   "duckdb", "pandas", "pyarrow", "numpy", "pydantic", "pyyaml",
   "scikit-learn", "shap", "streamlit", "plotly", "pytest", "hypothesis",

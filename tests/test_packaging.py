@@ -28,7 +28,9 @@ def test_readme_block_is_regenerated_between_markers_only_and_from_json(tmp_path
 def test_the_real_readme_has_markers_and_a_quickstart():
     text = (ROOT / "README.md").read_text(encoding="utf-8")
     assert "<!-- RESULTS:START -->" in text and "<!-- RESULTS:END -->" in text
-    assert "docker compose up" in text and "No license file" in text
+    assert "docker compose up" in text and "MIT License" in text and "No license file" not in text
+    lic = (ROOT / "LICENSE").read_text(encoding="utf-8")
+    assert lic.startswith("MIT License") and "Tanav Bollam" in lic and "WITHOUT WARRANTY OF ANY KIND" in lic
     for rel in re.findall(r"\]\((docs/[^)#]+)\)", text):
         assert (ROOT / rel).exists(), f"README links to missing {rel}"
 

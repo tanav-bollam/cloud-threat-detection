@@ -122,4 +122,6 @@ tests/     ~200 tests: rules fixtures, features, live engine, dashboard pages, i
 - Sample logs from Stratus Red Team (Datadog), Invictus-IR, and the SANS 504 S3 ransomware lab, as redistributed in [Yamato-Security/suzaku-sample-data](https://github.com/Yamato-Security/suzaku-sample-data). These are downloaded for validation and are **not** committed here.
 - MITRE ATT&CK® is a registered trademark of The MITRE Corporation.
 
-No license file has been chosen yet; add one before publishing.
+## License
+
+The code in this repository is released under the [MIT License](LICENSE). The public datasets listed above are **not** covered by it and keep their own terms; they are downloaded for validation and are not redistributed here.
