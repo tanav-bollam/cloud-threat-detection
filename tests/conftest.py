@@ -37,7 +37,7 @@ def dash_engine(tmp_path_factory, trained):
     joblib.dump(base, d / "models" / "baseline.joblib")
     model.save(d / "models" / "anomaly_global.joblib")
     env = {"CTD_MODELS": str(d / "models"), "CTD_DB": str(d / "live.duckdb"), "CTD_SPEED": "300", "CTD_SCALE": "0.05", "CTD_WORLD_SEED": str(WORLD),
-           "CTD_SIM_HOURS": "6", "CTD_DAYS": "1", "CTD_SUPPRESSIONS": str(d / "supp.json")}
+           "CTD_SIM_HOURS": "6", "CTD_DAYS": "1", "CTD_SUPPRESSIONS": str(d / "supp.json"), "CTD_NO_SNAPSHOT": "1"}
     old = {k: os.environ.get(k) for k in env}
     os.environ.update(env)
     from app import common as C

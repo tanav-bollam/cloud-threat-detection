@@ -218,7 +218,7 @@ class Detector(threading.Thread):
         super().__init__(daemon=True, name="detector")
         self.e = engine
         cfg = engine.cfg
-        self.rules = RulesEngine(context=org_context(), disabled=engine.disabled_rules)
+        self.rules = RulesEngine(context=org_context(), disabled=engine.disabled_rules, **({} if engine.dedupe_s is None else {"dedupe_s": engine.dedupe_s}))
         self.ip = IpAnalyzer(cfg["ip"], engine.baseline)
         self.buffer: deque = deque()
         self.next_boundary: Optional[pd.Timestamp] = None
@@ -387,7 +387,8 @@ class LiveEngine:
     def __init__(self, db_path: str | Path, baseline: Optional[Baseline] = None, model: Optional[AnomalyModel] = None, *, speed: float = 60.0,
                  scale: float = 0.3, seed: int = 777, world_seed: int = 42, start: str = "2025-01-13", start_hour: float = 9.0, days: int = 2,
                  until: Optional[datetime] = None, retain_min: int = 120, suppressions: Optional[SuppressionList] = None,
-                 disabled_rules: Optional[set] = None, queue_size: int = 20000, fresh: bool = True, cfg: Optional[dict] = None):
+                 disabled_rules: Optional[set] = None, queue_size: int = 20000, fresh: bool = True, cfg: Optional[dict] = None,
+                 seed_db: Optional[str | Path] = None, dedupe_s: Optional[float] = None):
         import duckdb
         self.cfg = cfg or load_config()
         self.baseline, self.model = baseline, model
@@ -400,8 +401,14 @@ class LiveEngine:
         self.alert_status: dict[str, str] = {}
         path = Path(db_path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        if fresh and path.exists():
-            path.unlink()
+        if fresh:
+            for f in (path, Path(str(path) + ".wal")):
+                if f.exists():
+                    f.unlink()
+            if seed_db and Path(seed_db).exists():          # start from a recorded snapshot (events, alerts, incidents) and continue live from there
+                import shutil
+                shutil.copyfile(seed_db, path)
+        self.dedupe_s = dedupe_s
         self.con = storage.connect(path)
         self.lock = threading.RLock()
         self.queue: queue.Queue = queue.Queue(maxsize=queue_size)
@@ -427,7 +434,15 @@ class LiveEngine:
     def stop(self) -> None:
         self.stop_flag.set()
         self.streamer.stop_flag.set()
-        self.detector.join(timeout=10)
+        if self.detector.is_alive():                       # an engine that was never started has nothing to join
+            self.detector.join(timeout=10)
+
+    def close(self) -> None:
+        """Stop the threads, flush the database to disk and release the file (used when recording a snapshot)."""
+        self.stop()
+        with self.lock:
+            self.con.execute("CHECKPOINT").fetchall()
+            self.con.close()
 
     def wait(self, timeout: Optional[float] = None) -> bool:
         """Block until the stream ended and the detector drained the queue."""

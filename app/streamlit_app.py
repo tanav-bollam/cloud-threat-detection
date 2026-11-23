@@ -16,5 +16,6 @@ pages = [
     st.Page("pages/simulator.py", title="Attack Simulator", icon=":material/bug_report:"),
     st.Page("pages/quality.py", title="Detection Quality", icon=":material/monitoring:"),
     st.Page("pages/realdata.py", title="Real Data", icon=":material/public:"),
+    st.Page("pages/settings.py", title="Settings", icon=":material/settings:"),
 ]
 st.navigation(pages).run()

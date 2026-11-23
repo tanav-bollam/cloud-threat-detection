@@ -1,0 +1,12 @@
+.venv
+.git
+data
+models
+reports/layers_cache.joblib
+tests
+__pycache__
+*.pyc
+.pytest_cache
+.hypothesis
+site
+docs/screenshots

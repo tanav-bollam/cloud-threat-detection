@@ -199,13 +199,56 @@ def detections_md() -> str:
     return "\n".join(md)
 
 
+README_START, README_END = "<!-- RESULTS:START -->", "<!-- RESULTS:END -->"
+
+
+def readme_block() -> str:
+    """The 'Results at a glance' table for README.md. Every number is read from reports/*.json."""
+    g, rob, real, live = load("metrics.json"), load("robustness.json"), load("real_data.json"), load("live_ttd.json")
+    if not g:
+        return "## Results at a glance\n\nNo measurements yet: run `python scripts/train.py && python scripts/evaluate.py && python scripts/make_results.py`.\n"
+    C = g["layers"]["combined"]
+    rows = [["Attack stages detected (synthetic held-out week)", f"{C['test_week']['injection_recall']*100:.1f}% of {g['injections']}"],
+            ["False-positive incidents per day (benign week)", f"{f(C['benign_week']['fp_incidents_per_day'])} ({f(C['benign_week']['fp_high_or_critical_per_day'])} HIGH or CRITICAL)"],
+            ["Kill chains grouped into one incident", f"{C['test_week']['chains_in_single_incident']}/{C['test_week']['chains']}"],
+            ["Time to detect, median / p95 (simulated s)", f"{f(C['ttd_p50_s'])} / {f(C['ttd_p95_s'])}"]]
+    if rob:
+        lv = rob["levels"]
+        rows.append(["Recall against a stealthy attacker", f"{rob['results'][str(lv[-1])]['combined']['incident_recall']*100:.1f}% at stealth {lv[-1]} (from {rob['results'][str(lv[0])]['combined']['incident_recall']*100:.0f}% at {lv[0]})"])
+    if live:
+        rows.append(["Live pipeline: event to alert (median)", f"{f(live['pipeline_latency_p50_ms'], 0)} ms, {live['detected']}/{live['injections']} injections detected"])
+    st = (real or {}).get("stratus")
+    if st and st["before"]:
+        rows.append(["**Real** Stratus techniques covered, original rules (held-out)", f"**{st['before']['covered_specific']}/{st['before']['techniques']}** ({st['before']['covered_specific']/st['before']['techniques']*100:.0f}%)"])
+        rows.append(["...after adding rules for the gaps (post-hoc, not independent)", f"{st['after']['covered_specific']}/{st['after']['techniques']} ({st['after']['covered_specific']/st['after']['techniques']*100:.0f}%)"])
+    fl = (real or {}).get("flaws")
+    if fl and fl.get("surge") and fl.get("ml"):
+        cb = fl["ml"]["by_layer"]["combined"]
+        rows.append([f"flaws.cloud {fl['surge']['month']} surge ({fl['surge']['x_median']}× normal volume)", f"detected; {cb['surge_events_covered_pct']}% of its events covered"])
+    return ("## Results at a glance\n\n" + table(["Measure", "Result"], rows, ["l", "l"]) +
+            "\n\nGenerated from `reports/*.json`. Synthetic numbers are optimistic (the detectors and generator share an author); the real-data rows are the honest ones. "
+            "See [`docs/RESULTS.md`](docs/RESULTS.md) and [`docs/REAL_DATA_FINDINGS.md`](docs/REAL_DATA_FINDINGS.md).\n")
+
+
+def update_readme(path: Path | None = None) -> bool:
+    p = path or ROOT / "README.md"
+    if not p.exists():
+        return False
+    text = p.read_text(encoding="utf-8")
+    if README_START not in text or README_END not in text:
+        return False
+    a, b = text.index(README_START) + len(README_START), text.index(README_END)
+    p.write_text(text[:a] + "\n" + readme_block() + text[b:], encoding="utf-8")
+    return True
+
+
 def main() -> None:
     DOCS.mkdir(exist_ok=True)
     (DOCS / "RESULTS.md").write_text(results_md(), encoding="utf-8")
     (DOCS / "DETECTIONS.md").write_text(detections_md(), encoding="utf-8")
     from scripts.real_findings import real_md          # imported lazily: real_findings imports helpers from this module
     (DOCS / "REAL_DATA_FINDINGS.md").write_text(real_md(), encoding="utf-8")
-    print("wrote docs/RESULTS.md, docs/DETECTIONS.md and docs/REAL_DATA_FINDINGS.md")
+    print("wrote docs/RESULTS.md, docs/DETECTIONS.md and docs/REAL_DATA_FINDINGS.md" + (" and the README results block" if update_readme() else ""))
 
 
 if __name__ == "__main__":

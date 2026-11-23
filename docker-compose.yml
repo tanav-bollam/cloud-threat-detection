@@ -1,0 +1,16 @@
+# docker compose up   ->   http://localhost:8501   (offline demo, synthetic data, no AWS account)
+services:
+  dashboard:
+    build: .
+    image: cloud-threat-detection:latest
+    ports:
+      - "8501:8501"
+    environment:
+      CTD_SPEED: "120"          # simulated seconds per real second
+      CTD_SCALE: "0.3"          # benign volume multiplier
+      # CTD_WEBHOOK_URL: ""     # optional Discord/Slack incoming webhook (kept out of the settings file)
+    volumes:
+      - ctd-data:/app/data      # live database and saved settings survive restarts
+    restart: unless-stopped
+volumes:
+  ctd-data:

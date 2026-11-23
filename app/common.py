@@ -64,7 +64,9 @@ def get_engine(token: int = 0) -> LiveEngine:
     """One engine per server process (DuckDB allows a single writer, so the dashboard hosts the pipeline). `token` forces a restart."""
     models = Path(_env("CTD_MODELS", "models"))
     if not (models / "baseline.joblib").exists():
-        raise FileNotFoundError(f"{models}/baseline.joblib not found. Run `python scripts/train.py` first (see README).")
+        models = ROOT / "demo" / "models"                   # committed pre-trained demo models, so a fresh clone runs without training
+    if not (models / "baseline.joblib").exists():
+        raise FileNotFoundError("No trained models found (models/ or demo/models/). Run `python scripts/train.py` first (see README).")
     base = joblib.load(models / "baseline.joblib")
     mp = models / "anomaly_global.joblib"
     model = AnomalyModel.load(mp) if mp.exists() and _env("CTD_NO_ANOMALY", "") == "" else None
@@ -74,7 +76,10 @@ def get_engine(token: int = 0) -> LiveEngine:
     until = datetime.strptime(start, "%Y-%m-%d") + timedelta(hours=hour + sim_hours) if sim_hours else None
     eng = LiveEngine(_env("CTD_DB", "data/live.duckdb"), base, model, speed=_env("CTD_SPEED", 120.0), scale=_env("CTD_SCALE", 0.3),
                      world_seed=_env("CTD_WORLD_SEED", 42), start=start, start_hour=hour, days=_env("CTD_DAYS", 2), until=until,
-                     suppressions=SuppressionList(path=_env("CTD_SUPPRESSIONS", "data/suppressions.json")))
+                     suppressions=SuppressionList(path=_env("CTD_SUPPRESSIONS", "data/suppressions.json")),
+                     seed_db=None if _env("CTD_NO_SNAPSHOT", "") else _env("CTD_SEED_DB", str(ROOT / "demo" / "demo_snapshot.duckdb")))
+    from src import settings as S
+    S.apply(eng, S.load())                                  # saved user settings (disabled rules, dedupe window, sensitivity, webhook)
     return eng.start()
 
 
@@ -104,7 +109,7 @@ def sidebar() -> None:
         st.markdown("### Pipeline")
         state = "ended" if s["finished"] and s["backlog"] == 0 else ("paused" if eng.streamer.paused.is_set() else "live")
         st.markdown(f"**Simulated time (UTC)**  \n`{pd.Timestamp(s['sim_now']):%Y-%m-%d %H:%M:%S}` · {state}")
-        st.caption(f"{s['events']:,} events processed · backlog {s['backlog']} · {s['alerts']} alerts")
+        st.caption(f"This session: {s['events']:,} live events processed · {s['alerts']} new alerts · backlog {s['backlog']}")
         cur_speed = int(s["speed"]) if s["speed"] in SPEEDS else 120
         sp = st.select_slider("Replay speed (sim s per real s)", SPEEDS, value=cur_speed, key="speed_sel")
         if sp != s["speed"]:
