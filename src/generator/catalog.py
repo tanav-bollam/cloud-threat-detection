@@ -134,8 +134,23 @@ def _detector(rng, ctx):
     return {"detectorId": ctx.get("detector_id", hexid(rng, 32))}
 
 
+def _stable_id(prefix: str, *parts: str) -> str:
+    import hashlib
+    return prefix + "0" + hashlib.sha1("|".join(parts).encode()).hexdigest()[:16]
+
+
+def flow_log_id_for(account: str, region: str) -> str:
+    """The (single) VPC flow log the organisation runs in a region; shared by the generator (DeleteFlowLogs) and the flow-log generator."""
+    return _stable_id("fl-", account, region)
+
+
+def vpc_id_for(account: str, region: str) -> str:
+    return _stable_id("vpc-", account, region)
+
+
 def _flowlogs(rng, ctx):
-    return {"DeleteFlowLogsRequest": {"FlowLogId": {"content": f"fl-0{hexid(rng,16)}", "tag": 1}}}
+    fid = ctx.get("flow_log_id") or f"fl-0{hexid(rng,16)}"
+    return {"DeleteFlowLogsRequest": {"FlowLogId": {"content": fid, "tag": 1}}}
 
 
 def _modify_snapshot(rng, ctx):

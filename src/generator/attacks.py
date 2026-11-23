@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from . import geo
-from .catalog import API, RECON_APIS, hexid
+from .catalog import API, RECON_APIS, flow_log_id_for, hexid
 from .world import Principal, World, build_record, console_login, load_yaml
 
 SCEN = load_yaml("scenarios.yaml")
@@ -134,7 +134,10 @@ def s4(r: Run) -> None:
     for name in names:
         if name == "DeleteDetector":
             r.ev("ListDetectors", lo=2, hi=8)
-        r.ev(name, lo=3, hi=25)
+        if name == "DeleteFlowLogs":       # the attacker removes the REAL flow log of the account's home region, so flow records can be seen to stop
+            r.ev(name, lo=3, hi=25, region=r.victim.region, ctx={"flow_log_id": flow_log_id_for(r.world.account, r.victim.region)})
+        else:
+            r.ev(name, lo=3, hi=25)
 
 
 def s5(r: Run) -> None:

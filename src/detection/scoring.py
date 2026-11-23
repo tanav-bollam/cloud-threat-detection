@@ -43,7 +43,7 @@ def score_alert(a: Alert, sc: dict) -> Alert:
         frac = min(max(a.margin / an["margin_full"], 0.0), 1.0)
         a.risk = (pts["LOW"] + frac * (an["max_points"] - pts["LOW"])) * w["anomaly"]
     else:
-        a.risk = pts[a.severity] * w["ip" if a.source == "ip" else "rule"]
+        a.risk = pts[a.severity] * w["ip" if a.source == "ip" else "rule"]      # source "flow" (VPC flow correlation) is weighted like a rule
     a.risk = round(min(a.risk, 100.0), 1)
     a.alert_id = alert_id(a)
     return a

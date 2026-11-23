@@ -55,6 +55,25 @@ def pctl(vals, q):
     return s[lo] + (s[hi] - s[lo]) * (k - lo)
 
 
+def extra_sections() -> list[str]:
+    """Sections 9-11 (VPC flow correlation, held-out generator variant, alternative models). Each appears only when its report exists."""
+    md: list[str] = []
+    fl = load("flow_correlation.json")
+    if fl:
+        rows = [[rid, d["alerts"], f(d["precision"], pct=True) if d["precision"] is not None else "n/a", f"{d['attack_events_detected']}/{d['relevant_attack_events']}",
+                 f(d["recall"], pct=True) if d["recall"] is not None else "n/a"] for rid, d in fl["rules"].items()]
+        v = fl["validation_week"]
+        md += ["## 9. VPC Flow Log correlation (stretch)\n",
+               "Synthetic flow logs are generated from the CloudTrail events and labels (`scripts/generate_flows.py`), then three correlation rules join them back to CloudTrail: "
+               "FL001 mining-port traffic from an instance an identity launched, FL002 a deleted flow log that stops reporting, FL003 a world-open security group that the internet then reaches.\n",
+               table(["Rule", "Alerts", "Precision", "Attack events caught", "Recall"], rows, ["l", "r", "r", "r", "r"]),
+               f"\nBenign validation week: **{v['false_positive_alerts']}** flow alerts ({v['fp_per_day']}/day) over {v['flow_records']:,} flow records.\n",
+               "**Read this carefully:** the flow logs and the attacks come from the same generator, so FL001 and FL003 are close to circular (the generator emits exactly the traffic the rule looks for). "
+               "They show the correlation machinery works end to end; they are not evidence of real-world detection quality. FL002 recall is below 100% by construction: only the first "
+               "DeleteFlowLogs of a log can produce silence, repeated deletes of an already-silent log cannot.\n"]
+    return md
+
+
 def results_md() -> str:
     g, pg, rob, live = load("metrics.json"), load("metrics_per_group.json"), load("robustness.json"), load("live_ttd.json")
     if not g:
@@ -152,7 +171,8 @@ def results_md() -> str:
                                            ["Event-to-alert pipeline latency p50 / p95 (ms)", f"{f(live['pipeline_latency_p50_ms'], 0)} / {f(live['pipeline_latency_p95_ms'], 0)}"]], ["l", "r"]),
                "\nMeasured headless at real-time replay speed. Latency rises when the dashboard is rendering in the same process.\n"]
 
-    md += ["## 9. Caveats: read before quoting any number\n",
+    md += extra_sections()
+    md += ["## 12. Caveats: read before quoting any number\n",
            "- **Synthetic data.** Benign traffic and attacks come from the same generator family, so metrics are optimistic compared with a real account. "
            "Real-data checks (flaws.cloud, Stratus Red Team samples) are reported separately in `docs/REAL_DATA_FINDINGS.md`.",
            "- **Rules were written knowing the scenarios.** High rule recall on S1-S8 is expected; the robustness table above is the fairer view of what rules can do "

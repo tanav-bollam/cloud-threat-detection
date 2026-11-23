@@ -42,6 +42,14 @@ CREATE TABLE IF NOT EXISTS ttd (
   injection_id VARCHAR PRIMARY KEY, scenario_id VARCHAR, chain_id VARCHAR, injected_sim TIMESTAMP, injected_wall TIMESTAMP,
   first_alert_id VARCHAR, detected_by VARCHAR, first_alert_sim TIMESTAMP, ttd_sim_s DOUBLE, ttd_wall_s DOUBLE, pipeline_latency_ms DOUBLE)
 """
+FLOWS_DDL = """
+CREATE TABLE IF NOT EXISTS flows (
+  start_time TIMESTAMP, end_time TIMESTAMP, account_id VARCHAR, interface_id VARCHAR, instance_id VARCHAR, vpc_id VARCHAR, region VARCHAR,
+  srcaddr VARCHAR, dstaddr VARCHAR, srcport INTEGER, dstport INTEGER, protocol INTEGER, packets BIGINT, bytes BIGINT, action VARCHAR,
+  flow_direction VARCHAR, flow_log_id VARCHAR, log_status VARCHAR)
+"""
+FLOW_COLS = ["start_time", "end_time", "account_id", "interface_id", "instance_id", "vpc_id", "region", "srcaddr", "dstaddr", "srcport", "dstport",
+             "protocol", "packets", "bytes", "action", "flow_direction", "flow_log_id", "log_status"]
 EVENT_COLS = ["event_id", "event_time", "event_source", "event_name", "aws_region", "source_ip", "user_agent", "identity_type", "identity",
               "principal_id", "identity_arn", "access_key_id", "account_id", "mfa_authenticated", "error_code", "read_only",
               "management_event", "event_type", "bytes_out", "console_login", "raw"]
@@ -51,7 +59,7 @@ LABEL_COLS = ["event_id", "is_malicious", "scenario_id", "injection_id", "techni
 def connect(path: str | Path, read_only: bool = False) -> duckdb.DuckDBPyConnection:
     con = duckdb.connect(str(path), read_only=read_only)
     if not read_only:
-        for ddl in (EVENTS_DDL, LABELS_DDL, INJECTIONS_DDL, ALERTS_DDL, INCIDENTS_DDL, TTD_DDL):
+        for ddl in (EVENTS_DDL, LABELS_DDL, INJECTIONS_DDL, ALERTS_DDL, INCIDENTS_DDL, TTD_DDL, FLOWS_DDL):
             con.execute(ddl)
     return con
 
@@ -183,3 +191,18 @@ def upsert_incidents(con: duckdb.DuckDBPyConnection, incidents: list) -> None:
     con.register("_inc", df)
     con.execute("INSERT OR REPLACE INTO incidents SELECT * FROM _inc")
     con.unregister("_inc")
+
+
+def insert_flows(con: duckdb.DuckDBPyConnection, flows: pd.DataFrame, replace: bool = True) -> int:
+    """Store VPC flow log records (the `flows` table). Existing rows are replaced by default so re-generation is idempotent."""
+    if replace:
+        con.execute("DELETE FROM flows").fetchall()
+    if flows.empty:
+        return 0
+    df = flows[FLOW_COLS].copy()
+    for c in ("start_time", "end_time"):
+        df[c] = pd.to_datetime(df[c])
+    con.register("_fl", df)
+    con.execute("INSERT INTO flows SELECT * FROM _fl").fetchall()
+    con.unregister("_fl")
+    return len(df)
