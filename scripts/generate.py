@@ -7,9 +7,13 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import time
-from datetime import datetime, timezone
+
+for _i, _a in enumerate(sys.argv):          # must happen before src.* is imported: the scenario config is read at import time
+    if _a == "--config-dir" and _i + 1 < len(sys.argv):
+        os.environ["CTD_CONFIG_DIR"] = sys.argv[_i + 1]
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -28,6 +32,7 @@ def main() -> None:
     ap.add_argument("--attacks", default="", help="comma list of S1..S9, or chains like S1+S2+S3")
     ap.add_argument("--count", type=int, default=1, help="instances of each attack")
     ap.add_argument("--stealth", type=float, default=0.0)
+    ap.add_argument("--config-dir", default=None, help="directory with org.yaml / scenarios.yaml overriding config/ (held-out generator variant)")
     ap.add_argument("--out", default="data/cloudtrail.duckdb")
     ap.add_argument("--overwrite", action="store_true")
     a = ap.parse_args()
