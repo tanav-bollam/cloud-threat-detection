@@ -13,6 +13,7 @@ Full spec: `SPEC.md`. Progress: `PLAN.md`. Everything must be free/open source; 
 - Dashboard: `.venv/Scripts/python.exe -m streamlit run app/streamlit_app.py` (needs models/). Pages in app/pages, data layer app/data.py (no Streamlit, unit-tested), shared app/common.py. Page tests use streamlit.testing AppTest + tests/conftest.py `dash_engine`.
 - Results pipeline: `scripts/evaluate.py --cache` -> `scripts/robustness.py` (needs the layers cache, ~12 min) -> `scripts/run_live.py` -> `scripts/make_results.py` (writes docs/RESULTS.md, docs/DETECTIONS.md). Never hand-edit those docs.
 - Real data: `scripts/load_flaws.py` (252 MB download, ~3 min ingest -> data/flaws.duckdb), sparse-clone `Yamato-Security/suzaku-sample-data` aws/ into data/raw/, then `scripts/validate_real.py` (~5 min) and `scripts/make_results.py`. `scripts/ingest_cloudtrail.py PATH --out X.duckdb` ingests any export. `src/stratus_coverage.py` measures per-technique rule coverage.
+- Packaging: `docker compose up` (http://localhost:8501); `scripts/build_demo.py` rebuilds demo/ (needs models/); `scripts/build_showcase.py` builds site/; `scripts/make_results.py` also refreshes the README results block. Settings in data/settings.json (CTD_SETTINGS), webhook via CTD_WEBHOOK_URL.
 - Summarize: `.venv/Scripts/python.exe scripts/summarize.py data/week.duckdb`
 
 ## Conventions

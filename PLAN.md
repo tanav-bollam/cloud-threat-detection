@@ -12,7 +12,7 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - [x] Phase 7: Streamlit dashboard (134 tests pass; Overview, Alerts & Incidents, Investigation + report export, Forensics, Attack Simulator; verified in a real browser)
 - [x] Phase 8: Detection Quality page + ablations + robustness (143 tests pass; combined recall 100% -> 86.9% as stealth rises; docs/RESULTS.md + DETECTIONS.md generated)
 - [x] Phase 9: real-data validation + file ingestor (193 tests pass; real Stratus coverage 12/35 before -> 33/35 post-hoc; flaws.cloud 1.23M unique events)
-- [ ] Phase 10: Docker, demo snapshot, webhook, CI, README, static showcase
+- [x] Phase 10: Docker, demo snapshot, webhook, Settings, CI, README, static showcase (fresh clone + new venv: 212 passed, 1 skipped)
 
 ## Decisions & findings so far
 - Anomaly model: **global** (persona = identity-type features) beats per-group: anomaly-only incident recall 0.952 vs 0.905 (reports/metrics*.json).
@@ -46,3 +46,12 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - flaws.cloud: 1,939,207 records = 1,225,784 unique events (37% exact duplicates by eventID). Aug-2019 surge (66.7x median month, Level6 RunInstances, 100% errors) found from
   raw counts; rules+anomaly both detect it, anomaly model flags ~4.7 windows/day vs a 0.5/day calibration (threshold does not transfer across regimes).
 - Test lesson: parametrize reads FIXTURES at import time; merging fixtures after the decorators silently skipped 17 rules' tests until moved before them.
+
+## Phase 10 notes (packaging) and final state
+- Demo: demo/ is ~20.7 MB (models 5 MB + snapshot 15.7 MB; whole .git is ~8 MB). `LiveEngine(seed_db=...)` copies the snapshot as the starting DB and the stream
+  continues from 2025-01-13 09:00, so a fresh container opens populated (6 incidents) with no training. `app/common.py` falls back to demo/models when models/ is absent.
+- Verified for real: `docker compose up` from a cold container -> overview content in ~10 s; fresh `git clone` + new venv + `pip install -r requirements.txt` -> full suite passes.
+- NOT verifiable here: GitHub Actions (ci.yml, pages.yml are written and YAML-valid but have never run on GitHub). No remote exists; nothing was pushed.
+- Bugs found while packaging: `.gitignore` `models/` also ignored demo/models (now `/models/`); `LiveEngine.stop()` joined an unstarted thread; webhook `drain()` raced with in-flight sends.
+- Webhook is off by default, http(s)-only, rate-limited, never raises into the pipeline; tested against a real local HTTP server. No real Discord/Slack endpoint was ever contacted.
+- Stretch goals (ATT&CK Navigator export, VPC flow logs, autoencoder, Ollama summaries) were not done.
