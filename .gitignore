@@ -20,3 +20,6 @@ reports/real_data_small.json
 *.log
 site/
 dist/
+docs/INTERVIEW.md
+PROGRESS.md
+DECISIONS_AND_CONCERNS.md

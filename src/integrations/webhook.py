@@ -6,8 +6,11 @@ MITRE tactic: with a real webhook this leaves your machine, so point it only at 
 """
 from __future__ import annotations
 
+import ipaddress
 import json
+import os
 import queue
+import socket
 import threading
 import time
 import urllib.error
@@ -53,9 +56,43 @@ def build_payload(a: Alert, kind: str) -> dict:
     return {"severity": a.severity, "title": a.title, "alert_id": a.alert_id, "text": text, **{k.lower().replace(" ", "_"): v for k, v in facts.items()}}
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """A webhook endpoint must answer directly: following a redirect would let it bounce the request to an internal address."""
+
+    def redirect_request(self, *a, **k):
+        return None
+
+
+_OPENER = urllib.request.build_opener(_NoRedirect)
+
+
+def destination_error(url: str, strict: Optional[bool] = None) -> Optional[str]:
+    """Why this URL must not be contacted, or None if it is fine. Always blocks link-local/metadata (169.254.0.0/16, fe80::/10), unspecified,
+    multicast and reserved addresses (the cloud-metadata SSRF targets). With CTD_WEBHOOK_STRICT=1 (or strict=True) loopback and private
+    ranges are blocked too, for deployments where the dashboard is reachable by people who must not be able to probe the internal network."""
+    strict = os.environ.get("CTD_WEBHOOK_STRICT") == "1" if strict is None else strict
+    host = urlparse(url).hostname
+    if not host:
+        return "no host in URL"
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except OSError as ex:
+        return f"could not resolve {host}: {ex}"
+    for info in infos:
+        ip = ipaddress.ip_address(info[4][0].split("%")[0])
+        if ip.is_link_local or ip.is_unspecified or ip.is_multicast or ip.is_reserved:
+            return f"destination {ip} is blocked (link-local / metadata / reserved range)"
+        if strict and (ip.is_loopback or ip.is_private):
+            return f"destination {ip} is blocked in strict mode (loopback / private range)"
+    return None
+
+
 def _http_post(url: str, payload: dict, timeout: float) -> int:
+    err = destination_error(url)
+    if err:
+        raise ValueError(err)
     req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json", "User-Agent": "cloud-threat-detection/0.1"}, method="POST")
-    with urllib.request.urlopen(req, timeout=timeout) as r:       # noqa: S310 - scheme validated in valid_url
+    with _OPENER.open(req, timeout=timeout) as r:       # noqa: S310 - scheme validated in valid_url, destination in destination_error, redirects disabled
         return r.status
 
 

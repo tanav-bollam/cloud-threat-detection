@@ -87,6 +87,10 @@ The synthetic numbers above are optimistic because the detectors and the generat
 
 `docs/RESULTS.md`, `docs/DETECTIONS.md` and `docs/REAL_DATA_FINDINGS.md` are **generated** from the measured reports. Never edit them by hand.
 
+## Security notes
+
+The dashboard is a local analyst tool and has **no authentication**. `docker compose` therefore publishes it on `127.0.0.1` only; do not expose it to an untrusted network without an authenticating proxy in front. The analyst SQL box is restricted by an allowlist (only `events`, `alerts` and `incidents`; no file, environment or system access) with a row cap and a timeout. See [`SECURITY.md`](SECURITY.md) for the trust model and how to report a problem.
+
 ## Optional alerting
 
 The **Settings** page can send HIGH/CRITICAL alerts to a free Discord or Slack incoming webhook (or any URL accepting a JSON POST). It is off by default, rate-limited, can never stall detection, and only accepts `http(s)` URLs. Prefer the `CTD_WEBHOOK_URL` environment variable so the URL is never written to a file. Alert details leave your machine when you enable it.

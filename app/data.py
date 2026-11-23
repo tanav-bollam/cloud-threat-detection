@@ -159,23 +159,84 @@ def raw_events(cur, event_ids: list[str], limit: int = 500) -> list[dict]:
 
 
 # ------------------------------------------------------------------------------------------------ forensics
-_FORBIDDEN = re.compile(r"\b(insert|update|delete|drop|create|alter|copy|attach|detach|install|load|export|import|pragma|call|set|truncate|replace)\b", re.I)
-_TRUTH_TABLES = re.compile(r"\b(labels|injections|ttd)\b", re.I)
+ANALYST_TABLES = {"events", "alerts", "incidents"}            # the only tables the analyst SQL box may read (ground truth is not among them)
+_SAFE_TABLE_FUNCS = {"unnest", "generate_series", "range"}
+# functions that read files, the environment, settings or system catalogs, or run nested SQL
+_DENY_FUNC = re.compile(r"^(read_|write_|copy_|parquet_|sniff_|duckdb_|pragma_|which_|load_|install_|iceberg_|delta_|query$|query_table$|glob$|getenv$|"
+                        r"current_setting$|current_query$|list_files|getvariable|.*_scan$)", re.I)
+_MAX_SQL_CHARS = 4000
+
+
+def _walk(node, tables, funcs, table_funcs, ctes):
+    if isinstance(node, dict):
+        t = node.get("type")
+        if t == "BASE_TABLE":
+            tables.append((node.get("catalog_name") or "", node.get("schema_name") or "", (node.get("table_name") or "")))
+        elif t == "TABLE_FUNCTION":
+            table_funcs.append(((node.get("function") or {}).get("function_name") or "").lower())
+        elif t == "FUNCTION":
+            funcs.append((node.get("function_name") or "").lower())
+        if "cte_map" in node and isinstance(node["cte_map"], dict):
+            for item in node["cte_map"].get("map", []):
+                ctes.add(str(item.get("key", "")).lower())
+        for v in node.values():
+            _walk(v, tables, funcs, table_funcs, ctes)
+    elif isinstance(node, list):
+        for v in node:
+            _walk(v, tables, funcs, table_funcs, ctes)
 
 
 def is_safe_select(sql: str) -> tuple[bool, str]:
+    """Allowlist check built on DuckDB's own parser (a keyword filter is not enough: read_text('/etc/passwd'), FROM 'file.csv',
+    glob(), getenv() all look like harmless SELECTs). Only a single SELECT over events/alerts/incidents (and its own CTEs) is allowed,
+    with no file, environment, settings or system-catalog access."""
+    import duckdb
     s = sql.strip().rstrip(";").strip()
     if not s:
         return False, "Empty query."
-    if ";" in s:
-        return False, "Only one statement is allowed."
-    if not re.match(r"^(select|with)\b", s, re.I):
-        return False, "Only SELECT / WITH queries are allowed."
-    if _FORBIDDEN.search(s):
-        return False, "Read-only: that statement contains a keyword that could modify data or files."
-    if _TRUTH_TABLES.search(s):
-        return False, "Ground-truth tables (labels, injections, ttd) are not available to analysts."
+    if len(s) > _MAX_SQL_CHARS:
+        return False, f"Query is longer than {_MAX_SQL_CHARS} characters."
+    try:
+        if len(duckdb.extract_statements(s)) != 1:
+            return False, "Only one statement is allowed."
+        raw = duckdb.connect(":memory:").execute("SELECT json_serialize_sql(?::VARCHAR)", [s]).fetchone()[0]
+    except Exception as ex:   # noqa: BLE001 - any parse failure means "not a plain SELECT"
+        return False, f"Could not parse a single SELECT statement: {str(ex)[:120]}"
+    tree = json.loads(raw)
+    if tree.get("error"):
+        return False, "Only SELECT queries are allowed (read-only)."
+    tables, funcs, table_funcs, ctes = [], [], [], set()
+    _walk(tree, tables, funcs, table_funcs, ctes)
+    for cat, schema, name in tables:
+        if cat or schema not in ("", "main"):
+            return False, "Only the events, alerts and incidents tables are available."
+        n = name.lower()
+        if n not in ANALYST_TABLES and n not in ctes:
+            if n in ("labels", "injections", "ttd"):
+                return False, "Ground-truth tables (labels, injections, ttd) are not available to analysts."
+            return False, f"Table or file '{name}' is not available. Use events, alerts or incidents."
+    for f in table_funcs:
+        if f not in _SAFE_TABLE_FUNCS:
+            return False, f"Table function {f}() is not allowed."
+    for f in funcs + table_funcs:
+        if _DENY_FUNC.match(f):
+            return False, f"Function {f}() is not allowed (it reads files, settings or system state)."
     return True, ""
+
+
+def run_readonly(cur, sql: str, row_limit: int = 5000, timeout_s: float = 15.0) -> pd.DataFrame:
+    """Run an already-validated analyst query on its own cursor with a row cap and a wall-clock timeout (a cross join must not freeze the app)."""
+    import threading
+    timer = threading.Timer(timeout_s, cur.interrupt)
+    timer.start()
+    try:
+        return cur.execute(f"SELECT * FROM ({sql.strip().rstrip(';')}) AS q LIMIT {int(row_limit)}").fetchdf()
+    except Exception as ex:   # noqa: BLE001
+        if "INTERRUPT" in str(ex).upper():
+            raise TimeoutError(f"Query stopped after {timeout_s:.0f} s. Add filters or a LIMIT.") from ex
+        raise
+    finally:
+        timer.cancel()
 
 
 def build_forensics_sql(f: dict, limit: int = 5000) -> tuple[str, list]:

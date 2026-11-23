@@ -17,7 +17,9 @@ COPY reports ./reports
 COPY docs ./docs
 
 # Runtime state (live database, saved settings, suppressions) lives here so it can be a volume.
-RUN mkdir -p /app/data
+# The app runs as an unprivileged user: a bug in it must not become root inside the container.
+RUN useradd --create-home --uid 10001 app && mkdir -p /app/data && chown -R app:app /app
+USER app
 ENV CTD_DB=/app/data/live.duckdb CTD_SETTINGS=/app/data/settings.json CTD_SUPPRESSIONS=/app/data/suppressions.json \
     CTD_SPEED=120 CTD_SCALE=0.3 CTD_DAYS=2
 

@@ -4,7 +4,9 @@ services:
     build: .
     image: cloud-threat-detection:latest
     ports:
-      - "8501:8501"
+      # Bound to this machine only. The dashboard has NO authentication: do not publish it to a network you do not trust
+      # (change to "8501:8501" or put it behind an authenticating reverse proxy if you really need remote access).
+      - "127.0.0.1:8501:8501"
     environment:
       CTD_SPEED: "120"          # simulated seconds per real second
       CTD_SCALE: "0.3"          # benign volume multiplier

@@ -49,6 +49,17 @@ def _dt(ep: float) -> datetime:
     return datetime.fromtimestamp(ep, tz=timezone.utc).replace(tzinfo=None)
 
 
+def _refuse_to_delete_unless_duckdb(path: Path, seed_db) -> None:
+    """`fresh=True` replaces the live database. Make a misconfigured CTD_DB (a source file, the demo snapshot itself, a random document)
+    fail loudly instead of being silently deleted."""
+    if seed_db and Path(seed_db).resolve() == path.resolve():
+        raise ValueError(f"CTD_DB / db_path ({path}) is the same file as the seed snapshot; refusing to delete it")
+    with open(path, "rb") as f:
+        head = f.read(16)
+    if head[8:12] != b"DUCK":
+        raise ValueError(f"{path} exists but is not a DuckDB database file; refusing to overwrite it. Choose another CTD_DB path.")
+
+
 # ====================================================================================================== ground truth (harness only)
 class GroundTruth:
     """Labels, injections and time-to-detect. Owned by the harness; nothing in src/detection imports this."""
@@ -402,6 +413,8 @@ class LiveEngine:
         path = Path(db_path)
         path.parent.mkdir(parents=True, exist_ok=True)
         if fresh:
+            if path.exists():
+                _refuse_to_delete_unless_duckdb(path, seed_db)
             for f in (path, Path(str(path) + ".wal")):
                 if f.exists():
                     f.unlink()

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,15 @@ ROOT = Path(__file__).resolve().parents[1]
 _RESOURCE_KEYS = {"bucketName": "S3 bucket", "userName": "IAM user", "roleName": "IAM role", "functionName": "Lambda function",
                   "policyArn": "IAM policy", "snapshotId": "EBS snapshot", "groupId": "Security group", "name": "CloudTrail trail",
                   "trailName": "CloudTrail trail", "detectorId": "GuardDuty detector", "instanceType": "Instance type", "secretId": "Secret"}
+
+
+def md_escape(value) -> str:
+    """Neutralise Markdown/HTML in values that come from logs (identity names, user agents, event names, bucket names are attacker-controlled):
+    no raw HTML, no links or images, no table-breaking pipes or newlines."""
+    t = str(value if value is not None else "")
+    t = t.replace("\\", "\\\\").replace("\r", " ").replace("\n", " ")
+    t = t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    return re.sub(r"([|`*_\[\]()!#~])", lambda m: "\\" + m.group(1), t)
 
 
 def load_playbook() -> dict:
@@ -76,10 +86,10 @@ def build_report(incident: dict, alerts: list[dict], timeline: list[dict], raw_e
 
 
 def to_markdown(rep: dict) -> str:
-    L = [f"# Incident {rep['incident_id']}: {rep['title']}", ""]
+    L = [f"# Incident {md_escape(rep['incident_id'])}: {md_escape(rep['title'])}", ""]
     L += [f"- **Severity:** {rep['severity']} (risk score {rep['risk_score']})", f"- **Status:** {rep['status']}",
           f"- **Window:** {rep['first_seen']} to {rep['last_seen']} (UTC)",
-          f"- **Identities:** {', '.join(rep['identities'])}", f"- **Source IPs:** {', '.join(rep['source_ips']) or 'n/a'}",
+          f"- **Identities:** {', '.join(md_escape(i) for i in rep['identities'])}", f"- **Source IPs:** {', '.join(md_escape(i) for i in rep['source_ips']) or 'n/a'}",
           f"- **Detected by:** {', '.join(rep['detection_sources'])}", ""]
     L += ["## Summary", ""]
     chain = " → ".join(rep["mitre_tactics"]) if rep["mitre_tactics"] else "n/a"
@@ -88,22 +98,22 @@ def to_markdown(rep: dict) -> str:
         L += ["Techniques: " + ", ".join(rep["mitre_techniques"]), ""]
     L += ["## Alerts", "", "| Time (UTC) | Severity | Source | Title | Identity | Detail |", "|---|---|---|---|---|---|"]
     for a in rep["alerts"]:
-        L.append(f"| {a['detected_at']} | {a['severity']} | {a['source']} | {a['title']} | {a['identity']} | {str(a.get('detail') or '').replace('|', '/')} |")
+        L.append(f"| {md_escape(a['detected_at'])} | {md_escape(a['severity'])} | {md_escape(a['source'])} | {md_escape(a['title'])} | {md_escape(a['identity'])} | {md_escape(a.get('detail') or '')} |")
     why = [a for a in rep["alerts"] if a.get("reasons")]
     if why:
         L += ["", "## Why the anomaly model flagged it", ""]
         for a in why:
             rs = a["reasons"] if isinstance(a["reasons"], list) else json.loads(a["reasons"])
-            L.append(f"- {a['identity']} @ {a['detected_at']}: " + ", ".join(f"`{r['feature']}={r['value']}` ({r['contribution']:+.2f})" for r in rs))
+            L.append(f"- {md_escape(a['identity'])} @ {md_escape(a['detected_at'])}: " + ", ".join(f"`{r['feature']}={r['value']}` ({r['contribution']:+.2f})" for r in rs))
     L += ["", "## Timeline", "", "| Time (UTC) | Identity | Source IP | Event | Region | Result | Flagged |", "|---|---|---|---|---|---|---|"]
     for t in rep["timeline"][:200]:
-        L.append(f"| {t['time']} | {t['identity']} | {t['ip']} | {t['event']} | {t['region']} | {t['error'] or 'ok'} | {t['risk']} |")
+        L.append(f"| {md_escape(t['time'])} | {md_escape(t['identity'])} | {md_escape(t['ip'])} | {md_escape(t['event'])} | {md_escape(t['region'])} | {md_escape(t['error'] or 'ok')} | {md_escape(t['risk'])} |")
     if len(rep["timeline"]) > 200:
         L.append(f"| … | | | {len(rep['timeline']) - 200} more events in the JSON export | | | |")
     L += ["", "## Affected resources", ""]
-    L += [f"- **{k}:** {', '.join(v)}" for k, v in rep["affected_resources"].items()] or ["- none extracted"]
+    L += [f"- **{md_escape(k)}:** {', '.join(md_escape(x) for x in v)}" for k, v in rep["affected_resources"].items()] or ["- none extracted"]
     L += ["", "## Recommended response", ""] + [f"{i}. {s}" for i, s in enumerate(rep["recommended_response"], 1)]
     if rep["analyst_notes"]:
-        L += ["", "## Analyst notes", "", rep["analyst_notes"]]
+        L += ["", "## Analyst notes", "", md_escape(rep["analyst_notes"])]
     L += ["", "---", f"*{rep['disclaimer']} Generated {rep['generated_at']}.*", ""]
     return "\n".join(L)

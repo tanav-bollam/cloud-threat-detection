@@ -64,7 +64,7 @@ def test_forensics_sql_builder_filters(dash_engine):
     ("SELECT * FROM events", True), ("with x as (select 1) select * from x", True), ("select count(*) from alerts;", True),
     ("DROP TABLE events", False), ("SELECT 1; DELETE FROM events", False), ("INSERT INTO events VALUES (1)", False),
     ("COPY events TO 'x.csv'", False), ("SELECT * FROM labels", False), ("select * from injections", False),
-    ("SELECT * FROM read_csv('c:/secrets.csv')", True), ("", False), ("PRAGMA database_list", False)])
+    ("SELECT * FROM read_csv('c:/secrets.csv')", False), ("", False), ("PRAGMA database_list", False)])
 def test_sql_guard(sql, ok):
     assert D.is_safe_select(sql)[0] is ok
 

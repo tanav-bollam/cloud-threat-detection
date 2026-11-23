@@ -59,6 +59,10 @@ def save(s: Settings, path: Optional[Path] = None) -> None:
     if os.environ.get("CTD_WEBHOOK_URL"):
         data["webhook_url"] = ""                   # do not write an env-provided secret to disk
     p.write_text(json.dumps(data, indent=1), encoding="utf-8")
+    try:
+        os.chmod(p, 0o600)                         # the webhook URL is a secret: owner-only where the OS supports it
+    except OSError:
+        pass
 
 
 def apply(engine, s: Settings) -> list[str]:

@@ -6,11 +6,11 @@ anonymized values), so flattening here never assumes a field exists; records wit
 """
 from __future__ import annotations
 
-import gzip
 import io
 import json
 import re
 import tarfile
+import zlib
 from pathlib import Path
 from typing import Iterable, Iterator, Optional
 
@@ -55,6 +55,17 @@ def _parse_text(text: str) -> Iterator[dict]:
                 continue
 
 
+MAX_DECOMPRESSED_BYTES = 1 << 30          # 1 GiB: a gzip member that expands beyond this is treated as a decompression bomb
+
+
+def _gunzip(data: bytes) -> bytes:
+    d = zlib.decompressobj(16 + zlib.MAX_WBITS)
+    out = d.decompress(data, MAX_DECOMPRESSED_BYTES + 1)
+    if len(out) > MAX_DECOMPRESSED_BYTES or d.unconsumed_tail:
+        raise ValueError(f"decompressed size exceeds {MAX_DECOMPRESSED_BYTES:,} bytes (possible decompression bomb)")
+    return out
+
+
 def _read_bytes(name: str, data: bytes) -> Iterator[dict]:
     low = name.lower()
     if low.endswith((".tar", ".tar.gz", ".tgz")):
@@ -66,12 +77,14 @@ def _read_bytes(name: str, data: bytes) -> Iterator[dict]:
                         yield from _read_bytes(m.name, f.read())
         return
     if low.endswith(".gz"):
-        data = gzip.decompress(data)
+        data = _gunzip(data)
         name = name[:-3]
     yield from _parse_text(data.decode("utf-8", errors="replace"))
 
 
-def iter_records(paths: Iterable[str | Path]) -> Iterator[dict]:
+def iter_records(paths: Iterable[str | Path], errors: Optional[list] = None) -> Iterator[dict]:
+    """Yield CloudTrail records. A file that cannot be read (corrupt gzip, decompression bomb, bad tar) is skipped and appended to `errors`
+    so one bad file never aborts a large ingest."""
     for p in paths:
         p = Path(p)
         # a directory is walked for log-like files only (so an output .duckdb or README next to the exports is never read);
@@ -79,14 +92,26 @@ def iter_records(paths: Iterable[str | Path]) -> Iterator[dict]:
         files = sorted(x for x in p.rglob("*") if x.is_file() and x.name.lower().endswith(_LOG_SUFFIXES) and not x.name.startswith(".")) if p.is_dir() else [p]
         for f in files:
             if f.suffix.lower() == ".tar":                   # stream big tars member by member instead of reading them whole
-                with tarfile.open(f) as t:
-                    for m in t:
-                        if m.isfile():
-                            fh = t.extractfile(m)
-                            if fh is not None:
-                                yield from _read_bytes(m.name, fh.read())
+                try:
+                    with tarfile.open(f) as t:
+                        for m in t:
+                            if m.isfile():
+                                fh = t.extractfile(m)
+                                if fh is not None:
+                                    try:
+                                        yield from _read_bytes(m.name, fh.read())
+                                    except (ValueError, OSError, EOFError, zlib.error) as ex:
+                                        if errors is not None:
+                                            errors.append(f"{f.name}:{m.name}: {ex}")
+                except (tarfile.TarError, OSError) as ex:
+                    if errors is not None:
+                        errors.append(f"{f.name}: {ex}")
                 continue
-            yield from _read_bytes(f.name, f.read_bytes())
+            try:
+                yield from _read_bytes(f.name, f.read_bytes())
+            except (ValueError, OSError, EOFError, zlib.error) as ex:
+                if errors is not None:
+                    errors.append(f"{f.name}: {ex}")
 
 
 def _identity_name(ui: dict) -> str:
@@ -153,7 +178,8 @@ def ingest(con, paths: Iterable[str | Path], chunk: int = 50_000, progress=None)
     """Stream records into `events` (duplicates by eventID ignored). Returns counts."""
     seen = inserted = skipped = 0
     buf: list[dict] = []
-    for rec in iter_records(paths):
+    errors: list[str] = []
+    for rec in iter_records(paths, errors):
         seen += 1
         row = flatten_lenient(rec)
         if row is None:
@@ -167,4 +193,4 @@ def ingest(con, paths: Iterable[str | Path], chunk: int = 50_000, progress=None)
                 progress(seen, inserted)
     if buf:
         inserted += _insert_ignore(con, buf)
-    return {"records_seen": seen, "inserted": inserted, "skipped_invalid": skipped, "duplicates": seen - skipped - inserted}
+    return {"records_seen": seen, "inserted": inserted, "skipped_invalid": skipped, "duplicates": seen - skipped - inserted, "unreadable_files": errors[:20]}

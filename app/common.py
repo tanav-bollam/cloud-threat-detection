@@ -17,6 +17,7 @@ from app import data
 from src.detection.iforest import AnomalyModel
 from src.detection.triage import SuppressionList
 from src.pipeline.live import LiveEngine
+from src.reporting import md_escape  # noqa: F401  (re-exported for pages)
 
 # ---- palette (dataviz reference instance, dark surface #1a1a19). Categorical slots 1-3 validate all-pairs; severity uses the fixed status steps.
 BLUE, ORANGE, AQUA = "#3987e5", "#d95926", "#199e70"
@@ -39,7 +40,8 @@ def sev_chip(sev: str) -> str:
 def tactic_chain(tactics: list[str]) -> str:
     if not tactics:
         return "<span style='color:%s'>no MITRE tactic mapped</span>" % MUTED
-    chips = [f'<span style="border:1px solid {MUTED};border-radius:6px;padding:2px 8px;color:{INK};white-space:nowrap">{t}</span>' for t in tactics]
+    import html as _html
+    chips = [f'<span style="border:1px solid {MUTED};border-radius:6px;padding:2px 8px;color:{INK};white-space:nowrap">{_html.escape(str(t))}</span>' for t in tactics]
     return f' <span style="color:{MUTED}">→</span> '.join(chips)
 
 

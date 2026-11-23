@@ -92,7 +92,7 @@ if rows:
 
 st.divider()
 st.subheader("SQL")
-st.caption("Read-only DuckDB. Tables: `events`, `alerts`, `incidents`. Results are capped at 5,000 rows.")
+st.caption("Read-only DuckDB over `events`, `alerts` and `incidents` only (no files, no settings). Results are capped at 5,000 rows and queries stop after 15 s.")
 default_sql = "SELECT event_name, count(*) AS n, count(DISTINCT identity) AS identities\nFROM events\nWHERE error_code IS NOT NULL\nGROUP BY 1 ORDER BY n DESC LIMIT 20"
 sql_text = st.text_area("Query", value=st.session_state.get("sql_text", default_sql), height=140, key="sql_text")
 if st.button("Run query"):
@@ -101,8 +101,10 @@ if st.button("Run query"):
         st.error(why)
     else:
         try:
-            out = D.df(cur, f"SELECT * FROM ({sql_text.strip().rstrip(';')}) LIMIT 5000")
+            out = D.run_readonly(cur, sql_text)
             st.dataframe(out, hide_index=True, width="stretch")
             st.download_button("⬇ CSV", out.to_csv(index=False), file_name="query.csv", mime="text/csv")
+        except TimeoutError as ex:
+            st.error(str(ex))
         except Exception as ex:   # noqa: BLE001 - show SQL errors to the analyst
             st.error(f"Query failed: {ex}")

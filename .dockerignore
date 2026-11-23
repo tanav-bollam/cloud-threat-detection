@@ -10,3 +10,8 @@ __pycache__
 .hypothesis
 site
 docs/screenshots
+docs/INTERVIEW.md
+PROGRESS.md
+DECISIONS_AND_CONCERNS.md
+site
+dist

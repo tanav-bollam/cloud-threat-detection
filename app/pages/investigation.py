@@ -25,7 +25,7 @@ if inc_df.empty:
 inc_df = inc_df.sort_values(["rank", "risk_score"], ascending=False)
 ids = list(inc_df["incident_id"])
 want = st.session_state.get("selected_incident")
-label = {r.incident_id: f"{C.sev_label(r.severity)} · {r.risk_score:.0f} · {r.title[:70]} ({r.incident_id})" for r in inc_df.itertuples()}
+label = {r.incident_id: f"{C.sev_label(r.severity)} · {r.risk_score:.0f} · {C.md_escape(r.title[:70])} ({r.incident_id})" for r in inc_df.itertuples()}
 iid = st.selectbox("Incident", ids, index=ids.index(want) if want in ids else 0, format_func=label.get)
 st.session_state["selected_incident"] = iid
 inc = D.get_incident(cur, iid)
@@ -33,7 +33,7 @@ alerts = D.incident_alerts(cur, iid)
 RULES = {r.id: r for r in load_rules()}
 
 # ------------------------------------------------------------------ header
-st.markdown(f"### {inc['title']}")
+st.markdown(f"### {C.md_escape(inc['title'])}")
 h1, h2, h3, h4 = st.columns([1.2, 1, 1.5, 1.5])
 h1.markdown(C.sev_chip(inc["severity"]), unsafe_allow_html=True)
 h2.metric("Risk score", f"{inc['risk_score']:.0f} / 100")
@@ -48,7 +48,7 @@ st.markdown("**Entities** — click to pivot in Forensics")
 cols = st.columns(max(1, min(6, len(inc["identities"]) + len(inc["ips"]))))
 k = 0
 for ident in inc["identities"][:6]:
-    if cols[k % len(cols)].button(f"👤 {ident}", key=f"pi_{ident}", width="stretch"):
+    if cols[k % len(cols)].button(f"👤 {C.md_escape(ident)}", key=f"pi_{ident}", width="stretch"):
         C.go("pages/forensics.py", pivot_identity=ident, pivot_ip="")
     k += 1
 for ip in inc["ips"][:6]:
@@ -96,7 +96,7 @@ else:
 # ------------------------------------------------------------------ alerts + why flagged
 st.subheader("Alerts and why they fired")
 for a in alerts.itertuples():
-    with st.expander(f"{C.sev_label(a.severity)} · {a.title} · {pd.Timestamp(a.detected_at):%H:%M:%S} · {a.identity}", expanded=(a.source == "anomaly" and len(alerts) <= 4)):
+    with st.expander(f"{C.sev_label(a.severity)} · {C.md_escape(a.title)} · {pd.Timestamp(a.detected_at):%H:%M:%S} · {C.md_escape(a.identity)}", expanded=(a.source == "anomaly" and len(alerts) <= 4)):
         st.markdown(f"**{a.rule_id}** ({a.source}) · risk {a.risk:.0f} · tactic {a.mitre_tactic or 'n/a'} {a.mitre_technique or ''}")
         st.write(a.description)
         if a.detail:

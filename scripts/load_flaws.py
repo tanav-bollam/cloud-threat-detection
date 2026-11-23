@@ -22,12 +22,22 @@ from src.pipeline import ingest, storage  # noqa: E402
 
 URL = "https://summitroute.com/downloads/flaws_cloudtrail_logs.tar"
 EXPECTED_BYTES = 251_688_960
+EXPECTED_SHA256 = "f26c2b8da56bb00d695a57f00f86208117582b9216bb52424d68e718ca2a96aa"     # measured on the verified download; also identical to the copy in suzaku-sample-data
+
+
+def sha256_of(path: Path) -> str:
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        while chunk := f.read(1 << 20):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def download(dest: Path) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
-    if dest.exists() and dest.stat().st_size == EXPECTED_BYTES:
-        print(f"already downloaded: {dest}")
+    if dest.exists() and dest.stat().st_size == EXPECTED_BYTES and sha256_of(dest) == EXPECTED_SHA256:
+        print(f"already downloaded and verified: {dest}")
         return
     print(f"downloading {URL} ...")
     req = urllib.request.Request(URL, headers={"User-Agent": "cloud-threat-detection-research/0.1"})
