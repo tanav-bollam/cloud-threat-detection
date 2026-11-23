@@ -108,9 +108,19 @@ def real_md() -> str:
                                  [[i["severity"], f"{i['risk']:.0f}", ", ".join(i["identities"]), i["first_seen"][:16], " → ".join(i["tactics"]) or "n/a", ", ".join(i["sources"]), i["alerts"]]
                                   for i in ml["top_incidents"]], ["l", "r", "l", "l", "l", "l", "r"]), ""]
                 rate = ml["flagged_windows"] / max(ml["scored_days"], 1)
+                rx = load("recalibration_experiment.json")
                 md += [f"The model flagged {ml['flagged_windows']:,} windows over {ml['scored_days']} days (**{rate:.1f}/day**) against the {ml['calibration_fp_per_day_target']}/day it was calibrated to on the "
-                       "last stretch of its own history. The scored period is not like the calibration period (the surge month alone is a different regime), so a threshold calibrated on history does "
-                       "not hold; in production it would need periodic recalibration.\n"]
+                       "last stretch of its own history. That headline overstates the problem: most of those windows are the genuine surge month itself."]
+                if rx:
+                    st = rx["threshold_strategies"]["static (calibrated once)"]
+                    g = rx["threshold_strategies"]["trailing quantile + storm guard"]
+                    md[-1] += (f" Outside the surge month the rate is **{st['outside_per_day']}/day** ({st['outside_flagged']} windows over {rx['days_outside_surge']} days; {st['surge_month_flagged']:,} fall in the surge month). "
+                               f"Window scores do drift upward (median {rx['calibration_median_score']} at calibration vs {rx['baseline_strategies']['frozen baseline']['median_window_score']} later) because the per-identity baseline goes stale, "
+                               f"but I tried five recalibration strategies (`scripts/recalibration_experiment.py`) and none helps much: the best, a trailing-quantile threshold with a storm guard, gives {g['outside_per_day']}/day "
+                               f"(-{round((1 - g['outside_per_day'] / st['outside_per_day']) * 100)}%) while keeping {round(g['surge_month_flagged'] / st['surge_month_flagged'] * 100)}% of the surge detections; a median+MAD threshold is worse "
+                               f"({rx['threshold_strategies']['median + k*MAD, trailing 30d']['outside_per_day']}/day), and an unguarded trailing quantile adapts to the surge and masks it. "
+                               "The remaining flagged windows are mostly unusual-but-benign inventory sweeps, not drift. Adaptive thresholding therefore ships as an optional, off-by-default library (`src/detection/calibration.py`).")
+                md[-1] += "\n"
                 if ml["top_anomalies_outside_surge"]:
                     breadth = ("log_n", "n_distinct_names", "volume_z", "n_services", "log_n_ips")
                     sweep = sum(1 for a in ml["top_anomalies_outside_surge"] if any(a["reasons"].startswith(b) for b in breadth))

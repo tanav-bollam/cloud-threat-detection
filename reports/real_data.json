@@ -722,7 +722,8 @@
    "records_seen": 2900,
    "inserted": 2900,
    "skipped_invalid": 0,
-   "duplicates": 0
+   "duplicates": 0,
+   "unreadable_files": []
   },
   "overview": {
    "events": 2900,
@@ -857,7 +858,7 @@
     "rule_id": "R001",
     "title": "CloudTrail logging stopped or trail deleted",
     "severity": "CRITICAL",
-    "tactic": "Defense Evasion",
+    "tactic": "Defense Impairment",
     "alerts": 2,
     "identities": 1,
     "top_identity": "bert-jan",
@@ -869,7 +870,7 @@
     "rule_id": "R002",
     "title": "CloudTrail configuration weakened",
     "severity": "HIGH",
-    "tactic": "Defense Evasion",
+    "tactic": "Defense Impairment",
     "alerts": 2,
     "identities": 1,
     "top_identity": "bert-jan",
@@ -929,7 +930,7 @@
     "rule_id": "R036",
     "title": "Attempt to leave the AWS Organization",
     "severity": "HIGH",
-    "tactic": "Defense Evasion",
+    "tactic": "Defense Impairment",
     "alerts": 1,
     "identities": 1,
     "top_identity": "stratus-red-team-leave-org-role",
@@ -941,7 +942,7 @@
     "rule_id": "R004",
     "title": "VPC flow logs deleted",
     "severity": "HIGH",
-    "tactic": "Defense Evasion",
+    "tactic": "Defense Impairment",
     "alerts": 1,
     "identities": 1,
     "top_identity": "bert-jan",
@@ -953,7 +954,7 @@
     "rule_id": "R017",
     "title": "Security group opened to the world",
     "severity": "MEDIUM",
-    "tactic": "Defense Evasion",
+    "tactic": "Defense Impairment",
     "alerts": 1,
     "identities": 1,
     "top_identity": "bert-jan",
@@ -1140,14 +1141,14 @@
     "alerted": 0
    },
    {
-    "event_name": "UpdateAssumeRolePolicy",
-    "events": 2,
-    "alerted": 1
-   },
-   {
     "event_name": "DeleteAccessKey",
     "events": 2,
     "alerted": 0
+   },
+   {
+    "event_name": "UpdateAssumeRolePolicy",
+    "events": 2,
+    "alerted": 1
    },
    {
     "event_name": "ModifySnapshotAttribute",
@@ -1167,7 +1168,8 @@
    "records_seen": 30477,
    "inserted": 23981,
    "skipped_invalid": 0,
-   "duplicates": 6496
+   "duplicates": 6496,
+   "unreadable_files": []
   },
   "overview": {
    "events": 23981,
@@ -1294,7 +1296,7 @@
     "rule_id": "R002",
     "title": "CloudTrail configuration weakened",
     "severity": "HIGH",
-    "tactic": "Defense Evasion",
+    "tactic": "Defense Impairment",
     "alerts": 1,
     "identities": 1,
     "top_identity": "root",
@@ -1306,7 +1308,7 @@
     "rule_id": "R024",
     "title": "Mass S3 object download by a human user",
     "severity": "HIGH",
-    "tactic": "Exfiltration",
+    "tactic": "Collection",
     "alerts": 1,
     "identities": 1,
     "top_identity": "FalsimentisRoot",
@@ -1324,17 +1326,17 @@
     "alerted": 0
    },
    {
-    "event_name": "CreateRole",
-    "events": 1,
-    "alerted": 0
-   },
-   {
     "event_name": "PutBucketPolicy",
     "events": 1,
     "alerted": 0
    },
    {
     "event_name": "CreateAccessKey",
+    "events": 1,
+    "alerted": 0
+   },
+   {
+    "event_name": "CreateRole",
     "events": 1,
     "alerted": 0
    }
@@ -1615,7 +1617,7 @@
      "rule_id": "R017",
      "title": "Security group opened to the world",
      "severity": "MEDIUM",
-     "tactic": "Defense Evasion",
+     "tactic": "Defense Impairment",
      "alerts": 7,
      "identities": 2,
      "top_identity": "backup",
@@ -1675,7 +1677,7 @@
      "rule_id": "R001",
      "title": "CloudTrail logging stopped or trail deleted",
      "severity": "CRITICAL",
-     "tactic": "Defense Evasion",
+     "tactic": "Defense Impairment",
      "alerts": 2,
      "identities": 2,
      "top_identity": "Level6",
@@ -1699,7 +1701,7 @@
      "rule_id": "R002",
      "title": "CloudTrail configuration weakened",
      "severity": "HIGH",
-     "tactic": "Defense Evasion",
+     "tactic": "Defense Impairment",
      "alerts": 1,
      "identities": 1,
      "top_identity": "Level6",
@@ -1720,7 +1722,7 @@
      "sample_event": "UpdateLoginProfile"
     }
    ],
-   "seconds": 38,
+   "seconds": 27,
    "alerts_without_dedupe": 847927
   },
   "ml": {
@@ -1752,18 +1754,18 @@
      "minutes_from_onset_to_first_alert": 3.5
     },
     "ip": {
-     "alerts": 290,
-     "incidents": 252,
-     "incidents_per_day": 0.58,
+     "alerts": 66,
+     "incidents": 62,
+     "incidents_per_day": 0.14,
      "surge_events_covered": 0,
      "surge_events_covered_pct": 0.0,
      "surge_detected": false,
      "minutes_from_onset_to_first_alert": null
     },
     "combined": {
-     "alerts": 5755,
-     "incidents": 685,
-     "incidents_per_day": 1.58,
+     "alerts": 5531,
+     "incidents": 591,
+     "incidents_per_day": 1.36,
      "surge_events_covered": 684377,
      "surge_events_covered_pct": 100.0,
      "surge_detected": true,
@@ -1789,22 +1791,21 @@
      ],
      "sources": [
       "anomaly",
-      "ip",
       "rule"
      ],
-     "alerts": 2897
+     "alerts": 2893
     },
     {
      "severity": "CRITICAL",
      "risk": 100.0,
-     "title": "Multi-stage activity on root: Initial Access \u2192 Defense Evasion \u2192 Discovery",
+     "title": "Multi-stage activity on root: Initial Access \u2192 Defense Impairment \u2192 Discovery",
      "identities": [
       "root"
      ],
      "first_seen": "2019-08-23T15:47:30Z",
      "tactics": [
       "Initial Access",
-      "Defense Evasion",
+      "Defense Impairment",
       "Discovery"
      ],
      "sources": [
@@ -1812,28 +1813,6 @@
       "rule"
      ],
      "alerts": 6
-    },
-    {
-     "severity": "CRITICAL",
-     "risk": 100.0,
-     "title": "Multi-stage activity on Level6 +1 more: Persistence \u2192 Impact \u2192 Discovery \u2192 Initial Access",
-     "identities": [
-      "Level6",
-      "backup"
-     ],
-     "first_seen": "2019-09-30T06:36:08Z",
-     "tactics": [
-      "Persistence",
-      "Impact",
-      "Discovery",
-      "Initial Access"
-     ],
-     "sources": [
-      "anomaly",
-      "ip",
-      "rule"
-     ],
-     "alerts": 59
     },
     {
      "severity": "CRITICAL",
@@ -1940,6 +1919,26 @@
      "alerts": 266
     },
     {
+     "severity": "CRITICAL",
+     "risk": 88.0,
+     "title": "Multi-stage activity on Level6 +1 more: Persistence \u2192 Impact \u2192 Discovery",
+     "identities": [
+      "Level6",
+      "backup"
+     ],
+     "first_seen": "2019-09-30T06:36:08Z",
+     "tactics": [
+      "Persistence",
+      "Impact",
+      "Discovery"
+     ],
+     "sources": [
+      "anomaly",
+      "rule"
+     ],
+     "alerts": 58
+    },
+    {
      "severity": "HIGH",
      "risk": 84.0,
      "title": "Multi-stage activity on Level6: Initial Access \u2192 Discovery \u2192 Credential Access \u2192 Impact",
@@ -1979,7 +1978,7 @@
       "ip",
       "rule"
      ],
-     "alerts": 33
+     "alerts": 24
     }
    ],
    "top_anomalies_outside_surge": [

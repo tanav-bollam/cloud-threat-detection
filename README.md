@@ -1,5 +1,8 @@
 # Cloud Threat Detection
 
+[![CI](https://github.com/tanav-bollam/cloud-threat-detection/actions/workflows/ci.yml/badge.svg)](https://github.com/tanav-bollam/cloud-threat-detection/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Defensive monitoring for **AWS CloudTrail**. It generates realistic synthetic audit logs with labeled attacks, detects threats with three layers (a rules engine, an **IsolationForest** behavioural model, and an IP/access-pattern layer), groups alerts into incidents with severity and a MITRE ATT&CK tactic chain, and gives an analyst a dashboard for triage, investigation and forensics.
 
 It analyzes logs and never attacks anything. Everything is free and open source, runs on a laptop CPU, and **needs no AWS account**.
@@ -36,7 +39,7 @@ python -m pytest -q                                    # ~2 minutes
 | Kill chains grouped into one incident | 6/6 |
 | Time to detect, median / p95 (simulated s) | 0 / 18.4 |
 | Recall against a stealthy attacker | 86.9% at stealth 0.9 (from 100% at 0.0) |
-| Live pipeline: event to alert (median) | 424 ms, 9/9 injections detected |
+| Live pipeline: event to alert (median) | 4553 ms, 5/5 injections detected |
 | **Real** Stratus techniques covered, original rules (held-out) | **12/35** (34%) |
 | ...after adding rules for the gaps (post-hoc, not independent) | 33/35 (94%) |
 | flaws.cloud 2019-08 surge (66.7× normal volume) | detected; 100.0% of its events covered |
@@ -116,7 +119,7 @@ tests/     ~200 tests: rules fixtures, features, live engine, dashboard pages, i
 ## Limitations
 
 - The detectors were developed against the same synthetic world used to evaluate them; treat synthetic metrics as an upper bound. Per-scenario precision is one-vs-rest against a shared benign background and depends on how many attacks were injected.
-- The anomaly threshold is calibrated on a benign week and does not carry over to a different regime without recalibration (visible on flaws.cloud).
+- The anomaly threshold is calibrated on a benign week. On flaws.cloud it flags 1.4 windows/day outside the genuine surge month against a 0.5/day target; five recalibration strategies were tried and none helped much (`docs/REAL_DATA_FINDINGS.md`).
 - Geolocation uses a synthetic registry for generated data and is switched off for real data (public datasets anonymize IPs). Plug in DB-IP Lite (free, CC BY 4.0) to use real geography on your own logs.
 - The stealth study models specific evasions (user agent, region/country, hours, pace). Real adversaries vary in other ways, and an attacker who stays read-only and low-volume is not modeled.
 

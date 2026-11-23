@@ -47,7 +47,7 @@ def download(dest: Path) -> None:
         while chunk := r.read(1 << 20):
             f.write(chunk)
             got += len(chunk)
-            if int((time.time() - t0)) % 10 == 0:
+            if int(time.time() - t0) % 10 == 0:
                 print(f"  {got/1e6:.0f}/{total/1e6:.0f} MB", end="\r", flush=True)
     if dest.stat().st_size != EXPECTED_BYTES:
         sys.exit(f"unexpected size {dest.stat().st_size} (expected {EXPECTED_BYTES}); the source may have changed, verify before using")

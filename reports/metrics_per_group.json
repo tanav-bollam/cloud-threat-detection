@@ -1412,9 +1412,9 @@
      "MEDIUM": 7
     },
     "tp_by_severity": {
-     "CRITICAL": 34,
+     "CRITICAL": 35,
      "MEDIUM": 6,
-     "HIGH": 11,
+     "HIGH": 10,
      "LOW": 1
     },
     "chains": 6,
@@ -1746,9 +1746,9 @@
      "MEDIUM": 7
     },
     "tp_by_severity": {
-     "CRITICAL": 36,
+     "CRITICAL": 37,
      "MEDIUM": 3,
-     "HIGH": 28
+     "HIGH": 27
     },
     "chains": 6,
     "chains_in_single_incident": 6
@@ -1983,12 +1983,12 @@
  "sample_incidents": [
   {
    "incident_id": "INC-334F8660",
-   "title": "Multi-stage activity on sana: Initial Access \u2192 Defense Evasion \u2192 Persistence",
+   "title": "Multi-stage activity on sana: Initial Access \u2192 Defense Impairment \u2192 Persistence",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
     "Initial Access",
-    "Defense Evasion",
+    "Defense Impairment",
     "Persistence"
    ],
    "sources": [
@@ -2016,12 +2016,12 @@
   },
   {
    "incident_id": "INC-A4903597",
-   "title": "Multi-stage activity on zane: Initial Access \u2192 Defense Evasion \u2192 Persistence",
+   "title": "Multi-stage activity on zane: Initial Access \u2192 Defense Impairment \u2192 Persistence",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
     "Initial Access",
-    "Defense Evasion",
+    "Defense Impairment",
     "Persistence"
    ],
    "sources": [
@@ -2033,7 +2033,7 @@
   },
   {
    "incident_id": "INC-8CDA660F",
-   "title": "Multi-stage activity on carol: Initial Access \u2192 Discovery \u2192 Privilege Escalation \u2192 Persistence \u2192 Defense Evasion \u2192 Exfiltration",
+   "title": "Multi-stage activity on carol: Initial Access \u2192 Discovery \u2192 Privilege Escalation \u2192 Persistence \u2192 Defense Impairment \u2192 Exfiltration",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
@@ -2041,7 +2041,7 @@
     "Discovery",
     "Privilege Escalation",
     "Persistence",
-    "Defense Evasion",
+    "Defense Impairment",
     "Exfiltration"
    ],
    "sources": [
@@ -2070,12 +2070,12 @@
   },
   {
    "incident_id": "INC-34855723",
-   "title": "Multi-stage activity on priya: Initial Access \u2192 Defense Evasion \u2192 Impact \u2192 Persistence",
+   "title": "Multi-stage activity on priya: Initial Access \u2192 Defense Impairment \u2192 Impact \u2192 Persistence",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
     "Initial Access",
-    "Defense Evasion",
+    "Defense Impairment",
     "Impact",
     "Persistence"
    ],
@@ -2105,7 +2105,7 @@
   },
   {
    "incident_id": "INC-BC960559",
-   "title": "Multi-stage activity on sana: Initial Access \u2192 Discovery \u2192 Persistence \u2192 Privilege Escalation \u2192 Defense Evasion \u2192 Exfiltration",
+   "title": "Multi-stage activity on sana: Initial Access \u2192 Discovery \u2192 Persistence \u2192 Privilege Escalation \u2192 Defense Impairment \u2192 Collection \u2192 Exfiltration",
    "severity": "CRITICAL",
    "risk_score": 100.0,
    "tactics": [
@@ -2113,7 +2113,8 @@
     "Discovery",
     "Persistence",
     "Privilege Escalation",
-    "Defense Evasion",
+    "Defense Impairment",
+    "Collection",
     "Exfiltration"
    ],
    "sources": [

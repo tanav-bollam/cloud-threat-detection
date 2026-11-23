@@ -1,0 +1,57 @@
+{
+ "dataset": "flaws.cloud",
+ "target_per_day": 0.5,
+ "base_threshold": 0.688,
+ "calibration_median_score": 0.414,
+ "scored_days": 433,
+ "days_outside_surge": 402,
+ "surge_month": "2019-08",
+ "threshold_strategies": {
+  "static (calibrated once)": {
+   "surge_month_flagged": 1471,
+   "outside_flagged": 552,
+   "outside_per_day": 1.37,
+   "median_threshold": 0.688
+  },
+  "median + k*MAD, trailing 30d": {
+   "surge_month_flagged": 1658,
+   "outside_flagged": 1848,
+   "outside_per_day": 4.6,
+   "median_threshold": 0.641
+  },
+  "trailing quantile, no storm guard": {
+   "surge_month_flagged": 390,
+   "outside_flagged": 382,
+   "outside_per_day": 0.95,
+   "median_threshold": 0.715
+  },
+  "trailing quantile + storm guard": {
+   "surge_month_flagged": 1410,
+   "outside_flagged": 464,
+   "outside_per_day": 1.15,
+   "median_threshold": 0.699,
+   "frozen_periods": 9
+  }
+ },
+ "baseline_strategies": {
+  "frozen baseline": {
+   "surge_month_flagged": 1471,
+   "outside_flagged": 557,
+   "outside_per_day": 1.39,
+   "median_window_score": 0.578
+  },
+  "rolling baseline (quarantine flagged)": {
+   "surge_month_flagged": 1498,
+   "outside_flagged": 636,
+   "outside_per_day": 1.58,
+   "median_window_score": 0.473
+  },
+  "rolling baseline (no quarantine)": {
+   "surge_month_flagged": 1461,
+   "outside_flagged": 540,
+   "outside_per_day": 1.34,
+   "median_window_score": 0.473
+  }
+ },
+ "seconds": 219
+}

@@ -17,7 +17,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import joblib
-import pandas as pd
 
 from src.detection.iforest import AnomalyModel
 from src.detection.triage import SuppressionList

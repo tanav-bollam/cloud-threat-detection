@@ -1,86 +1,54 @@
 {
- "events": 4039,
- "wall_s": 72.5,
- "events_per_s": 56,
- "alerts": 33,
- "injections": 9,
- "detected": 9,
- "ttd_sim_p50_s": 15.0,
- "ttd_sim_p95_s": 172.5999999999999,
- "pipeline_latency_p50_ms": 424.4,
- "pipeline_latency_p95_ms": 2536.74,
+ "events": 3991,
+ "wall_s": 9.4,
+ "events_per_s": 424,
+ "alerts": 15,
+ "injections": 5,
+ "detected": 5,
+ "ttd_sim_p50_s": 1229.0,
+ "ttd_sim_p95_s": 1662.8,
+ "pipeline_latency_p50_ms": 4553.1,
+ "pipeline_latency_p95_ms": 4554.1,
  "per_injection": [
   {
    "injection_id": "inj-777-0001-S1",
    "scenario_id": "S1",
    "detected_by": "R022",
    "ttd_sim_s": 0.0,
-   "ttd_wall_s": 0.43,
-   "latency_ms": 346.0
+   "ttd_wall_s": 4.57,
+   "latency_ms": 4554.1
   },
   {
    "injection_id": "inj-777-0001-S2",
    "scenario_id": "S2",
    "detected_by": "R023",
    "ttd_sim_s": 43.0,
-   "ttd_wall_s": 2.65,
-   "latency_ms": 424.4
+   "ttd_wall_s": 4.57,
+   "latency_ms": 4554.1
   },
   {
    "injection_id": "inj-777-0001-S3",
    "scenario_id": "S3",
-   "detected_by": "R007",
-   "ttd_sim_s": 15.0,
-   "ttd_wall_s": 7.93,
-   "latency_ms": 2791.9
+   "detected_by": "ML001",
+   "ttd_sim_s": 1707.0,
+   "ttd_wall_s": 4.57,
+   "latency_ms": 4553.1
   },
   {
    "injection_id": "inj-777-0001-S4",
    "scenario_id": "S4",
-   "detected_by": "R001",
-   "ttd_sim_s": 19.0,
-   "ttd_wall_s": 7.93,
-   "latency_ms": 1295.7
+   "detected_by": "ML001",
+   "ttd_sim_s": 1486.0,
+   "ttd_wall_s": 4.57,
+   "latency_ms": 4553.1
   },
   {
    "injection_id": "inj-777-0001-S5",
    "scenario_id": "S5",
    "detected_by": "ML001",
-   "ttd_sim_s": 259.0,
-   "ttd_wall_s": 10.38,
-   "latency_ms": 2154.0
-  },
-  {
-   "injection_id": "inj-777-0002-S9",
-   "scenario_id": "S9",
-   "detected_by": "IP001",
-   "ttd_sim_s": 0.0,
-   "ttd_wall_s": 0.95,
-   "latency_ms": 208.6
-  },
-  {
-   "injection_id": "inj-777-0003-S7",
-   "scenario_id": "S7",
-   "detected_by": "R022",
-   "ttd_sim_s": 0.0,
-   "ttd_wall_s": 0.63,
-   "latency_ms": 582.2
-  },
-  {
-   "injection_id": "inj-777-0004-S8",
-   "scenario_id": "S8",
-   "detected_by": "R020",
-   "ttd_sim_s": 16.0,
-   "ttd_wall_s": 0.42,
-   "latency_ms": 390.6
-  },
-  {
-   "injection_id": "inj-777-0005-S6",
-   "scenario_id": "S6",
-   "detected_by": "R010",
-   "ttd_sim_s": 0.0,
-   "ttd_wall_s": 0.19,
-   "latency_ms": 151.4
+   "ttd_sim_s": 1229.0,
+   "ttd_wall_s": 4.57,
+   "latency_ms": 4553.1
   }
  ]
 }

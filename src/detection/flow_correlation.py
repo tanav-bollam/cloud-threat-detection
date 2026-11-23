@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import ipaddress
 import json
-from typing import Optional
 
 import pandas as pd
 
