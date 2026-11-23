@@ -162,5 +162,46 @@ def main() -> None:
     print(f"site/ built: {len(list(SITE.rglob('*.html')))} pages, {len(shots)} screenshots, {size/1e6:.1f} MB")
 
 
+def build_single_file(out: Path) -> Path:
+    """One self-contained HTML file: images and Plotly embedded, the three docs appended as sections. Works offline, no CDN, no server.
+    Intended as a downloadable attachment (e.g. a GitHub Release asset). Requires site/ to have been built first."""
+    import base64
+    import re
+
+    from plotly.offline import get_plotlyjs
+
+    index = (SITE / "index.html").read_text(encoding="utf-8")
+    js = get_plotlyjs().replace("</script>", "<\\/script>")
+    index, n = re.subn(r'<script[^>]*src="https://cdn\.plot\.ly/[^"]+"[^>]*></script>', lambda m: f"<script>{js}</script>", index, count=1)
+    assert n == 1, "expected exactly one Plotly CDN script tag"
+    index = re.sub(r'<a href="img/[^"]+">(<img[^>]*>)</a>', r"\1", index)
+
+    def data_uri(m):
+        data = base64.b64encode((SITE / "img" / m.group(1)).read_bytes()).decode()
+        return f'src="data:image/png;base64,{data}"'
+
+    index = re.sub(r'src="img/([^"]+\.png)"', data_uri, index)
+    sections = []
+    for name in ("RESULTS", "REAL_DATA_FINDINGS", "DETECTIONS"):
+        p = SITE / "docs" / f"{name}.html"
+        if not p.exists():
+            continue
+        inner = re.search(r'<div class="doc">(.*)</div></body>', p.read_text(encoding="utf-8"), re.S).group(1)
+        inner = re.sub(r'<p><a href="\.\./index\.html">.*?</a></p>', "", inner, count=1)
+        sections.append(f'<section class="doc" id="doc-{name}"><p><a href="#top">↑ back to the top</a></p>{inner}</section>')
+        index = index.replace(f'href="docs/{name}.html"', f'href="#doc-{name}"')
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    index = index.replace("<body>", f'<body id="top"><div class="note" style="max-width:1080px;margin:12px auto;">Single-file offline snapshot generated {now}. '
+                                    "Everything (charts, screenshots, the three documents) is embedded; the live site is at the repository's GitHub Pages URL.</div>", 1)
+    index = index.replace("</body>", "".join(sections) + "</body>")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(index, encoding="utf-8")
+    return out
+
+
 if __name__ == "__main__":
     main()
+    if "--single-file" in sys.argv:
+        target = Path(sys.argv[sys.argv.index("--single-file") + 1]) if len(sys.argv) > sys.argv.index("--single-file") + 1 else ROOT / "dist" / "cloud-threat-detection-showcase.html"
+        f = build_single_file(target)
+        print(f"single file: {f} ({f.stat().st_size/1e6:.1f} MB)")

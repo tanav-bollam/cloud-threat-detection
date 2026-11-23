@@ -19,3 +19,4 @@ data/raw/
 reports/real_data_small.json
 *.log
 site/
+dist/
