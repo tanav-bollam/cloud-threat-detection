@@ -70,7 +70,7 @@ def test_blocklisted_asn_once_per_hour(base):
 
 
 # ------------------------------------------------------------------------------------------- scoring
-def mkalert(rid="R001", sev="HIGH", ident="alice", ip="45.1.1.1", t="2025-01-08T10:00:00Z", tactic="Defense Evasion", src="rule", eid="e1", **kw):
+def mkalert(rid="R001", sev="HIGH", ident="alice", ip="45.1.1.1", t="2025-01-08T10:00:00Z", tactic="Defense Impairment", src="rule", eid="e1", **kw):
     return Alert(rid, "t", sev, tactic, "T1", eid, t, ident, ip, "d", source=src, **kw)
 
 
@@ -102,11 +102,11 @@ def inc(alerts, known=None):
 def test_same_identity_within_gap_groups_and_chain_is_ordered():
     al = [mkalert("R1", "MEDIUM", t="2025-01-08T10:00:00Z", tactic="Initial Access", eid="a"),
           mkalert("R2", "HIGH", t="2025-01-08T10:20:00Z", tactic="Privilege Escalation", eid="b"),
-          mkalert("R3", "CRITICAL", t="2025-01-08T10:40:00Z", tactic="Defense Evasion", eid="c")]
+          mkalert("R3", "CRITICAL", t="2025-01-08T10:40:00Z", tactic="Defense Impairment", eid="c")]
     out = inc(al)
     assert len(out) == 1
     i = out[0]
-    assert i.tactics == ["Initial Access", "Privilege Escalation", "Defense Evasion"] and i.severity == "CRITICAL" and i.n_alerts == 3
+    assert i.tactics == ["Initial Access", "Privilege Escalation", "Defense Impairment"] and i.severity == "CRITICAL" and i.n_alerts == 3
     assert i.title.startswith("Multi-stage activity on alice")
 
 
@@ -173,7 +173,7 @@ def test_end_to_end_kill_chain_becomes_one_high_incident():
     mine = [i for i in incidents if victim in i.identities and i.severity in ("HIGH", "CRITICAL")]
     assert len(mine) == 1
     chain = mine[0].tactics
-    for earlier, later in (("Initial Access", "Defense Evasion"), ("Privilege Escalation", "Defense Evasion")):
+    for earlier, later in (("Initial Access", "Defense Impairment"), ("Privilege Escalation", "Defense Impairment")):
         assert earlier in chain and later in chain and chain.index(earlier) < chain.index(later)
     assert mine[0].severity == "CRITICAL"                           # StopLogging / DeleteTrail
     inj_start = pd.Timestamp(ds.injections[0]["start_time"])

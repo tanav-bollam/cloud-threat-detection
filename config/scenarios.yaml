@@ -3,8 +3,8 @@ scenarios:
   S1: {name: "Leaked access key used from attacker infrastructure", technique: T1078.004, tactic: Initial Access, off_hours: true}
   S2: {name: "Reconnaissance / enumeration",                       technique: T1580,     tactic: Discovery,      off_hours: true, events: [80, 250], deny_rate: 0.45}
   S3: {name: "IAM privilege escalation",                           technique: T1098.003, tactic: Privilege Escalation}
-  S4: {name: "Defense evasion (disable logging/detection)",        technique: T1562.008, tactic: Defense Evasion}
-  S5: {name: "Data exfiltration",                                  technique: T1530,     tactic: Exfiltration,   events: [60, 400]}
+  S4: {name: "Defense evasion (disable logging/detection)",        technique: T1685.002, tactic: Defense Impairment}
+  S5: {name: "Data exfiltration",                                  technique: T1530,     tactic: Collection,   events: [60, 400]}
   S6: {name: "Persistence (backdoor identities)",                  technique: T1136.003, tactic: Persistence,    off_hours: true}
   S7: {name: "Crypto-mining (resource hijacking)",                 technique: T1496,     tactic: Impact}
   S8: {name: "Console brute force / risky login",                  technique: T1110,     tactic: Credential Access, failures: [10, 40]}

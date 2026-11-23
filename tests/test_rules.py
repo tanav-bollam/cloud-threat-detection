@@ -146,7 +146,7 @@ def test_disabled_rule_does_not_fire():
 
 def test_alert_carries_metadata():
     a = fired([mk("StopLogging")], "R001")[0]
-    assert a.severity == "CRITICAL" and a.mitre_technique == "T1562.008" and a.identity == "alice" and a.event_name == "StopLogging"
+    assert a.severity == "CRITICAL" and a.mitre_technique == "T1685.002" and a.identity == "alice" and a.event_name == "StopLogging"
 
 
 def test_engine_never_sees_labels():

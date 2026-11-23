@@ -80,6 +80,10 @@ with t1:
             {"Variant": "Per group (human vs service role)", "Anomaly-only recall %": P["anomaly_only"]["test_week"]["injection_recall"] * 100, "Combined recall %": P["combined"]["test_week"]["injection_recall"] * 100,
              "Combined FP incidents/day": P["combined"]["benign_week"]["fp_incidents_per_day"]}]), hide_index=True, width="stretch")
 
+    from src import navigator
+    st.download_button("⬇ ATT&CK Navigator layer: rule coverage", json.dumps(navigator.coverage_layer(), indent=1), file_name="attack-coverage-layer.json", mime="application/json",
+                       help="The techniques the shipped rules are written to detect (intended coverage, not measured quality). Open at https://mitre-attack.github.io/attack-navigator/")
+
 with t2:
     ps = Cm["per_scenario"]
     df = pd.DataFrame([{"Scenario": f"{s}: {NAMES[s]}", "Injections": v["injections"], "Detected": v["detected"], "Incident P %": v["incident"]["precision"] * 100,

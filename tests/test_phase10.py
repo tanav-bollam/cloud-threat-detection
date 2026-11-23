@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def alert(sev="HIGH", title="CloudTrail logging stopped", **kw):
-    return Alert("R001", title, sev, "Defense Evasion", "T1562.008", "e1", "2025-01-13T10:00:00Z", "alice", "45.1.1.1", "desc", risk=60.0, source="rule", **kw)
+    return Alert("R001", title, sev, "Defense Impairment", "T1685.002", "e1", "2025-01-13T10:00:00Z", "alice", "45.1.1.1", "desc", risk=60.0, source="rule", **kw)
 
 
 class Capture:

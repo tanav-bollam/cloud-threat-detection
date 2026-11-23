@@ -1,0 +1,36 @@
+# HELD-OUT GENERATOR VARIANT of the attack scenarios (see org.yaml in this directory). The rules and models were never tuned against these.
+# Harder in these ways: attackers use ordinary-looking CLI/SDK user agents (not offensive tooling), smaller recon and exfiltration bursts,
+# fewer failed logins, and crypto-mining on instance sizes the instance rule does not list.
+scenarios:
+  S1: {name: "Leaked access key used from attacker infrastructure", technique: T1078.004, tactic: Initial Access, off_hours: false}
+  S2: {name: "Reconnaissance / enumeration",                       technique: T1580,     tactic: Discovery,      off_hours: false, events: [30, 90], deny_rate: 0.25}
+  S3: {name: "IAM privilege escalation",                           technique: T1098.003, tactic: Privilege Escalation}
+  S4: {name: "Defense evasion (disable logging/detection)",        technique: T1685.002, tactic: Defense Impairment}
+  S5: {name: "Data exfiltration",                                  technique: T1530,     tactic: Collection,   events: [40, 120]}
+  S6: {name: "Persistence (backdoor identities)",                  technique: T1136.003, tactic: Persistence,    off_hours: false}
+  S7: {name: "Crypto-mining (resource hijacking)",                 technique: T1496,     tactic: Impact}
+  S8: {name: "Console brute force / risky login",                  technique: T1110,     tactic: Credential Access, failures: [6, 12]}
+  S9: {name: "Impossible travel",                                  technique: T1078.004, tactic: Initial Access, min_km: 3000}
+
+event_overrides:
+  CreateAccessKey: [T1098.001, Persistence]
+  CreateLoginProfile: [T1098, Persistence]
+  UpdateAssumeRolePolicy: [T1098, Persistence]
+  CreateFunction20150331: [T1546, Privilege Escalation]
+  PutBucketPolicy: [T1537, Exfiltration]
+  PutBucketAcl: [T1537, Exfiltration]
+  ModifySnapshotAttribute: [T1537, Exfiltration]
+  GetCallerIdentity: [T1078.004, Initial Access]
+  CreateUser: [T1136.003, Persistence]
+  AttachUserPolicy: [T1098.003, Privilege Escalation]
+  PutUserPolicy: [T1098.003, Privilege Escalation]
+
+attacker:
+  countries: [BR, NL, SG, CN]
+  agents:
+    - "aws-cli/2.15.17 Python/3.11.6 Darwin/23.4.0 source/arm64 prompt/off"
+    - "Boto3/1.34.40 md/Botocore#1.34.40 ua/2.0 os/linux#5.15.0 md/arch#x86_64 lang/python#3.10.12 md/pyimpl#CPython cfg/retry-mode#legacy Botocore/1.34.40"
+    - "aws-sdk-go/1.50.0 (go1.21.6; linux; amd64)"
+  external_accounts: ["731234567890", "505050505050"]
+  crypto_regions: [us-east-1, ap-south-1, sa-east-1, eu-north-1]
+  crypto_instances: [c5.9xlarge, m5.8xlarge, g4dn.xlarge, c6i.16xlarge]

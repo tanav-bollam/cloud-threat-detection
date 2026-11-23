@@ -41,8 +41,8 @@
 - id: R017
   title: Security group opened to the world
   severity: MEDIUM
-  mitre_tactic: Defense Evasion
-  mitre_technique: T1562.007
+  mitre_tactic: Defense Impairment
+  mitre_technique: T1686.001
   description: AuthorizeSecurityGroupIngress allows 0.0.0.0/0.
   false_positive_notes: Public web/load-balancer security groups on 80/443.
   condition: {event_name: [AuthorizeSecurityGroupIngress], check: open_to_world}

@@ -102,7 +102,7 @@ def test_affected_resources_and_playbook():
             {"requestParameters": {}, "responseElements": {"accessKey": {"accessKeyId": "AKIAEXAMPLEEXAMPLE1"}}}]
     res = reporting.affected_resources(recs)
     assert res["S3 bucket"] == ["acme-prod"] and res["External account"] == ["999988887777"] and "Access key created" in res
-    steps = reporting.recommended_steps(["T1562.008"], ["Defense Evasion"])
+    steps = reporting.recommended_steps(["T1685.002"], ["Defense Impairment"])
     assert any("StartLogging" in s for s in steps) and len(steps) == len(set(steps))
 
 

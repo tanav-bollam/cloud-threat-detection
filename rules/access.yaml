@@ -67,7 +67,7 @@
 - id: R024
   title: Mass S3 object download by a human user
   severity: HIGH
-  mitre_tactic: Exfiltration
+  mitre_tactic: Collection
   mitre_technique: T1530
   description: An IAM user performed 250+ GetObject calls in ten minutes. Service roles are excluded because bulk reads are normal for them.
   false_positive_notes: Data migrations or analysts exporting large datasets.

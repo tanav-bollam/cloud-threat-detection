@@ -20,13 +20,13 @@ by_technique:
     - "Remove unexpected login profiles and roll back role trust policies (UpdateAssumeRolePolicy) to the last known-good document."
   T1136.003:
     - "Delete or disable IAM users created during the incident and review their activity before deleting."
-  T1562.008:
+  T1685.002:
     - "Re-enable CloudTrail logging immediately (StartLogging), confirm the trail is multi-region with log file validation, and restore the original event selectors."
     - "Treat everything after the logging gap as unobserved: check S3 server access logs, VPC flow logs and service-specific logs for that window."
     - "Apply an SCP denying cloudtrail:StopLogging / DeleteTrail / UpdateTrail except for a break-glass role."
-  T1562.001:
+  T1685:
     - "Re-create or re-enable the GuardDuty detector in every region where it was removed and review findings from the gap."
-  T1562.007:
+  T1686.001:
     - "Remove 0.0.0.0/0 ingress rules created during the incident and check for instances reachable from the internet."
   T1530:
     - "Identify which objects were read (S3 data events / server access logs) and classify the data exposure for breach-notification decisions."
@@ -40,11 +40,13 @@ by_technique:
     - "Check the bill for the incident window (Cost Explorer) and open an AWS support case about abuse charges."
   T1110:
     - "Lock or reset the targeted account, enforce MFA, and block the offending source IPs at the edge/SSO provider."
+  T1666:
+    - "Find out why the account tried to leave (or change) its AWS Organization, confirm it is still attached, and that service control policies and the organization trail still apply to it."
   T1090:
     - "Review whether the anonymizing network was used for the successful sessions; consider conditional access that requires known egress IPs."
 by_tactic:
   Initial Access: ["Check how the credential was exposed (phishing, leaked key, reused password)."]
   Persistence: ["Hunt for other persistence: new users, keys, roles with external trust, Lambda backdoors, scheduled events."]
-  "Defense Evasion": ["Assume the attacker knows your detections; widen the investigation window."]
+  "Defense Impairment": ["Assume the attacker knows your detections; widen the investigation window."]
   Exfiltration: ["Quantify the data accessed and involve legal/privacy early."]
   Impact: ["Stop the resource consumption first, then investigate how access was obtained."]

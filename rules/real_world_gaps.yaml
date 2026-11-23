@@ -95,16 +95,16 @@
 - id: R036
   title: Attempt to leave the AWS Organization
   severity: HIGH
-  mitre_tactic: Defense Evasion
-  mitre_technique: T1562
+  mitre_tactic: Defense Impairment
+  mitre_technique: T1666
   description: LeaveOrganization would detach the account from organization-level guardrails (SCPs, org trails).
   false_positive_notes: Account divestiture, which is a planned and ticketed event.
   condition: {event_name: [LeaveOrganization]}
 - id: R037
   title: DNS query logging removed
   severity: HIGH
-  mitre_tactic: Defense Evasion
-  mitre_technique: T1562.008
+  mitre_tactic: Defense Impairment
+  mitre_technique: T1685.002
   description: A Route 53 Resolver query log configuration was deleted or disassociated, blinding DNS-based detection.
   false_positive_notes: VPC teardown.
   condition: {event_name: [DeleteResolverQueryLogConfig, DisassociateResolverQueryLogConfig]}

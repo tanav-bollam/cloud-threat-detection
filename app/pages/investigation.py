@@ -10,7 +10,7 @@ import streamlit as st
 
 from app import common as C
 from app import data as D
-from src import reporting
+from src import navigator, reporting
 from src.detection.rules_engine import load_rules
 
 C.sidebar()
@@ -127,8 +127,11 @@ rep_tl = [{"time": str(r.event_time), "identity": r.identity, "ip": r.source_ip,
 raw = D.raw_events(cur, list(flag_ev["event_id"])) if not flag_ev.empty else []
 rep = reporting.build_report(inc, json.loads(alerts.drop(columns=["matched_event_ids"]).to_json(orient="records", date_format="iso")), rep_tl, raw,
                              notes=st.session_state.get(f"nt_{iid}", inc.get("notes") or ""))
-c1, c2 = st.columns(2)
+c1, c2, c3 = st.columns(3)
 c1.download_button("⬇ Markdown report", reporting.to_markdown(rep), file_name=f"{iid}.md", mime="text/markdown", width="stretch")
 c2.download_button("⬇ JSON report", json.dumps(rep, indent=1, default=str), file_name=f"{iid}.json", mime="application/json", width="stretch")
+nav_layer = navigator.incident_layer(inc, alerts.to_dict("records"))
+c3.download_button("⬇ ATT&CK Navigator layer", json.dumps(nav_layer, indent=1), file_name=f"{iid}-attack-layer.json", mime="application/json", width="stretch",
+                   help="Open at https://mitre-attack.github.io/attack-navigator/ with Open Existing Layer > Upload from local. Nothing is uploaded by this app.")
 with st.expander("Preview report"):
     st.markdown(reporting.to_markdown(rep))

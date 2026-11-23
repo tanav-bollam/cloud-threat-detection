@@ -1,0 +1,253 @@
+{
+ "name": "Cloud Threat Detection: rule coverage",
+ "versions": {
+  "attack": "20",
+  "navigator": "5.3.2",
+  "layer": "4.5"
+ },
+ "domain": "enterprise-attack",
+ "description": "Techniques the 41 shipped detection rules are written to detect (score = number of rules). This is intended coverage, not measured detection quality; see docs/RESULTS.md and docs/REAL_DATA_FINDINGS.md for measurements.",
+ "filters": {
+  "platforms": [
+   "IaaS"
+  ]
+ },
+ "sorting": 3,
+ "layout": {
+  "layout": "side",
+  "aggregateFunction": "max",
+  "showID": true,
+  "showName": true,
+  "showAggregateScores": false,
+  "countUnscored": false,
+  "expandedSubtechniques": "annotated"
+ },
+ "hideDisabled": false,
+ "techniques": [
+  {
+   "techniqueID": "T1021",
+   "tactic": "lateral-movement",
+   "score": 1,
+   "comment": "R033 EC2 Instance Connect or serial console access used",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1059",
+   "tactic": "execution",
+   "score": 1,
+   "comment": "R034 EC2 user data modified",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1078.004",
+   "tactic": "initial-access",
+   "score": 3,
+   "comment": "R018 Root account used; R019 Console login without MFA; R022 Offensive-tooling user agent",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": true
+  },
+  {
+   "techniqueID": "T1098",
+   "tactic": "persistence",
+   "score": 6,
+   "comment": "R008 Console login profile created; R009 Role trust policy opened to an external account; R027 Lambda function invokable by anyone; R038 Federation token requested by an IAM user; R039 IAM Roles Anywhere trust anchor or profile created; R040 Console password reset for another user",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1098.001",
+   "tactic": "persistence",
+   "score": 1,
+   "comment": "R007 Access key created for a different user",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": true
+  },
+  {
+   "techniqueID": "T1098.003",
+   "tactic": "privilege-escalation",
+   "score": 2,
+   "comment": "R005 AdministratorAccess policy attached; R006 Inline policy granting full admin (Action * on Resource *)",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": true
+  },
+  {
+   "techniqueID": "T1110",
+   "tactic": "credential-access",
+   "score": 2,
+   "comment": "R020 Repeated failed console logins; R021 Successful console login after repeated failures",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1136.003",
+   "tactic": "persistence",
+   "score": 1,
+   "comment": "R010 IAM user created",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": true
+  },
+  {
+   "techniqueID": "T1496",
+   "tactic": "impact",
+   "score": 3,
+   "comment": "R015 Large or GPU instance launched; R016 Compute launched in a region the organization does not use; R041 Bedrock model invoked",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1530",
+   "tactic": "collection",
+   "score": 1,
+   "comment": "R024 Mass S3 object download by a human user",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1537",
+   "tactic": "exfiltration",
+   "score": 5,
+   "comment": "R012 S3 bucket policy allows public access; R013 S3 bucket ACL made public; R014 EBS snapshot shared with an external account; R025 AMI shared with an external account or publicly; R026 RDS snapshot shared with an external account",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1546",
+   "tactic": "privilege-escalation",
+   "score": 1,
+   "comment": "R011 Lambda function created",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1552",
+   "tactic": "credential-access",
+   "score": 3,
+   "comment": "R028 EC2 Windows password data retrieved; R031 SSM parameters read in bulk; R035 EC2 user data read",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1555",
+   "tactic": "credential-access",
+   "score": 2,
+   "comment": "R029 Secrets Manager secrets retrieved in bulk; R030 Burst of secret reads by a human user",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1580",
+   "tactic": "discovery",
+   "score": 1,
+   "comment": "R023 Burst of AccessDenied errors (enumeration)",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1651",
+   "tactic": "execution",
+   "score": 1,
+   "comment": "R032 Remote command or session on instances via SSM",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1666",
+   "tactic": "defense-impairment",
+   "score": 1,
+   "comment": "R036 Attempt to leave the AWS Organization",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1685",
+   "tactic": "defense-impairment",
+   "score": 1,
+   "comment": "R003 GuardDuty detector deleted or disabled",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": false
+  },
+  {
+   "techniqueID": "T1685.002",
+   "tactic": "defense-impairment",
+   "score": 4,
+   "comment": "R001 CloudTrail logging stopped or trail deleted; R002 CloudTrail configuration weakened; R004 VPC flow logs deleted; R037 DNS query logging removed",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": true
+  },
+  {
+   "techniqueID": "T1686.001",
+   "tactic": "defense-impairment",
+   "score": 1,
+   "comment": "R017 Security group opened to the world",
+   "enabled": true,
+   "metadata": [],
+   "links": [],
+   "showSubtechniques": true
+  }
+ ],
+ "gradient": {
+  "colors": [
+   "#d0e2fb",
+   "#1c5cab"
+  ],
+  "minValue": 1,
+  "maxValue": 6
+ },
+ "legendItems": [
+  {
+   "label": "1 rule",
+   "color": "#d0e2fb"
+  },
+  {
+   "label": "6+ rules",
+   "color": "#1c5cab"
+  }
+ ],
+ "metadata": [],
+ "links": [],
+ "showTacticRowBackground": false,
+ "tacticRowBackground": "#dddddd",
+ "selectTechniquesAcrossTactics": true,
+ "selectSubtechniquesWithParent": false,
+ "selectVisibleTechniques": false
+}

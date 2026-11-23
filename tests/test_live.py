@@ -52,7 +52,7 @@ def test_replay_detects_kill_chain_and_records_everything(tmp_path, trained):
     inc = cur.execute("SELECT severity, tactics FROM incidents WHERE identities LIKE ? ORDER BY risk_score DESC", [f'%"{victim}"%']).fetchall()
     assert inc and inc[0][0] in ("HIGH", "CRITICAL")
     tactics = json.loads(inc[0][1])
-    assert "Defense Evasion" in tactics and len(tactics) >= 2
+    assert "Defense Impairment" in tactics and len(tactics) >= 2
     # every alert row is attached to an incident
     assert cur.execute("SELECT count(*) FROM alerts WHERE incident_id IS NULL").fetchone()[0] == 0
 

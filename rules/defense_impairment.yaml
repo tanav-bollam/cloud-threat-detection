@@ -1,32 +1,32 @@
 - id: R001
   title: CloudTrail logging stopped or trail deleted
   severity: CRITICAL
-  mitre_tactic: Defense Evasion
-  mitre_technique: T1562.008
+  mitre_tactic: Defense Impairment
+  mitre_technique: T1685.002
   description: An identity stopped logging on, or deleted, a CloudTrail trail. Attackers do this to blind investigators before acting.
   false_positive_notes: Planned trail migrations by the platform team. Should always be ticketed; treat unticketed as an incident.
   condition: {event_name: [StopLogging, DeleteTrail]}
 - id: R002
   title: CloudTrail configuration weakened
   severity: HIGH
-  mitre_tactic: Defense Evasion
-  mitre_technique: T1562.008
+  mitre_tactic: Defense Impairment
+  mitre_technique: T1685.002
   description: UpdateTrail or PutEventSelectors changed what the trail records (single-region, no validation, management events off).
   false_positive_notes: Legitimate cost-tuning of event selectors. Compare the new selectors against the previous ones.
   condition: {event_name: [UpdateTrail, PutEventSelectors]}
 - id: R003
   title: GuardDuty detector deleted or disabled
   severity: HIGH
-  mitre_tactic: Defense Evasion
-  mitre_technique: T1562.001
+  mitre_tactic: Defense Impairment
+  mitre_technique: T1685
   description: A GuardDuty detector was deleted or disabled, removing a managed threat detection service.
   false_positive_notes: Account decommissioning or region clean-up.
   condition: {event_name: [DeleteDetector, UpdateDetector], check: detector_disabled}
 - id: R004
   title: VPC flow logs deleted
   severity: HIGH
-  mitre_tactic: Defense Evasion
-  mitre_technique: T1562.008
+  mitre_tactic: Defense Impairment
+  mitre_technique: T1685.002
   description: Flow logs were deleted, removing network visibility.
   false_positive_notes: VPC teardown by infrastructure automation (usually a CI/CD role, not a person).
   condition: {event_name: [DeleteFlowLogs]}
