@@ -1,6 +1,5 @@
 import json
 
-import pytest
 
 from src import navigator as N
 from src.detection.rules_engine import load_rules

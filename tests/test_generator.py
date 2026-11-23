@@ -125,7 +125,6 @@ def test_storage_roundtrip(tmp_path, ds):
 
 def _s1_attackers(stealth, n=6):
     ds = generate_dataset(seed=21, world_seed=9, days=3, scale=0.03, attacks=["S1"], count=n, stealth=stealth)
-    victims = {r["victim"]: r for r in ds.injections}
     out = []
     for rec, lab in ds.events:
         if lab and lab["is_malicious"] and lab["scenario_id"] == "S1":

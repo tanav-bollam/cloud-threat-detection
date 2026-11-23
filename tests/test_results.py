@@ -1,10 +1,8 @@
 import json
-import shutil
 from pathlib import Path
 from types import SimpleNamespace
 
 import pandas as pd
-import pytest
 from streamlit.testing.v1 import AppTest
 
 from src.evaluation import _prf, scenario_prf

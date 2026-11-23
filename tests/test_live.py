@@ -3,15 +3,9 @@ import json
 import time
 from datetime import datetime, timedelta
 
-import numpy as np
-import pandas as pd
-import pytest
 
-from src.detection.features import FEATURES, compute_windows, fit_baseline
-from src.detection.iforest import AnomalyModel
 from src.detection.incidents import Incident
 from src.detection.triage import Suppression, SuppressionList
-from src.generator.dataset import generate_dataset
 from src.pipeline import storage
 from src.pipeline.live import Detector, LiveEngine
 

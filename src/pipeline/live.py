@@ -29,7 +29,7 @@ from src.detection.iforest import AnomalyModel, windows_to_alerts
 from src.detection.incidents import group_alerts
 from src.detection.ip_analysis import IpAnalyzer
 from src.detection.rules_engine import Alert, RulesEngine
-from src.detection.scoring import load_config, score_alert, score_alerts
+from src.detection.scoring import load_config, score_alert
 from src.detection.triage import SuppressionList
 from src.generator.attacks import AttackRunner
 from src.generator.benign import BenignGenerator
@@ -401,7 +401,6 @@ class LiveEngine:
                  until: Optional[datetime] = None, retain_min: int = 120, suppressions: Optional[SuppressionList] = None,
                  disabled_rules: Optional[set] = None, queue_size: int = 20000, fresh: bool = True, cfg: Optional[dict] = None,
                  seed_db: Optional[str | Path] = None, dedupe_s: Optional[float] = None):
-        import duckdb
         self.cfg = cfg or load_config()
         self.baseline, self.model = baseline, model
         if baseline is None:

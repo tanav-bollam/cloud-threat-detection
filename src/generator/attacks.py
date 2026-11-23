@@ -200,7 +200,7 @@ def s9(r: Run) -> None:
     sc = SCEN["scenarios"]["S9"]
     home_ip = r.victim.home_ips[0]
     victim_ua = list(r.victim.uas.values())[0][0]
-    anchor = r.ev("DescribeInstances", lo=0, ip=home_ip, ua=victim_ua, region=r.victim.region, malicious=False)
+    anchor = r.ev("DescribeInstances", lo=0, ip=home_ip, ua=victim_ua, region=r.victim.region, malicious=False)  # noqa: F841  (kept: the call advances the RNG, removing it would change generated data)
     h = geo.lookup(home_ip)
     far = [c for c, (_, la, lo) in geo.COUNTRIES.items() if geo.haversine_km(h.lat, h.lon, la, lo) >= sc["min_km"]]
     ip = geo.random_ip(r.rng, r.rng.choice(far))

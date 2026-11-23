@@ -29,7 +29,7 @@ from src.detection.explain import explain, format_reasons
 from src.detection.features import HIGH_RISK, compute_windows, fit_baseline, load_events
 from src.detection.iforest import AnomalyModel, windows_to_alerts
 from src.detection.ip_analysis import IpAnalyzer
-from src.detection.rules_engine import RulesEngine, load_rules
+from src.detection.rules_engine import load_rules
 from src.detection.scoring import load_config
 from src.generator import geo
 from src.pipeline import ingest, storage
@@ -222,7 +222,6 @@ def main() -> None:
     log("stratus: coverage per technique ...")
     before = json.load(open("reports/stratus_coverage_before.json")) if Path("reports/stratus_coverage_before.json").exists() else None
     after = stratus_coverage(samples / "stratus-red-team.cloud")
-    orig_ids = {r["rule_id"] for r in [] } or None
     res["stratus"] = {"before": None if before is None else {k: before[k] for k in ("techniques", "covered_specific", "covered_any", "rules_evaluated", "measured_at_commit")},
                       "after": {k: after[k] for k in ("techniques", "covered_specific", "covered_any", "rules_evaluated")},
                       "rows": [{"tactic": r["tactic"], "technique": r["technique"], "events": r["events"], "event_names": r["event_names"][:4],

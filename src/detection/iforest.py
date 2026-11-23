@@ -107,7 +107,7 @@ def windows_to_alerts(feats: pd.DataFrame, scores: np.ndarray, flagged: np.ndarr
     alerts: list[Alert] = []
     win = pd.Timedelta(minutes=WINDOW_MIN)
     for ident, g in f.groupby("identity"):
-        run_start = prev = None
+        prev = None
         rows: list = []
         runs = []
         for r in g.itertuples():

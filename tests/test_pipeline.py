@@ -7,7 +7,7 @@ from src.detection.ip_analysis import IpAnalyzer
 from src.detection.rules_engine import Alert, RulesEngine
 from src.detection.scoring import alert_id, load_config, score_alert, score_alerts
 from src.detection.triage import SuppressionList
-from tests.test_features_model import HOME_IP, LONDON_IP, ev, history
+from tests.test_features_model import HOME_IP, LONDON_IP, history
 
 CFG = load_config()
 NYC2 = "11.7.7.7"

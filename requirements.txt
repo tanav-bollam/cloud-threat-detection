@@ -13,3 +13,4 @@ joblib==1.6.0
 pytest==9.2.0
 hypothesis==6.170.17
 markdown==3.11.3
+ruff==0.17.6

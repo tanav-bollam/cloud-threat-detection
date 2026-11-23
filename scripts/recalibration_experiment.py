@@ -121,7 +121,6 @@ def main() -> None:
     # ---- (A) threshold strategies on windows scored with the frozen baseline
     feats = compute_windows(post, static_base)
     scores = model.score(feats)
-    months = feats["wstart"].dt.strftime("%Y-%m").to_numpy()
     in_surge = (feats["wstart"] >= s_start) & (feats["wstart"] < s_end)
     wt, st_ = feats["wstart"].to_numpy(), calib["wstart"].to_numpy()
     variants = {

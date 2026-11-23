@@ -61,9 +61,13 @@ def style(fig, height=340):
     return fig
 
 
-def fragment(fig, first=[True]) -> str:
-    out = fig.to_html(full_html=False, include_plotlyjs="cdn" if first[0] else False, config={"displayModeBar": False})
-    first[0] = False
+_PLOTLY_LOADED = False          # the page loads plotly.js once, with the first chart; main() resets this so every build starts fresh
+
+
+def fragment(fig) -> str:
+    global _PLOTLY_LOADED
+    out = fig.to_html(full_html=False, include_plotlyjs=False if _PLOTLY_LOADED else "cdn", config={"displayModeBar": False})
+    _PLOTLY_LOADED = True
     return out
 
 
@@ -77,6 +81,8 @@ def page(title, body, extra_head=""):
 
 
 def main() -> None:
+    global _PLOTLY_LOADED
+    _PLOTLY_LOADED = False
     g, rob, real, live = load("metrics.json"), load("robustness.json"), load("real_data.json"), load("live_ttd.json")
     if not g:
         sys.exit("reports/metrics.json missing: run scripts/evaluate.py first")

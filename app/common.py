@@ -13,7 +13,6 @@ import joblib
 import pandas as pd
 import streamlit as st
 
-from app import data
 from src.detection.iforest import AnomalyModel
 from src.detection.triage import SuppressionList
 from src.pipeline.live import LiveEngine
@@ -39,7 +38,7 @@ def sev_chip(sev: str) -> str:
 
 def tactic_chain(tactics: list[str]) -> str:
     if not tactics:
-        return "<span style='color:%s'>no MITRE tactic mapped</span>" % MUTED
+        return f"<span style='color:{MUTED}'>no MITRE tactic mapped</span>"
     import html as _html
     chips = [f'<span style="border:1px solid {MUTED};border-radius:6px;padding:2px 8px;color:{INK};white-space:nowrap">{_html.escape(str(t))}</span>' for t in tactics]
     return f' <span style="color:{MUTED}">→</span> '.join(chips)

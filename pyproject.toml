@@ -12,3 +12,11 @@ dependencies = [
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 200                 # the codebase uses long, dense lines on purpose; this keeps the linter about bugs, not wrapping
+extend-exclude = ["data", "demo", "site", ".venv", "models"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP", "I"]
+ignore = ["E501", "E402", "E731", "E741", "B008", "UP006", "UP007", "UP035", "UP045", "I001", "B905", "UP037", "UP017", "UP015", "E702", "B007"]   # E702/B007: deliberate dense style, intentional unused loop vars

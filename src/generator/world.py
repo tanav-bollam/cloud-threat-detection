@@ -1,6 +1,7 @@
 """World model (principals + their network/device habits) and the CloudTrail record builder."""
 from __future__ import annotations
 
+import os
 import random
 import uuid
 from dataclasses import dataclass, field
@@ -17,6 +18,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def load_yaml(name: str) -> dict:
+    """Read config/<name>, or <CTD_CONFIG_DIR>/<name> when that directory provides it (used for the held-out generator variant)."""
+    override = os.environ.get("CTD_CONFIG_DIR")
+    if override and (Path(override) / name).exists():
+        return yaml.safe_load((Path(override) / name).read_text(encoding="utf-8"))
     return yaml.safe_load((ROOT / "config" / name).read_text(encoding="utf-8"))
 
 
@@ -194,7 +199,7 @@ def build_record(rng: random.Random, t: datetime, p: Principal, session: dict, i
         "sourceIPAddress": ip,
         "userAgent": ua,
     }
-    sess_issuer = ""
+    sess_issuer = ""  # noqa: F841
     if error:
         rec["errorCode"] = error
         arn = rec["userIdentity"]["arn"]

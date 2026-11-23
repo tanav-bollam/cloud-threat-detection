@@ -1,7 +1,6 @@
 """Benign baseline generator: a normal week in a ~50-person startup, including benign-but-unusual noise."""
 from __future__ import annotations
 
-import math
 import random
 from datetime import datetime, timedelta
 from typing import Optional

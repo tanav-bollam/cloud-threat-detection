@@ -1,10 +1,8 @@
 """Regression tests for the findings of the code and security review."""
-import io
 import os
 import re
 import stat
 import sys
-import tarfile
 import threading
 import time
 import zlib
@@ -120,7 +118,7 @@ def test_webhook_does_not_follow_redirects():
     red = ThreadingHTTPServer(("127.0.0.1", 0), Redirector)
     threading.Thread(target=red.serve_forever, daemon=True).start()
     try:
-        with pytest.raises(Exception):
+        with pytest.raises(OSError):                                       # urllib.error.URLError/HTTPError are OSErrors
             W._http_post(f"http://127.0.0.1:{red.server_address[1]}/hook", {"a": 1}, 3.0)
         assert hits == []                                                  # the redirect target was never contacted
     finally:
