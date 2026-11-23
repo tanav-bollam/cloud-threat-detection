@@ -1,6 +1,6 @@
 from src.detection.rules_engine import RulesEngine
 from src.generator.world import Principal
-from tests.test_rules import ACCT, ALICE, mk
+from tests.test_rules import ACCT, ALICE, mk  # noqa: F401
 
 BOB = Principal("bob", "IAMUser", "developers", ACCT, access_key="AKIAZZZZZZZZZZZZZZZZ", principal_id="AIDAYYYYYYYYYYYYYYYYY")
 
@@ -46,3 +46,31 @@ def test_reset_clears_dedupe_state():
     alerts(eng, flood(3), "R016")
     eng.reset()
     assert len(alerts(eng, flood(3), "R016")) == 1
+
+
+def test_pop_updated_returns_alerts_that_absorbed_repeats_once():
+    eng = RulesEngine()
+    out = [a for r in flood(5) for a in eng.evaluate(r) if a.rule_id == "R016"]
+    assert len(out) == 1
+    upd = eng.pop_updated()
+    assert out[0] in upd and len({id(a) for a in upd}) == len(upd)           # the same object, no duplicates
+    assert eng.pop_updated() == []                                           # cleared after reading
+    assert len(out[0].matched_event_ids) == 5
+
+
+def test_live_pipeline_persists_folded_repeats(tmp_path, trained):
+    """In live mode the stored alert must list every folded event, not just the first."""
+    import json
+    from datetime import datetime, timedelta
+    from src.pipeline.live import LiveEngine
+    base, model = trained
+    start = datetime(2025, 1, 13, 9, 0)
+    eng = LiveEngine(tmp_path / "l.duckdb", base, model, speed=0, scale=0.05, world_seed=9, days=1, until=start + timedelta(hours=2), fresh=True)
+    eng.inject("S7", at=start + timedelta(minutes=30))
+    eng.start()
+    assert eng.wait(120) and eng.detector.error is None
+    rows = eng.cursor().execute("SELECT rule_id, matched_event_ids, detail FROM alerts WHERE rule_id IN ('R015','R016')").fetchall()
+    assert rows, "S7 should raise the instance rules"
+    folded = [(r, json.loads(m)) for r, m, d in rows if "repeats folded" in (d or "")]
+    assert folded and all(len(ids) > 1 for _, ids in folded), "a folded alert was stored with only its first event"
+    eng.close()

@@ -296,6 +296,7 @@ class Detector(threading.Thread):
                                      "source_ip": row["source_ip"], "event_name": row["event_name"]})
             self.buffer.append(light)
             rows.append(row)
+        touched += self.rules.pop_updated()                   # rule alerts that absorbed repeats in this batch must be re-saved
         last_t = pd.Timestamp(rows[-1]["event_time"])
         while self.buffer and pd.Timestamp(self.buffer[0]["event_time"]) < last_t - pd.Timedelta(minutes=self.e.retain_min):
             self.buffer.popleft()

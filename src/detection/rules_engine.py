@@ -142,6 +142,7 @@ class RulesEngine:
         self.disabled = disabled or set()
         self.dedupe_s = dedupe_s          # single-event rules: repeats for the same (rule, identity, source IP) within this window fold into one alert
         self._open: dict[tuple, tuple[Alert, float]] = {}
+        self._updated: dict[int, Alert] = {}       # already-emitted alerts that gained matched events since the last pop_updated()
         self._win: dict[tuple, deque] = defaultdict(deque)       # (rule_id, group) -> deque[(t, event_id)]
         self._prior: dict[tuple, deque] = defaultdict(deque)
         self._last_fire: dict[tuple, float] = {}
@@ -156,7 +157,7 @@ class RulesEngine:
                     self._by_name[n].append(r)
 
     def reset(self) -> None:
-        self._win.clear(); self._prior.clear(); self._last_fire.clear(); self._open.clear()
+        self._win.clear(); self._prior.clear(); self._last_fire.clear(); self._open.clear(); self._updated.clear()
 
     # -------------------------------------------------------------------------------- matching
     def _match(self, cond: dict, rec: dict, include_check: bool = True) -> bool:
@@ -203,6 +204,13 @@ class RulesEngine:
                 out.append(a)
         return out
 
+    def pop_updated(self) -> list[Alert]:
+        """Alerts emitted earlier that have since absorbed repeats (more matched events). A live consumer must re-persist them, otherwise the stored
+        alert would keep only the first event while the batch path (which holds the same objects) sees them all."""
+        out = list(self._updated.values())
+        self._updated.clear()
+        return out
+
     def _dedupe(self, rule: Rule, rec: dict, a: Alert) -> Optional[Alert]:
         """Real traffic repeats the same hit thousands of times (one attacker, one API, 15 regions). Alert once per window and keep the
         repeats as matched events on the first alert, so event coverage is unchanged but the analyst sees one alert."""
@@ -213,6 +221,7 @@ class RulesEngine:
             first = prev[0]
             first.matched_event_ids.append(a.event_id)
             first.detail = f"{len(first.matched_event_ids)} matching events within {int(t - prev[1])}s (repeats folded into this alert)"
+            self._updated[id(first)] = first
             return None
         if len(self._open) > 200_000:                      # bound memory on very long streams
             self._open = {k: v for k, v in self._open.items() if t - v[1] <= self.dedupe_s}
