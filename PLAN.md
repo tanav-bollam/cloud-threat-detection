@@ -39,7 +39,7 @@ Decisions: no boto3 pull (use `scripts/ingest_cloudtrail.py` file ingestor + pub
 - Per-scenario precision is one-vs-rest against the shared benign background (prevalence-dependent); FP/day on the benign week is the honest number.
 - Phase 9 (real data): `scripts/load_flaws.py` (tar -> ingest, verified URL + size + 20/20 SHA-256 match with the samples repo), `scripts/ingest_cloudtrail.py`
   (any CloudTrail export, no AWS SDK), `scripts/validate_real.py` -> reports/real_data.json -> docs/REAL_DATA_FINDINGS.md (generated) + the Real Data page.
-- Honest real-data number: 12/35 Stratus techniques covered by the ORIGINAL 24 rules (measured at commit 18f7504 in a pristine worktree). The 33/35 after is POST-HOC
+- Honest real-data number: 12/35 Stratus techniques covered by the ORIGINAL 24 rules (measured at commit 0c4b21d in a pristine worktree). The 33/35 after is POST-HOC
   (17 rules R025-R041 written after reading those samples) and is a regression check only. Two shipped rules were wrong on real shapes (R017, R009).
 - Real data also forced: engine-level dedupe of single-event rules (flaws.cloud 847,927 -> 7,078 alerts), R018 per-IP/hour dedupe, R023 excludes AWSService principals
   (SANS lab: 177 -> 13 alerts), lenient flatten/ingest, geo registry switch (`geo.set_enabled(False)` for real data; IPs are anonymized).
